@@ -199,10 +199,90 @@
     return '<option value="' + esc(v) + '">' + esc(v) + "</option>";
   }).join("");
 
+  /* Papel/PET/Kraft ya se venden por pieza con precio y existencia reales
+     (ver `venta` en productos.js): esas fichas cambian el bloque de compra
+     entero. El resto del catálogo sigue exactamente como siempre, bajo
+     cotización por caja. No hay pasarela de pago todavía, así que "Comprar
+     ahora" abre al agente de ventas con la pieza y cantidad ya escritas —
+     es un camino real hoy, no un botón muerto a falta de Openpay. */
+  var bloqueCompra;
+  if (p.venta) {
+    bloqueCompra =
+      '<div class="ficha__bloque">' +
+        '<p class="ficha__label">Precio</p>' +
+        '<p class="ficha__preciogrande" id="precio-unidad">Cargando…</p>' +
+        '<p class="ficha__sku" id="sku-actual"></p>' +
+      "</div>" +
+
+      '<div class="ficha__bloque">' +
+        '<label class="ficha__label" for="f-cant">Cantidad</label>' +
+        '<div class="stepper stepper--cant" data-role="stepper-venta">' +
+          '<button type="button" data-vstep="-1" aria-label="Quitar una pieza">' +
+            '<svg class="ico" aria-hidden="true"><use href="#i-minus"></use></svg></button>' +
+          '<input id="f-cant" type="number" min="1" value="1" data-role="qty" aria-label="Piezas">' +
+          '<button type="button" data-vstep="1" aria-label="Agregar una pieza">' +
+            '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></button>' +
+        "</div>" +
+        '<p class="ficha__hint" id="hint-stock"></p>' +
+        '<p class="ficha__total" id="total-compra"></p>' +
+      "</div>" +
+
+      '<div class="ficha__cta">' +
+        '<button class="btn btn--ghost btn--block pcard__add" type="button" data-role="add">' +
+          '<span class="btn__label">Añadir al carrito</span>' +
+          '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg>' +
+        "</button>" +
+        '<button class="btn btn--primary btn--block" type="button" id="btn-comprar">' +
+          '<span class="btn__label">Comprar ahora</span>' +
+        "</button>" +
+        '<button class="btn btn--ghost btn--block" type="button" ' +
+          'data-agente="Cuéntame más sobre ' + esc(p.nombre) + '. ¿Qué medidas hay y para qué se usa?">' +
+          '<span class="btn__label">Preguntar por este producto</span>' +
+        "</button>" +
+        '<button class="btn btn--ghost btn--block" type="button" id="btn-mas-unidades" hidden>' +
+          '<svg class="ico" aria-hidden="true"><use href="#i-sparkle"></use></svg>' +
+          '<span class="btn__label">¿Necesitas más unidades? Habla con nuestro agente</span>' +
+        "</button>" +
+      "</div>" +
+
+      '<p class="ficha__precio">' +
+        '<svg class="ico" aria-hidden="true"><use href="#i-seal-check"></use></svg>' +
+        "Pago en línea próximamente. Por ahora nuestro agente cierra la compra contigo." +
+      "</p>";
+  } else {
+    bloqueCompra =
+      '<div class="ficha__bloque">' +
+        '<label class="ficha__label" for="f-cant">Cajas</label>' +
+        '<div class="ficha__acciones">' +
+          '<div class="stepper" data-role="stepper">' +
+            '<button type="button" data-step="-1" aria-label="Quitar una caja">' +
+              '<svg class="ico" aria-hidden="true"><use href="#i-minus"></use></svg></button>' +
+            '<input id="f-cant" type="number" min="1" max="999" value="1" data-role="qty" aria-label="Cajas">' +
+            '<button type="button" data-step="1" aria-label="Agregar una caja">' +
+              '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></button>' +
+          "</div>" +
+          '<button class="btn btn--primary pcard__add" type="button" data-role="add">' +
+            '<span class="btn__label">Añadir al carrito</span>' +
+            '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg>' +
+          "</button>" +
+        "</div>" +
+        '<button class="btn btn--ghost btn--block" type="button" ' +
+          'data-agente="Cuéntame más sobre ' + esc(p.nombre) + '. ¿Qué medidas hay y para qué se usa?">' +
+          '<svg class="ico" aria-hidden="true"><use href="#i-sparkle"></use></svg>' +
+          '<span class="btn__label">Preguntar por este producto</span>' +
+        "</button>" +
+      "</div>" +
+
+      '<p class="ficha__precio">' +
+        '<svg class="ico" aria-hidden="true"><use href="#i-seal-check"></use></svg>' +
+        "Precio bajo cotización. Depende de la medida y del volumen; ventas te contesta sin compromiso." +
+      "</p>";
+  }
+
   ficha.innerHTML =
     /* --- galería --- */
     '<div class="ficha__media">' +
-      '<div class="ficha__foto' + (p.placa ? " ficha__foto--placa" : "") + '">' +
+      '<div class="ficha__foto' + (p.placa ? " ficha__foto--placa" : "") + (p.fotoPropia ? " ficha__foto--propia" : "") + '">' +
         (promo && promo.desc ? '<span class="pcard__flag pcard__flag--off">-' + promo.desc + "%</span>" : "") +
         (p.destacado ? '<span class="pcard__flag">Más pedido</span>' : "") +
         '<img src="' + src(p.img) + '" alt="' + esc(p.nombre) + '" width="800" height="600" fetchpriority="high">' +
@@ -230,40 +310,15 @@
            cambia y no hubo que tocar su lógica. */
         '<div class="vchips" role="radiogroup" aria-labelledby="lbl-variante">' +
           p.v.map(function (v, k) {
-            return '<button type="button" class="vchip" role="radio" data-v="' + esc(v) + '"' +
+            return '<button type="button" class="vchip" role="radio" data-v="' + esc(v) + '" data-i="' + k + '"' +
                    ' aria-checked="' + (k === 0 ? "true" : "false") + '">' + esc(v) + "</button>";
           }).join("") +
         "</div>" +
         '<input type="hidden" id="f-variante" data-role="variant" value="' + esc(p.v[0]) + '">' +
-        (p.p ? '<p class="ficha__hint">Cada caja trae ' + p.p.toLocaleString("es-MX") + " piezas.</p>" : "") +
+        (p.p && !p.venta ? '<p class="ficha__hint">Cada caja trae ' + p.p.toLocaleString("es-MX") + " piezas.</p>" : "") +
       "</div>" +
 
-      '<div class="ficha__bloque">' +
-        '<label class="ficha__label" for="f-cant">Cajas</label>' +
-        '<div class="ficha__acciones">' +
-          '<div class="stepper" data-role="stepper">' +
-            '<button type="button" data-step="-1" aria-label="Quitar una caja">' +
-              '<svg class="ico" aria-hidden="true"><use href="#i-minus"></use></svg></button>' +
-            '<input id="f-cant" type="number" min="1" max="999" value="1" data-role="qty" aria-label="Cajas">' +
-            '<button type="button" data-step="1" aria-label="Agregar una caja">' +
-              '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></button>' +
-          "</div>" +
-          '<button class="btn btn--primary pcard__add" type="button" data-role="add">' +
-            '<span class="btn__label">Añadir al carrito</span>' +
-            '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg>' +
-          "</button>" +
-        "</div>" +
-        '<button class="btn btn--ghost btn--block" type="button" ' +
-          'data-agente="Cuéntame más sobre ' + esc(p.nombre) + '. ¿Qué medidas hay y para qué se usa?">' +
-          '<svg class="ico" aria-hidden="true"><use href="#i-sparkle"></use></svg>' +
-          '<span class="btn__label">Preguntar por este producto</span>' +
-        "</button>" +
-      "</div>" +
-
-      '<p class="ficha__precio">' +
-        '<svg class="ico" aria-hidden="true"><use href="#i-seal-check"></use></svg>' +
-        "Precio bajo cotización. Depende de la medida y del volumen; ventas te contesta sin compromiso." +
-      "</p>" +
+      bloqueCompra +
 
       '<ul class="ficha__cars">' +
         cars.map(function (c) {
@@ -272,6 +327,104 @@
         }).join("") +
       "</ul>" +
     "</div>";
+
+  /* ======================= precio y existencias en vivo (venta en línea) =======================
+     Solo corre para las fichas con `venta` (líneas Papel, PET, Kraft). Lee
+     precio/stock de productos.js (los captura el panel de admin) y ajusta el
+     tope de piezas al tamaño elegido. Sin pasarela de pago todavía: "Comprar
+     ahora" abre al agente con la pieza y cantidad ya escritas, para no dejar
+     un botón que no lleve a ningún lado mientras se conecta Openpay. */
+  if (p.venta) (function () {
+    var TAM = p.venta.tam;
+    var sel = 0;
+    var cantEl = document.getElementById("f-cant");
+    var precioEl = document.getElementById("precio-unidad");
+    var skuEl = document.getElementById("sku-actual");
+    var hintEl = document.getElementById("hint-stock");
+    var totalEl = document.getElementById("total-compra");
+    var btnComprar = document.getElementById("btn-comprar");
+    var btnMas = document.getElementById("btn-mas-unidades");
+
+    function money(n) {
+      return "$" + n.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    /* Si el producto tiene una oferta activa (mismo mecanismo que ya usa el
+       resto del sitio, capturado en el panel de admin), el precio por pieza
+       se muestra con el tachado y el % de descuento, igual que cualquier
+       otra oferta de la tienda. precioFinal() da el numero ya con el
+       descuento aplicado, para no repetir la cuenta al armar el total. */
+    function precioFinal(t) {
+      if (t.precio == null) return null;
+      return promo && promo.desc ? t.precio * (1 - promo.desc / 100) : t.precio;
+    }
+
+    function precioHTML(t) {
+      var final = precioFinal(t);
+      if (final == null) return "Aún sin precio para esta presentación";
+      if (promo && promo.desc) {
+        return money(final) + " MXN <span class=\"ficha__preciotachado\">" + money(t.precio) +
+               "</span> <span class=\"ficha__preciodesc\">-" + promo.desc + "%</span>";
+      }
+      return money(final) + " MXN <span class=\"ficha__preciounidad\">por pieza</span>";
+    }
+
+    function actualizar() {
+      var t = TAM[sel] || { precio: null, stock: 0 };
+      var stock = t.stock || 0;
+      precioEl.innerHTML = precioHTML(t);
+      skuEl.textContent = t.sku ? "Código: " + t.sku : "";
+
+      var cant = parseInt(cantEl.value, 10) || 1;
+      if (stock > 0 && cant > stock) cant = stock;
+      cantEl.value = stock > 0 ? cant : 1;
+      cantEl.disabled = stock === 0;
+
+      var final = precioFinal(t);
+      totalEl.textContent = final != null ? "Total: " + money(final * cant) + " MXN" : "";
+
+      hintEl.textContent = stock === 0
+        ? "Sin existencia por ahora en esta presentación."
+        : "Quedan " + stock.toLocaleString("es-MX") + " piezas disponibles.";
+
+      var sinExistencia = stock === 0 || t.precio == null;
+      btnComprar.disabled = sinExistencia;
+      if (!sinExistencia) {
+        btnComprar.dataset.agente = "Quiero comprar " + cant + " piezas de " + p.nombre +
+          " en presentación " + p.v[sel] + " (total " + money(final * cant) + " MXN). ¿Cómo completo el pago?";
+      } else {
+        delete btnComprar.dataset.agente;
+      }
+
+      var tope = stock > 0 && cant >= stock;
+      btnMas.hidden = !tope;
+      if (tope) {
+        btnMas.dataset.agente = "Necesito más de " + stock + " piezas de " + p.nombre +
+          " en presentación " + p.v[sel] + ". ¿Pueden conseguirme más?";
+      }
+    }
+
+    ficha.addEventListener("click", function (e) {
+      var chip = e.target.closest(".vchip");
+      if (!chip || chip.dataset.i == null) return;
+      sel = parseInt(chip.dataset.i, 10);
+      actualizar();
+    });
+
+    var stepper = document.querySelector('[data-role="stepper-venta"]');
+    stepper.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-vstep]"); if (!b) return;
+      var stock = (TAM[sel] || {}).stock || 0;
+      var v = (parseInt(cantEl.value, 10) || 1) + parseInt(b.dataset.vstep, 10);
+      if (v < 1) v = 1;
+      if (stock > 0 && v > stock) v = stock;
+      cantEl.value = v;
+      actualizar();
+    });
+    cantEl.addEventListener("input", actualizar);
+
+    actualizar();
+  })();
 
   /* ======================= certificaciones + relacionados ======================= */
   /* Los relacionados son del mismo grupo del catálogo, tal como el catálogo
@@ -333,8 +486,9 @@
 
   /* Si el producto ya está en el carrito, el botón arranca en "Actualizar"
      y con la medida y las cajas que se eligieron antes. Se lee la misma llave
-     que escribe tienda.js. */
-  try {
+     que escribe tienda.js. No aplica a `venta`: esas fichas compran por pieza
+     a través del agente, no arman una cotización por caja en este carrito. */
+  if (!p.venta) try {
     var guardado = JSON.parse(localStorage.getItem("greenova.cotizacion.v1") || "[]");
     var linea = guardado.filter(function (l) { return l && l.id === p.id; })[0];
     if (linea) {

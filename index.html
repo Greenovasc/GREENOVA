@@ -29,7 +29,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Outfit:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap">
 <link rel="preload" as="image" href="assets/hero-empaque-greenova.webp">
 <link rel="stylesheet" href="styles.css">
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("greenova.tema");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<script>document.documentElement.classList.add("js");</script>
 
 <script type="application/ld+json">
 {
@@ -51,6 +51,23 @@
 <div class="progress" aria-hidden="true"></div>
 <a class="skip" href="#main">Saltar al contenido</a>
 
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <ul class="ticker__list">
+      <li><svg class="ico"><use href="#i-truck"></use></svg>Envíos a nivel nacional</li>
+      <li><svg class="ico"><use href="#i-seal-check"></use></svg>Registro SEDEMA y certificación FSC</li>
+      <li><svg class="ico"><use href="#i-paint-brush-broad"></use></svg>Personaliza con tu logo</li>
+      <li><svg class="ico"><use href="#i-package"></use></svg>Muestra física gratuita de tus 3 productos favoritos</li>
+    </ul>
+    <ul class="ticker__list">
+      <li><svg class="ico"><use href="#i-truck"></use></svg>Envíos a nivel nacional</li>
+      <li><svg class="ico"><use href="#i-seal-check"></use></svg>Registro SEDEMA y certificación FSC</li>
+      <li><svg class="ico"><use href="#i-paint-brush-broad"></use></svg>Personaliza con tu logo</li>
+      <li><svg class="ico"><use href="#i-package"></use></svg>Muestra física gratuita de tus 3 productos favoritos</li>
+    </ul>
+  </div>
+</div>
+
 <header class="nav" id="nav">
   <div class="wrap nav__inner">
     <a class="nav__logo" href="#main" aria-label="GreeNova SC, inicio">
@@ -65,7 +82,6 @@
         </button>
       </div>
       <a href="#personalizacion">Personalización</a>
-      <a href="#medidas">Medidas</a>
       <a href="tienda.html">Tienda</a>
       <a href="ofertas.html">Ofertas</a>
       <a class="cart-btn" href="tienda.html" aria-label="Ver el carrito en la tienda">
@@ -73,15 +89,11 @@
         <span class="cart-btn__label">Carrito</span>
         <span class="cart-btn__count" id="cart-count" data-empty="true">0</span>
       </a>
-      <button class="theme-btn" id="theme-toggle" type="button" aria-label="Cambiar a tema oscuro">
-        <svg class="ico ico--sun" aria-hidden="true"><use href="#i-sun"></use></svg>
-        <svg class="ico ico--moon" aria-hidden="true"><use href="#i-moon"></use></svg>
-      </button>
       <a class="btn btn--primary btn--sm nav__cta" href="#cotizar">Solicitar cotización</a>
     </nav>
       <div class="mega" id="mega" hidden>
         <div class="wrap mega__inner">
-          <div class="mega__cols"><div class="mega__col"><h3>Bebidas</h3><ul><li><a href="tienda.html?cat=vasos-papel"><span class="mega__thumb"><img src="assets/prod/vaso-papel-par.webp" alt="" loading="lazy" decoding="async"></span><span>Vasos de papel</span></a></li><li><a href="tienda.html?cat=vasos-frios"><span class="mega__thumb"><img src="assets/prod/vaso-pet-vpa.webp" alt="" loading="lazy" decoding="async"></span><span>Vasos PET y PLA</span></a></li><li><a href="tienda.html?cat=tapas"><span class="mega__thumb"><img src="assets/prod/tapa-viajera-negra.webp" alt="" loading="lazy" decoding="async"></span><span>Tapas</span></a></li><li><a href="tienda.html?q=popote"><span class="mega__thumb"><img src="assets/prod/vaso-popotes.webp" alt="" loading="lazy" decoding="async"></span><span>Popotes</span></a></li></ul></div><div class="mega__col"><h3>Comida para llevar</h3><ul><li><a href="tienda.html?cat=contenedores"><span class="mega__thumb"><img src="assets/prod/contenedor-kraft-rect.webp" alt="" loading="lazy" decoding="async"></span><span>Contenedores kraft</span></a></li><li><a href="tienda.html?cat=bagazo"><span class="mega__thumb"><img src="assets/prod/almeja-bagazo.webp" alt="" loading="lazy" decoding="async"></span><span>Bagazo y paja</span></a></li><li><a href="tienda.html?q=charola"><span class="mega__thumb"><img src="assets/prod/charola-kraft.webp" alt="" loading="lazy" decoding="async"></span><span>Charolas y cajas</span></a></li><li><a href="tienda.html?q=ensaladera"><span class="mega__thumb"><img src="assets/prod/ensaladera-transparente.webp" alt="" loading="lazy" decoding="async"></span><span>Ensaladeras</span></a></li></ul></div><div class="mega__col"><h3>Barra y servicio</h3><ul><li><a href="tienda.html?cat=accesorios"><span class="mega__thumb"><img src="assets/prod/portavaso-charola-2.webp" alt="" loading="lazy" decoding="async"></span><span>Accesorios</span></a></li><li><a href="tienda.html?q=fajilla"><span class="mega__thumb"><img src="assets/prod/fajilla-kraft.webp" alt="" loading="lazy" decoding="async"></span><span>Fajillas</span></a></li><li><a href="tienda.html?q=portavaso"><span class="mega__thumb"><img src="assets/prod/portavaso-caja-kraft.webp" alt="" loading="lazy" decoding="async"></span><span>Portavasos</span></a></li><li><a href="tienda.html?q=agitador"><span class="mega__thumb"><img src="assets/prod/agitador-madera.webp" alt="" loading="lazy" decoding="async"></span><span>Agitadores</span></a></li></ul></div><div class="mega__col"><h3>Papel y bolsas</h3><ul><li><a href="tienda.html?cat=papel"><span class="mega__thumb"><img src="assets/prod/srv-bolsa-kraft.webp" alt="" loading="lazy" decoding="async"></span><span>Bolsas kraft y bond</span></a></li><li><a href="tienda.html?q=papel"><span class="mega__thumb"><img src="assets/prod/papel-encerado.webp" alt="" loading="lazy" decoding="async"></span><span>Papel encerado</span></a></li><li><a href="tienda.html?q=ventana"><span class="mega__thumb"><img src="assets/prod/bolsa-ventana.webp" alt="" loading="lazy" decoding="async"></span><span>Bolsas con ventana</span></a></li><li><a href="index.html#personalizacion"><span class="mega__thumb"><img src="assets/prod/srv-vaso-serigrafia.webp" alt="" loading="lazy" decoding="async"></span><span>Personalización</span></a></li></ul></div></div>
+          <div class="mega__cols"><div class="mega__col"><h3>Bebidas</h3><ul><li><a href="tienda.html?cat=vasos-papel"><span class="mega__thumb"><img src="assets/prod/mega-vasos-papel.webp" alt="" loading="lazy" decoding="async"></span><span>Vasos de papel</span></a></li><li><a href="tienda.html?cat=vasos-frios"><span class="mega__thumb"><img src="assets/prod/mega-vasos-pet-pla.webp" alt="" loading="lazy" decoding="async"></span><span>Vasos PET y PLA</span></a></li><li><a href="tienda.html?cat=tapas"><span class="mega__thumb"><img src="assets/prod/mega-tapas.webp" alt="" loading="lazy" decoding="async"></span><span>Tapas</span></a></li><li><a href="tienda.html?q=popote"><span class="mega__thumb"><img src="assets/prod/mega-popotes.webp" alt="" loading="lazy" decoding="async"></span><span>Popotes</span></a></li></ul></div><div class="mega__col"><h3>Comida para llevar</h3><ul><li><a href="tienda.html?cat=contenedores"><span class="mega__thumb"><img src="assets/prod/mega-contenedores-kraft.webp" alt="" loading="lazy" decoding="async"></span><span>Contenedores kraft</span></a></li><li><a href="tienda.html?cat=bagazo"><span class="mega__thumb"><img src="assets/prod/mega-bagazo-paja.webp" alt="" loading="lazy" decoding="async"></span><span>Bagazo y paja</span></a></li><li><a href="tienda.html?q=charola"><span class="mega__thumb"><img src="assets/prod/mega-charolas-cajas.webp" alt="" loading="lazy" decoding="async"></span><span>Charolas y cajas</span></a></li><li><a href="tienda.html?q=ensaladera"><span class="mega__thumb"><img src="assets/prod/mega-ensaladeras.webp" alt="" loading="lazy" decoding="async"></span><span>Ensaladeras</span></a></li></ul></div><div class="mega__col"><h3>Barra y servicio</h3><ul><li><a href="tienda.html?cat=accesorios"><span class="mega__thumb"><img src="assets/prod/mega-accesorios.webp" alt="" loading="lazy" decoding="async"></span><span>Accesorios</span></a></li><li><a href="tienda.html?q=fajilla"><span class="mega__thumb"><img src="assets/prod/mega-fajillas.webp" alt="" loading="lazy" decoding="async"></span><span>Fajillas</span></a></li><li><a href="tienda.html?q=portavaso"><span class="mega__thumb"><img src="assets/prod/mega-portavasos.webp" alt="" loading="lazy" decoding="async"></span><span>Portavasos</span></a></li><li><a href="tienda.html?q=agitador"><span class="mega__thumb"><img src="assets/prod/mega-agitadores.webp" alt="" loading="lazy" decoding="async"></span><span>Agitadores</span></a></li></ul></div><div class="mega__col"><h3>Papel y bolsas</h3><ul><li><a href="tienda.html?cat=papel"><span class="mega__thumb"><img src="assets/prod/mega-bolsas-kraft.webp" alt="" loading="lazy" decoding="async"></span><span>Bolsas kraft y bond</span></a></li><li><a href="tienda.html?q=papel"><span class="mega__thumb"><img src="assets/prod/mega-papel-encerado.webp" alt="" loading="lazy" decoding="async"></span><span>Papel encerado</span></a></li><li><a href="tienda.html?q=ventana"><span class="mega__thumb"><img src="assets/prod/mega-bolsas-ventana.webp" alt="" loading="lazy" decoding="async"></span><span>Bolsas con ventana</span></a></li><li><a href="index.html#personalizacion"><span class="mega__thumb"><img src="assets/prod/mega-personalizacion.webp" alt="" loading="lazy" decoding="async"></span><span>Personalización</span></a></li></ul></div></div>
           <div class="mega__foot">
             <a class="mega__all" href="tienda.html">
               <svg class="ico" aria-hidden="true"><use href="#i-shopping-bag"></use></svg>
@@ -162,23 +174,23 @@
 
       <div class="pains">
         <div class="pain rv">
-          <svg class="ico" aria-hidden="true"><use href="#i-seal-check"></use></svg>
+          <span class="pain__icon"><svg class="ico" aria-hidden="true"><use href="#i-seal-check"></use></svg></span>
           <p>Te preocupa una inspección o una multa por no cumplir con la norma de empaque de la ciudad.</p>
         </div>
         <div class="pain rv" data-d="1">
-          <svg class="ico" aria-hidden="true"><use href="#i-cup-cold"></use></svg>
+          <span class="pain__icon"><svg class="ico" aria-hidden="true"><use href="#i-cup-cold"></use></svg></span>
           <p>Ya te pasó que un vaso goteó o una tapa se despegó frente a un cliente.</p>
         </div>
         <div class="pain rv" data-d="2">
-          <svg class="ico" aria-hidden="true"><use href="#i-fork-knife"></use></svg>
+          <span class="pain__icon"><svg class="ico" aria-hidden="true"><use href="#i-fork-knife"></use></svg></span>
           <p>Sientes que tu empaque no refleja la calidad de lo que sirves.</p>
         </div>
         <div class="pain rv" data-d="1">
-          <svg class="ico" aria-hidden="true"><use href="#i-package"></use></svg>
+          <span class="pain__icon"><svg class="ico" aria-hidden="true"><use href="#i-package"></use></svg></span>
           <p>Batallas para encontrar un proveedor confiable que te entregue completo y a tiempo.</p>
         </div>
         <div class="pain rv" data-d="2">
-          <svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg>
+          <span class="pain__icon"><svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg></span>
           <p>No sabes si lo "biodegradable" que compraste en realidad lo es.</p>
         </div>
       </div>
@@ -232,7 +244,7 @@
       </div>
 
       <div class="bento">
-        <a class="tile tile--brand t1 rv" href="tienda.html" data-cat="vasos-papel">
+        <a class="tile tile--brand tile--foto t1 rv" href="tienda.html" data-cat="vasos-papel">
           <span class="tile__eyebrow">Línea caliente · lo más pedido</span>
           <img class="tile__img" src="assets/prod/vaso-papel-par.webp" width="692" height="782" alt="Vasos de papel blanco de 8 y 12 onzas." loading="lazy">
           <h3>Vasos de papel blanco</h3>
@@ -245,13 +257,13 @@
           </ul>
         <span class="catcard__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow-up-right"></use></svg></span></a>
 
-        <a class="tile t2 rv" data-d="1" href="tienda.html" data-cat="vasos-frios">
+        <a class="tile tile--foto t2 rv" data-d="1" href="tienda.html" data-cat="vasos-frios">
           <img class="tile__img" src="assets/prod/vaso-pet-vpa.webp" alt="Vasos transparentes de PET para bebida fría." loading="lazy">
           <h3>Vasos PET y PLA</h3>
           <p>Para bebidas frías, smoothies y especialidades, de 7 oz a 32 oz.</p>
         <span class="catcard__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow-up-right"></use></svg></span></a>
 
-        <a class="tile tile--sage t3 rv" data-d="2" href="tienda.html" data-cat="tapas">
+        <a class="tile tile--sage tile--foto t3 rv" data-d="2" href="tienda.html" data-cat="tapas">
           <img class="tile__img" src="assets/prod/tapa-viajera-negra.webp" alt="Tapa negra para vaso caliente." loading="lazy">
           <h3>Tapas</h3>
           <p>Compatibles con cada modelo de vaso, incluidas opciones compostables (PLA).</p>
@@ -287,41 +299,6 @@
             <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg>
           </a>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="medidas">
-    <div class="wrap">
-      <div class="head rv">
-        <h2>Busca tu medida antes de pedir.</h2>
-        <p>Estas son las medidas que mantenemos en inventario. Si conoces la boca de tu vaso o el volumen de tu contenedor, la referencia está aquí.</p>
-      </div>
-
-      <div class="sizes__top rv">
-        <div class="tabs" role="tablist" aria-label="Familia de producto">
-          <button class="tab" role="tab" id="tab-papel" aria-controls="panel-papel" aria-selected="true" tabindex="0">Vaso de papel</button>
-          <button class="tab" role="tab" id="tab-frios" aria-controls="panel-frios" aria-selected="false" tabindex="-1">Vaso PET y PLA</button>
-          <button class="tab" role="tab" id="tab-tapas" aria-controls="panel-tapas" aria-selected="false" tabindex="-1">Tapas</button>
-          <button class="tab" role="tab" id="tab-contenedores" aria-controls="panel-contenedores" aria-selected="false" tabindex="-1">Contenedores</button>
-        </div>
-      </div>
-
-      <div class="panel" id="panel-papel" role="tabpanel" aria-labelledby="tab-papel">
-        <ul class="spec-grid"><li class="spec"><div class="spec__size">4 oz</div><div class="spec__meta">Boca 63 mm</div></li><li class="spec"><div class="spec__size">8 oz</div><div class="spec__meta">Boca 80 mm</div></li><li class="spec"><div class="spec__size">10 oz</div><div class="spec__meta">Boca 90 mm</div></li><li class="spec"><div class="spec__size">12 oz</div><div class="spec__meta">Boca 90 mm</div></li><li class="spec"><div class="spec__size">16 oz</div><div class="spec__meta">Boca 90 mm</div></li><li class="spec"><div class="spec__size">20 oz</div><div class="spec__meta">Boca 90 mm</div></li></ul>
-        <p class="panel__foot">Caja de 1,000 piezas. Cada medida existe en versión estándar y en versión con registro SEDEMA, apta para bebidas calientes y frías.</p>
-      </div>
-      <div class="panel" id="panel-frios" role="tabpanel" aria-labelledby="tab-frios" hidden>
-        <ul class="spec-grid"><li class="spec"><div class="spec__size">7 oz</div><div class="spec__meta">Boca 78 mm</div><span class="spec__tag">PET</span></li><li class="spec"><div class="spec__size">10 oz</div><div class="spec__meta">Boca 78 mm</div><span class="spec__tag">PET</span></li><li class="spec"><div class="spec__size">12 oz</div><div class="spec__meta">Boca 92 mm</div><span class="spec__tag">PET</span></li><li class="spec"><div class="spec__size">12 oz</div><div class="spec__meta">Boca 95 mm</div><span class="spec__tag">PET</span></li><li class="spec"><div class="spec__size">12 oz</div><div class="spec__meta">Boca 95 mm</div><span class="spec__tag">PLA</span></li><li class="spec"><div class="spec__size">12 oz</div><div class="spec__meta">Boca 90 mm</div><span class="spec__tag">PET-U</span></li><li class="spec"><div class="spec__size">14 oz</div><div class="spec__meta">Boca 98 mm</div><span class="spec__tag">PET</span></li><li class="spec"><div class="spec__size">16 oz</div><div class="spec__meta">Boca 95 mm</div><span class="spec__tag">PET</span></li><li class="spec"><div class="spec__size">16 oz</div><div class="spec__meta">Boca 95 mm</div><span class="spec__tag">PLA</span></li><li class="spec"><div class="spec__size">16 oz</div><div class="spec__meta">Boca 98 mm</div><span class="spec__tag">PET</span></li><li class="spec"><div class="spec__size">16 oz</div><div class="spec__meta">Boca 90 mm</div><span class="spec__tag">PET-U</span></li><li class="spec"><div class="spec__size">20 oz</div><div class="spec__meta">Boca 95 mm</div><span class="spec__tag">PET</span></li><li class="spec"><div class="spec__size">20 oz</div><div class="spec__meta">Boca 95 mm</div><span class="spec__tag">PLA</span></li><li class="spec"><div class="spec__size">20 oz</div><div class="spec__meta">Boca 98 mm</div><span class="spec__tag">PET</span></li><li class="spec"><div class="spec__size">24 oz</div><div class="spec__meta">Boca 98 mm</div><span class="spec__tag">PET</span></li><li class="spec"><div class="spec__size">24 oz</div><div class="spec__meta">Boca 90 mm</div><span class="spec__tag">PET-U</span></li><li class="spec"><div class="spec__size">32 oz</div><div class="spec__meta">Boca 107 mm</div><span class="spec__tag">PET</span></li></ul>
-        <p class="panel__foot">El PLA es el material compostable de la línea fría. PET-U corresponde al vaso de una sola pieza.</p>
-      </div>
-      <div class="panel" id="panel-tapas" role="tabpanel" aria-labelledby="tab-tapas" hidden>
-        <ul class="spec-grid"><li class="spec"><div class="spec__size">4 oz</div><div class="spec__meta">Vaso caliente. Modelo 4A</div></li><li class="spec"><div class="spec__size">8 oz</div><div class="spec__meta">Vaso caliente. Modelos 8A a 8D y 8G en papel</div></li><li class="spec"><div class="spec__size">8 oz</div><div class="spec__meta">Vaso caliente. Modelos 8E y 8F</div><span class="spec__tag">Compostable PLA</span></li><li class="spec"><div class="spec__size">10 a 20 oz</div><div class="spec__meta">Vaso caliente. Modelos TA a TG y TI en papel</div></li><li class="spec"><div class="spec__size">10 a 20 oz</div><div class="spec__meta">Vaso caliente. Modelos TH y TI</div><span class="spec__tag">Compostable PLA</span></li><li class="spec"><div class="spec__size">78 mm</div><div class="spec__meta">Vaso frío. Modelos PA y PB</div></li><li class="spec"><div class="spec__size">90 mm</div><div class="spec__meta">Vaso frío. Modelos PA, PB y PC</div></li><li class="spec"><div class="spec__size">92 mm</div><div class="spec__meta">Vaso frío. Modelos PA y PB</div></li><li class="spec"><div class="spec__size">95 mm</div><div class="spec__meta">Vaso frío. Modelos PA, PB y PC</div><span class="spec__tag">Versión compostable</span></li><li class="spec"><div class="spec__size">98 mm</div><div class="spec__meta">Vaso frío. Modelos PA a PG</div></li><li class="spec"><div class="spec__size">107 mm</div><div class="spec__meta">Vaso frío. Modelos PA y PB</div></li></ul>
-        <p class="panel__foot">Plana, domo, domo alto y bebedero según el modelo. Si conoces la boca de tu vaso, la tapa ya existe en inventario.</p>
-      </div>
-      <div class="panel" id="panel-contenedores" role="tabpanel" aria-labelledby="tab-contenedores" hidden>
-        <ul class="spec-grid"><li class="spec"><div class="spec__size">500 ml</div><div class="spec__meta">Contenedor rectangular kraft</div></li><li class="spec"><div class="spec__size">650 ml</div><div class="spec__meta">Contenedor rectangular kraft</div></li><li class="spec"><div class="spec__size">750 ml</div><div class="spec__meta">Contenedor rectangular kraft</div></li><li class="spec"><div class="spec__size">Tapa kraft</div><div class="spec__meta">Genérica para los tres volúmenes</div></li><li class="spec"><div class="spec__size">Tapa plástico</div><div class="spec__meta">Genérica para los tres volúmenes</div></li></ul>
-        <p class="panel__foot">Caja de 300 piezas. Resisten alimento caliente y grasa sin perder la forma.</p>
       </div>
     </div>
   </section>
@@ -372,139 +349,27 @@
       </div>
 
       <div class="custom__grid">
-        <article class="svc svc--lead probador rv" id="probador">
+        <article class="svc svc--sm rv">
+          <img src="assets/prod/srv-vaso-serigrafia.webp" alt="Vaso de café impreso en serigrafía con el logo de una cafetería." loading="lazy">
           <div class="svc__icon"><svg class="ico" aria-hidden="true"><use href="#i-paint-brush-broad"></use></svg></div>
           <h3>Servicio de serigrafía</h3>
-          <p class="probador__lema">Tu identidad impresa en armonía con el planeta.</p>
-          <p>Sube tu logo y míralo sobre nuestros productos antes de pedir. Se procesa
-             en tu navegador: el archivo no se sube a ningún lado.</p>
-
-          <div class="probador__cuerpo">
-            <div class="probador__lienzo">
-              <canvas id="pb-canvas" width="680" height="590"
-                      aria-label="Vista previa de tu logo sobre el producto"></canvas>
-              <p class="probador__pista" id="pb-pista">Arrastra el logo para moverlo</p>
-            </div>
-
-            <div class="probador__panel">
-              <label class="probador__soltar" id="pb-soltar" for="pb-archivo">
-                <svg class="ico" aria-hidden="true"><use href="#i-arrow-up"></use></svg>
-                <strong id="pb-nombre">Sube tu logo</strong>
-                <span>PNG con fondo transparente, JPG o SVG</span>
-                <input type="file" id="pb-archivo" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden>
-              </label>
-
-              <div class="probador__campo">
-                <span class="probador__etiqueta">Producto</span>
-                <div class="probador__opciones" id="pb-producto" role="group" aria-label="Producto">
-                  <button type="button" data-prod="vaso" aria-pressed="true">Vaso de papel</button>
-                  <button type="button" data-prod="kraft" aria-pressed="false">Contenedor kraft</button>
-                </div>
-              </div>
-
-              <div class="probador__campo">
-                <span class="probador__etiqueta">Tinta</span>
-                <div class="probador__opciones" id="pb-tinta" role="group" aria-label="Tinta">
-                  <button type="button" data-tinta="oscura" aria-pressed="true">Oscura</button>
-                  <button type="button" data-tinta="clara" aria-pressed="false">Clara</button>
-                </div>
-              </div>
-
-              <div class="probador__campo">
-                <label class="probador__etiqueta" for="pb-tam">Tamaño</label>
-                <input type="range" id="pb-tam" min="25" max="100" value="86" aria-label="Tamaño del logo">
-              </div>
-
-              <div class="probador__acciones">
-                <a class="btn btn--primary btn--sm" href="#cotizar">Cotizar con mi logo</a>
-                <button type="button" class="btn btn--onbrand btn--sm" id="pb-bajar">Descargar</button>
-              </div>
-              <p class="probador__nota">Es una vista previa aproximada. El arte final lo revisa
-                 producción antes de imprimir.</p>
-            </div>
-          </div>
+          <p>Imprime tu logo en vasos, contenedores y bolsas. Cotízalo y te mandamos
+             una muestra antes de producir tu pedido.</p>
         </article>
-
-        <div class="svc__stack">
-          <article class="svc svc--sm rv" data-d="1">
-            <img src="assets/prod/srv-contenedores-medida.webp" alt="Cajas impresas para papas y hamburguesa." loading="lazy">
-            <div class="svc__icon"><svg class="ico" aria-hidden="true"><use href="#i-package"></use></svg></div>
-            <h3>Contenedores a medida</h3>
-            <p>Diseñamos y producimos contenedores para alimentos, con o sin impresión,
-               adaptados a las necesidades específicas de tu operación.</p>
-          </article>
-          <article class="svc svc--sm rv" data-d="2">
-            <img src="assets/prod/srv-bolsa-kraft.webp" alt="Bolsa de papel kraft impresa." loading="lazy">
-            <div class="svc__icon"><svg class="ico" aria-hidden="true"><use href="#i-shopping-bag"></use></svg></div>
-            <h3>Bolsas de papel bond y kraft</h3>
-            <p>Fabricación de bolsas personalizadas, con o sin asa, con o sin impresión.
-               Presentación profesional desde el primer contacto con tu cliente.</p>
-          </article>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ SECCIÓN 7 — Oferta ============ -->
-  <section class="section" id="oferta" aria-labelledby="oferta-h">
-    <div class="wrap">
-      <div class="head rv">
-        <p class="eyebrow">Oferta</p>
-        <h2 id="oferta-h">Cotiza esta semana y llévate esto sin costo</h2>
-      </div>
-
-      <div class="offer rv">
-        <div class="offer__cols">
-          <div class="offer__col">
-            <h3>Qué incluye tu cotización</h3>
-            <ul class="offer__list">
-              <li><svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
-                  Catálogo completo con más de 15 líneas de producto</li>
-              <li><svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
-                  Empaque con registro SEDEMA y certificación FSC</li>
-              <li><svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
-                  Cotización personalizada según tu volumen real de venta</li>
-              <li><svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
-                  Asesoría para elegir el modelo y tamaño exacto para tu operación</li>
-              <li><svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
-                  Envío a nivel nacional</li>
-            </ul>
-          </div>
-
-          <div class="offer__col">
-            <h3>Bonos por cotizar esta semana</h3>
-            <ul class="offer__list offer__list--bonus">
-              <li><svg class="ico" aria-hidden="true"><use href="#i-sparkle"></use></svg>
-                  Muestra física gratuita de tus 3 productos favoritos del catálogo</li>
-              <li><svg class="ico" aria-hidden="true"><use href="#i-sparkle"></use></svg>
-                  Mockup de tu logo en el vaso o contenedor, sin costo</li>
-              <li><svg class="ico" aria-hidden="true"><use href="#i-sparkle"></use></svg>
-                  Asesoría gratuita sobre qué certificación necesita tu tipo de negocio</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="offer__fine">
-          <!-- FECHA LÍMITE DE LA OFERTA
-               El copy original dice "antes del [fecha]". No se publicó una fecha
-               inventada. Para poner la real, sustituye la frase de abajo por:
-               "Esta condición aplica solo para negocios que cierren su cotización
-                antes del 31 de octubre de 2026, para asegurar tiempos de producción
-                antes de temporada alta." -->
-          <p>Esta condición aplica solo para negocios que cierren su cotización
-             <strong>esta semana</strong>, para asegurar tiempos de producción antes de temporada alta.</p>
-          <p>Por temporada, solo se atienden un número limitado de pedidos de personalización
-             nuevos al mes — para garantizar tiempos de entrega e impresión de calidad.</p>
-        </div>
-
-        <div class="offer__cta">
-          <a class="btn btn--primary" href="tienda.html">
-            <svg class="ico" aria-hidden="true"><use href="#i-shopping-bag"></use></svg>
-            Ver catálogo y aprovechar mi bono
-          </a>
-          <small>Para reclamar la muestra gratis o el mockup, solo menciona esta oferta
-                 al escribirnos — datos de contacto al final de la página.</small>
-        </div>
+        <article class="svc svc--sm rv" data-d="1">
+          <img src="assets/prod/srv-contenedores-medida.webp" alt="Cajas impresas para papas y hamburguesa." loading="lazy">
+          <div class="svc__icon"><svg class="ico" aria-hidden="true"><use href="#i-package"></use></svg></div>
+          <h3>Contenedores a medida</h3>
+          <p>Diseñamos y producimos contenedores para alimentos, con o sin impresión,
+             adaptados a las necesidades específicas de tu operación.</p>
+        </article>
+        <article class="svc svc--sm rv" data-d="2">
+          <img src="assets/prod/srv-bolsa-kraft.webp" alt="Bolsa de papel kraft impresa." loading="lazy">
+          <div class="svc__icon"><svg class="ico" aria-hidden="true"><use href="#i-shopping-bag"></use></svg></div>
+          <h3>Bolsas de papel bond y kraft</h3>
+          <p>Fabricación de bolsas personalizadas, con o sin asa, con o sin impresión.
+             Presentación profesional desde el primer contacto con tu cliente.</p>
+        </article>
       </div>
     </div>
   </section>
@@ -705,6 +570,7 @@
         <ul>
           <li><a href="https://www.greenovasc.com.mx" rel="noopener">Compra en línea: www.greenovasc.com.mx</a></li>
           <li><a href="mailto:ventas@greenovasc.com.mx">Solicita cotización: ventas@greenovasc.com.mx</a></li>
+          <li><a href="mailto:ventas@greenovasc.com.mx?subject=Solicito%20factura&amp;body=Quiero%20facturar%20mi%20compra.%0A%0ANumero%20de%20pedido%3A%20%0ARFC%3A%20%0ARazon%20social%3A%20%0AUso%20de%20CFDI%3A%20">Facturar tu compra</a></li>
           <li><a href="tel:+525522601113">55 2260 1113</a></li>
           <li><a href="tel:+525570511149">55 7051 1149</a></li>
         </ul>
@@ -723,7 +589,6 @@
 
 <script src="productos.js"></script>
 <script src="greenova.js"></script>
-<script src="serigrafia.js"></script>
 <script src="agente-criterios.js"></script>
 <script src="agente.js"></script>
 </body>

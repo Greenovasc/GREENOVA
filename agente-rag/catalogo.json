@@ -1,0 +1,2111 @@
+{
+  "moneda": "MXN",
+  "fuente": "Catálogo GreeNova SC 2026 - Híbrido WeCare x Entelequia (PDF, 30 páginas)",
+  "nota_precios": "Precios de referencia en MXN, antes de IVA, transcritos del catálogo oficial. Los artículos con cotizar=true no tienen precio de lista fijo: el catálogo indica que se cotizan según volumen y personalización. Antes de prometer un precio final a un cliente real, confírmalo con ventas — el catálogo puede cambiar.",
+  "contacto_ventas": {
+    "correo": "ventas@greenovasc.com.mx",
+    "telefonos": [
+      "55 2260 1113",
+      "55 7051 1149"
+    ],
+    "sitio": "www.greenovasc.com.mx"
+  },
+  "productos": [
+    {
+      "id": "vaso-papel-blanco-4oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel blanco 4 oz",
+      "material": "Papel",
+      "boca_mm": 62,
+      "medidas": "Alto 65 mm, Base 46 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.05
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.91
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-negro-4oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel negro 4 oz",
+      "material": "Papel",
+      "boca_mm": 62,
+      "medidas": "Alto 65 mm, Base 46 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.05
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.91
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-blanco-8oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel blanco 8 oz",
+      "material": "Papel",
+      "boca_mm": 80,
+      "medidas": "Alto 92 mm, Base 52 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.06
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.92
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-negro-8oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel negro 8 oz",
+      "material": "Papel",
+      "boca_mm": 80,
+      "medidas": "Alto 92 mm, Base 52 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.14
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.0
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-kraft-8oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel kraft 8 oz",
+      "material": "Papel kraft",
+      "boca_mm": 80,
+      "medidas": "Alto 92 mm, Base 52 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.06
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.92
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-doble-pared-blanco-8oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel doble pared blanco 8 oz",
+      "material": "Papel doble pared",
+      "boca_mm": 80,
+      "medidas": "Alto 92 mm, Base 52 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.01
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.87
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-blanco-10oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel blanco 10 oz",
+      "material": "Papel",
+      "boca_mm": 90,
+      "medidas": "Alto 96 mm, Base 60 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.23
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.09
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-negro-10oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel negro 10 oz",
+      "material": "Papel",
+      "boca_mm": 90,
+      "medidas": "Alto 96 mm, Base 60 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.32
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.18
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-blanco-12oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel blanco 12 oz",
+      "material": "Papel",
+      "boca_mm": 90,
+      "medidas": "Alto 108 mm, Base 59 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.34
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.2
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-negro-12oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel negro 12 oz",
+      "material": "Papel",
+      "boca_mm": 90,
+      "medidas": "Alto 108 mm, Base 59 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.45
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.31
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-kraft-12oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel kraft 12 oz",
+      "material": "Papel kraft",
+      "boca_mm": 90,
+      "medidas": "Alto 108 mm, Base 59 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.34
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.2
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-doble-pared-blanco-12oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel doble pared blanco 12 oz",
+      "material": "Papel doble pared",
+      "boca_mm": 90,
+      "medidas": "Alto 108 mm, Base 59 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.21
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.07
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-doble-pared-negro-12oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel doble pared negro 12 oz",
+      "material": "Papel doble pared",
+      "boca_mm": 90,
+      "medidas": "Alto 108 mm, Base 59 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.66
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.52
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-doble-pared-generico-12oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel doble pared genérico 12 oz",
+      "material": "Papel doble pared",
+      "boca_mm": 90,
+      "medidas": "Alto 108 mm, Base 59 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 25,
+          "precio_pza": 2.3
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 500,
+          "precio_pza": 2.16
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-blanco-16oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel blanco 16 oz",
+      "material": "Papel",
+      "boca_mm": 90,
+      "medidas": "Alto 139 mm, Base 59 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.5
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.36
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-negro-16oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel negro 16 oz",
+      "material": "Papel",
+      "boca_mm": 90,
+      "medidas": "Alto 139 mm, Base 59 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.63
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.49
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-kraft-16oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel kraft 16 oz",
+      "material": "Papel kraft",
+      "boca_mm": 90,
+      "medidas": "Alto 139 mm, Base 59 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.5
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.36
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-doble-pared-blanco-16oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel doble pared blanco 16 oz",
+      "material": "Papel doble pared",
+      "boca_mm": 90,
+      "medidas": "Alto 139 mm, Base 59 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 25,
+          "precio_pza": 2.74
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 500,
+          "precio_pza": 2.6
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-doble-pared-negro-16oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel doble pared negro 16 oz",
+      "material": "Papel doble pared",
+      "boca_mm": 90,
+      "medidas": "Alto 139 mm, Base 59 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 28,
+          "precio_pza": 2.98
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 560,
+          "precio_pza": 2.84
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-blanco-20oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel blanco 20 oz",
+      "material": "Papel",
+      "boca_mm": 90,
+      "medidas": "Alto 163 mm, Base 60 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.75
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.61
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-negro-20oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel negro 20 oz",
+      "material": "Papel",
+      "boca_mm": 90,
+      "medidas": "Alto 163 mm, Base 60 mm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.9
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.76
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-blanco-32oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel blanco 32 oz",
+      "material": "Papel con recubrimiento",
+      "boca_mm": 105,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 25,
+          "precio_pza": 2.64
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 500,
+          "precio_pza": 2.5
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-blanco-44oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel blanco 44 oz",
+      "material": "Papel con recubrimiento",
+      "boca_mm": 115,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 25,
+          "precio_pza": 3.05
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 500,
+          "precio_pza": 2.91
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-rojo-44oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel rojo 44 oz",
+      "material": "Papel con recubrimiento",
+      "boca_mm": 115,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 3.13
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 500,
+          "precio_pza": 2.99
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-azul-44oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel azul 44 oz",
+      "material": "Papel con recubrimiento",
+      "boca_mm": 115,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 3.13
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 500,
+          "precio_pza": 2.99
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-gris-44oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel gris 44 oz",
+      "material": "Papel con recubrimiento",
+      "boca_mm": 115,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 3.13
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 500,
+          "precio_pza": 2.99
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-papel-negro-44oz",
+      "categoria": "Vasos de papel",
+      "nombre": "Vaso de papel negro 44 oz",
+      "material": "Papel con recubrimiento",
+      "boca_mm": 115,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 3.13
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 500,
+          "precio_pza": 2.99
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-7oz",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 7 oz",
+      "material": "PET",
+      "boca_mm": 78,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.4
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.26
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-9oz-78mm",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 9 oz",
+      "material": "PET",
+      "boca_mm": 78,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.7
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.56
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-10oz",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 10 oz",
+      "material": "PET",
+      "boca_mm": 78,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.35
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.21
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-12oz-92mm",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 12 oz",
+      "material": "PET",
+      "boca_mm": 92,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.77
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.63
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-9oz-95mm",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 9 oz (boca 95 mm)",
+      "material": "PET",
+      "boca_mm": 95,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.43
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.29
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-12oz-95mm",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 12 oz (boca 95 mm)",
+      "material": "PET",
+      "boca_mm": 95,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 2.09
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.95
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-16oz-95mm",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 16 oz (boca 95 mm)",
+      "material": "PET",
+      "boca_mm": 95,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 2.61
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 2.47
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-20oz-95mm",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 20 oz (boca 95 mm)",
+      "material": "PET",
+      "boca_mm": 95,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 2.7
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 2.56
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-14oz",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 14 oz",
+      "material": "PET",
+      "boca_mm": 98,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.8
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.66
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-16oz-98mm",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 16 oz (boca 98 mm)",
+      "material": "PET",
+      "boca_mm": 98,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 2.1
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.96
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-20oz-98mm",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 20 oz (boca 98 mm)",
+      "material": "PET",
+      "boca_mm": 98,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 2.46
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 600,
+          "precio_pza": 2.32
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-24oz",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 24 oz",
+      "material": "PET",
+      "boca_mm": 98,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 2.67
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 600,
+          "precio_pza": 2.53
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-32oz",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET 32 oz",
+      "material": "PET",
+      "boca_mm": 107,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 25,
+          "precio_pza": 4.12
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 300,
+          "precio_pza": 3.98
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-u-12oz",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET-U 12 oz",
+      "material": "PET",
+      "boca_mm": 90,
+      "medidas": "Una sola pieza",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.72
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.58
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-u-16oz",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET-U 16 oz",
+      "material": "PET",
+      "boca_mm": 90,
+      "medidas": "Una sola pieza",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 2.23
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 2.09
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pet-u-24oz",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PET-U 24 oz",
+      "material": "PET",
+      "boca_mm": 90,
+      "medidas": "Una sola pieza",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 2.62
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 2.48
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pp-u-16oz",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PP-U 16 oz",
+      "material": "Polipropileno",
+      "boca_mm": 88,
+      "medidas": "Una sola pieza",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 2.11
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.97
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pp-16oz-92mm",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PLA compostable 16 oz (boca 92 mm)",
+      "material": "PLA",
+      "boca_mm": 92,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 25,
+          "precio_pza": 1.6
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.46
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "vaso-pp-16oz-95mm",
+      "categoria": "Vasos PET y PLA",
+      "nombre": "Vaso PLA compostable 16 oz (boca 95 mm)",
+      "material": "PLA",
+      "boca_mm": 95,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 25,
+          "precio_pza": 1.8
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.66
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-ps-blanca-62mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PS cafetera blanca 62 mm",
+      "material": "Poliestireno",
+      "boca_mm": 62,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 0.85
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.71
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-ps-negra-62mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PS cafetera negra 62 mm",
+      "material": "Poliestireno",
+      "boca_mm": 62,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 0.85
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.71
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-ps-negra-plana-solapa-80mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PS cafetera negra plana con solapa 80 mm",
+      "material": "Poliestireno",
+      "boca_mm": 80,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 0.78
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.64
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-ps-blanca-80mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PS cafetera blanca 80 mm",
+      "material": "Poliestireno",
+      "boca_mm": 80,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 100,
+          "precio_pza": 1.6
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.46
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-ps-negra-80mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PS cafetera negra 80 mm",
+      "material": "Poliestireno",
+      "boca_mm": 80,
+      "medidas": null,
+      "cotizar": true,
+      "precios": [],
+      "notas": null
+    },
+    {
+      "id": "tapa-pp-negra-80mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PP cafetera negra 80 mm",
+      "material": "Polipropileno",
+      "boca_mm": 80,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.16
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.02
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-ps-negra-plana-solapa-90mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PS cafetera negra plana con solapa 90 mm",
+      "material": "Poliestireno",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 0.97
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.83
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-ps-blanca-3ovalos-90mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PS cafetera blanca 3 óvalos 90 mm",
+      "material": "Poliestireno",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.0
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.86
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-ps-negra-3ovalos-90mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PS cafetera negra 3 óvalos 90 mm",
+      "material": "Poliestireno",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.0
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.86
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pp-blanca-90mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PP cafetera blanca 90 mm",
+      "material": "Polipropileno",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.04
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.9
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pp-negra-90mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PP cafetera negra 90 mm",
+      "material": "Polipropileno",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.04
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.9
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-ps-negra-90mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PS cafetera negra 90 mm",
+      "material": "Poliestireno",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.13
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.99
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-ps-negra-tapon-90mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PS cafetera negra tapón 90 mm",
+      "material": "Poliestireno",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.02
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.88
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pp-blanca-tapon-90mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PP cafetera blanca tapón 90 mm",
+      "material": "Polipropileno",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 100,
+          "precio_pza": 1.34
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1200,
+          "precio_pza": 1.2
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pp-negra-tapon-90mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PP cafetera negra tapón 90 mm",
+      "material": "Polipropileno",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 100,
+          "precio_pza": 1.27
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1200,
+          "precio_pza": 1.13
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pap-blanca-90mm",
+      "categoria": "Tapas de papel (cafetera)",
+      "nombre": "Tapa PAP cafetera blanca 90 mm",
+      "material": "Papel",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.5
+        }
+      ],
+      "notas": "Presentación Paquete se cotiza (sin precio de lista)."
+    },
+    {
+      "id": "tapa-pet-plana-ranura-78mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET plana con ranura 78 mm",
+      "material": "PET",
+      "boca_mm": 78,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 100,
+          "precio_pza": 0.61
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.47
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-plana-sin-ranura-78mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET plana sin ranura 78 mm",
+      "material": "PET",
+      "boca_mm": 78,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 100,
+          "precio_pza": 0.61
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.47
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-domo-orificio-78mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET domo con orificio 78 mm",
+      "material": "PET",
+      "boca_mm": 78,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 100,
+          "precio_pza": 0.7
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.56
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-plana-ranura-92mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET plana con ranura 92 mm",
+      "material": "PET",
+      "boca_mm": 92,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 100,
+          "precio_pza": 0.79
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.65
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-domo-orificio-92mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET domo con orificio 92 mm",
+      "material": "PET",
+      "boca_mm": 92,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 100,
+          "precio_pza": 0.91
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.77
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-plana-ranura-95mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET plana con ranura 95 mm",
+      "material": "PET",
+      "boca_mm": 95,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 0.94
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.8
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-sorbe-tapon-95mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET sorbe con tapón 95 mm",
+      "material": "PET",
+      "boca_mm": 95,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.12
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.98
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-domo-orificio-95mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET domo con orificio 95 mm",
+      "material": "PET",
+      "boca_mm": 95,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.25
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.11
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-domo-oso-orificio-95mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET domo oso con orificio 95 mm",
+      "material": "PET",
+      "boca_mm": 95,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.27
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.13
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-plana-ranura-98mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET plana con ranura 98 mm",
+      "material": "PET",
+      "boca_mm": 98,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 100,
+          "precio_pza": 0.77
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.63
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-domo-orificio-98mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET domo con orificio 98 mm",
+      "material": "PET",
+      "boca_mm": 98,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 100,
+          "precio_pza": 0.97
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.83
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-domo-orificio-ancho-98mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET domo con orificio ancho 98 mm",
+      "material": "PET",
+      "boca_mm": 98,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 100,
+          "precio_pza": 1.03
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.89
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-domo-oso-orificio-98mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET domo oso con orificio 98 mm",
+      "material": "PET",
+      "boca_mm": 98,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.35
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.21
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-sorbe-98mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET sorbe 98 mm",
+      "material": "PET",
+      "boca_mm": 98,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.3
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.16
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-sorbe-tapon-98mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET sorbe con tapón 98 mm",
+      "material": "PET",
+      "boca_mm": 98,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.26
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.12
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-plana-ranura-107mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET plana con ranura 107 mm",
+      "material": "PET",
+      "boca_mm": 107,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.01
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 500,
+          "precio_pza": 0.87
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-domo-orificio-107mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET domo con orificio 107 mm",
+      "material": "PET",
+      "boca_mm": 107,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.39
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 500,
+          "precio_pza": 1.25
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-plana-ranura-90mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET plana con ranura 90 mm",
+      "material": "PET",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 0.7
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.56
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-sorbe-90mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET sorbe 90 mm",
+      "material": "PET",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 0.92
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.78
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-sorbe-tapon-90mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET sorbe con tapón 90 mm",
+      "material": "PET",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 0.93
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.79
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-domo-orificio-90mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET domo con orificio 90 mm",
+      "material": "PET",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 0.89
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.75
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "tapa-pet-domo-oso-orificio-90mm",
+      "categoria": "Tapas PET y PP (bebida fría)",
+      "nombre": "Tapa PET domo oso con orificio 90 mm",
+      "material": "PET",
+      "boca_mm": 90,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 1.2
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 1.06
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "fajilla-pegada",
+      "categoria": "Accesorios (fajillas y agitadores)",
+      "nombre": "Fajilla pegada",
+      "material": "Kraft",
+      "boca_mm": null,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 25,
+          "precio_pza": 1.05
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.91
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "fajilla-ajustable",
+      "categoria": "Accesorios (fajillas y agitadores)",
+      "nombre": "Fajilla ajustable",
+      "material": "Kraft",
+      "boca_mm": null,
+      "medidas": null,
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 50,
+          "precio_pza": 0.54
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 1000,
+          "precio_pza": 0.4
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "agitador-14cm",
+      "categoria": "Accesorios (fajillas y agitadores)",
+      "nombre": "Agitador de madera 14 cm",
+      "material": "Madera",
+      "boca_mm": null,
+      "medidas": "14 cm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 1000,
+          "precio_pza": 0.21
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 10000,
+          "precio_pza": 0.07
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "agitador-18cm",
+      "categoria": "Accesorios (fajillas y agitadores)",
+      "nombre": "Agitador de madera 18 cm",
+      "material": "Madera",
+      "boca_mm": null,
+      "medidas": "18 cm",
+      "cotizar": false,
+      "precios": [
+        {
+          "presentacion": "Paquete",
+          "piezas": 1000,
+          "precio_pza": 0.3
+        },
+        {
+          "presentacion": "Caja",
+          "piezas": 10000,
+          "precio_pza": 0.16
+        }
+      ],
+      "notas": null
+    },
+    {
+      "id": "contenedor-rect-500ml",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Contenedor rectangular kraft 500 ml",
+      "material": "Kraft",
+      "boca_mm": null,
+      "medidas": "500 ml",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 300 pz. Resistente a grasa y calor."
+    },
+    {
+      "id": "contenedor-rect-650ml",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Contenedor rectangular kraft 650 ml",
+      "material": "Kraft",
+      "boca_mm": null,
+      "medidas": "650 ml",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 300 pz. Resistente a grasa y calor."
+    },
+    {
+      "id": "contenedor-rect-750ml",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Contenedor rectangular kraft 750 ml",
+      "material": "Kraft",
+      "boca_mm": null,
+      "medidas": "750 ml",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 300 pz. Resistente a grasa y calor."
+    },
+    {
+      "id": "tapa-kraft-contenedor",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Tapa kraft para contenedor",
+      "material": "Kraft",
+      "boca_mm": null,
+      "medidas": "Genérica, para los 3 tamaños",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 300 pz."
+    },
+    {
+      "id": "tapa-plastico-contenedor",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Tapa plástico para contenedor",
+      "material": "Plástico",
+      "boca_mm": null,
+      "medidas": "Genérica, para los 3 tamaños",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 300 pz."
+    },
+    {
+      "id": "cono-porta-crepa",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Cono porta crepa",
+      "material": "Papel",
+      "boca_mm": null,
+      "medidas": "Tamaño grande",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 1000 pz."
+    },
+    {
+      "id": "portavaso-charola-2",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Porta vaso charola 2 espacios",
+      "material": "Cartón",
+      "boca_mm": null,
+      "medidas": "Charola para 2 vasos",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 600 pz."
+    },
+    {
+      "id": "portavaso-charola-4",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Porta vaso charola 4 espacios",
+      "material": "Cartón",
+      "boca_mm": null,
+      "medidas": "Charola para 4 vasos",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 300 pz."
+    },
+    {
+      "id": "portavaso-asa-2",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Porta vaso con asa 2 espacios",
+      "material": "Cartón",
+      "boca_mm": null,
+      "medidas": "Con asa, para 2 vasos",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 250 pz."
+    },
+    {
+      "id": "portavaso-asa-4",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Porta vaso con asa 4 espacios",
+      "material": "Cartón",
+      "boca_mm": null,
+      "medidas": "Con asa, para 4 vasos",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 200 pz."
+    },
+    {
+      "id": "papel-grado-alimenticio-rh",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Papel grado alimenticio RH",
+      "material": "Papel",
+      "boca_mm": null,
+      "medidas": "Para envolver alimentos, tamaño variado",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 1000 pz."
+    },
+    {
+      "id": "papel-grado-alimenticio-encerado",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Papel grado alimenticio encerado",
+      "material": "Papel encerado",
+      "boca_mm": null,
+      "medidas": "Para envolver alimentos, tamaño variado",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 1000 pz."
+    },
+    {
+      "id": "servilleta-larga",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Servilleta larga",
+      "material": "Papel",
+      "boca_mm": null,
+      "medidas": "39.0 x 37.5 cm",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 1200 pz."
+    },
+    {
+      "id": "popote-tapioca-biodegradable",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Popote tapioca biodegradable",
+      "material": "Tapioca",
+      "boca_mm": null,
+      "medidas": "21 cm",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 5 kg."
+    },
+    {
+      "id": "popote-tapioca-estuchado",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Popote tapioca estuchado",
+      "material": "Tapioca",
+      "boca_mm": null,
+      "medidas": "21 cm, individual",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 2000 pz. Envuelto de forma individual."
+    },
+    {
+      "id": "popote-cuchara-biodegradable",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Popote cuchara biodegradable",
+      "material": "Fécula de maíz",
+      "boca_mm": null,
+      "medidas": "26 cm",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 5 kg. Combina popote y cuchara en una pieza."
+    }
+  ]
+}

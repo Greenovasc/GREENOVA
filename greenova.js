@@ -160,57 +160,6 @@
     });
   }
 
-  /* ---------- interruptor de tema ----------
-     El HTML ya aplicó el tema guardado antes de pintar; aquí solo se alterna. */
-  var themeBtn = document.getElementById("theme-toggle");
-  if (themeBtn) {
-    function paintTheme() {
-      var dark = document.documentElement.dataset.theme === "dark";
-      themeBtn.setAttribute("aria-label", dark ? "Cambiar a tema claro" : "Cambiar a tema oscuro");
-      themeBtn.dataset.dark = String(dark);
-    }
-    paintTheme();
-    themeBtn.addEventListener("click", function () {
-      var dark = document.documentElement.dataset.theme === "dark";
-      if (dark) delete document.documentElement.dataset.theme;
-      else document.documentElement.dataset.theme = "dark";
-      try { localStorage.setItem("greenova.tema", dark ? "light" : "dark"); } catch (e) { /* modo privado */ }
-      paintTheme();
-    });
-  }
-
-  /* ---------- size finder tabs ---------- */
-  var tablist = document.querySelector('[role="tablist"]');
-  if (tablist) {
-    var tabs = Array.prototype.slice.call(tablist.querySelectorAll('[role="tab"]'));
-
-    function select(tab, focus) {
-      tabs.forEach(function (t) {
-        var on = t === tab;
-        t.setAttribute("aria-selected", String(on));
-        t.tabIndex = on ? 0 : -1;
-        document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
-      });
-      if (focus) tab.focus();
-    }
-
-    tablist.addEventListener("click", function (e) {
-      var tab = e.target.closest('[role="tab"]');
-      if (tab) select(tab, false);
-    });
-
-    tablist.addEventListener("keydown", function (e) {
-      var i = tabs.indexOf(document.activeElement);
-      if (i < 0) return;
-      var next = null;
-      if (e.key === "ArrowRight") next = tabs[(i + 1) % tabs.length];
-      if (e.key === "ArrowLeft") next = tabs[(i - 1 + tabs.length) % tabs.length];
-      if (e.key === "Home") next = tabs[0];
-      if (e.key === "End") next = tabs[tabs.length - 1];
-      if (next) { e.preventDefault(); select(next, true); }
-    });
-  }
-
   /* ---------- quote form ----------
      Submitting composes a message in the visitor's mail client. Swap `send()` for a
      POST to a real endpoint when the site gets a backend or a form service. */

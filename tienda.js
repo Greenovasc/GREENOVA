@@ -29,7 +29,13 @@
   }
 
   /* ============================ estado ============================ */
-  var state = { cat: "todo", mats: [], q: "", sort: "destacado", stock: "todo" };
+  var state = { cat: "todo", mats: [], q: "", sort: "destacado", stock: "todo", linea: "" };
+  /* Papel/PET/Kraft: los productos que ya se venden por unidad con precio y
+     existencias reales (ver `venta` en productos.js), separados por material
+     para que nadie mezcle presentaciones al comprar. */
+  /* Todo material puede traer venta en línea (ver LINEAS_VENTA en main.py):
+     se arma de MATERIALES en vez de una lista fija para no desalinearse. */
+  var LINEAS = Object.keys(MATS).map(function (k) { return [k, MATS[k]]; });
   var cart = [];
 
   try {
@@ -104,6 +110,7 @@
   }
 
   function pasaFiltros(p) {
+    if (state.linea && (!p.venta || p.venta.linea !== state.linea)) return false;
     if (state.cat !== "todo" && p.cat !== state.cat) return false;
     if (state.stock === "disponible" && (PROMOS[p.id] || {}).agotado) return false;
     if (state.stock === "agotado" && !(PROMOS[p.id] || {}).agotado) return false;
@@ -158,6 +165,20 @@
   }
 
   function buildChips() {
+    var conVenta = BASE.filter(function (p) { return p.venta; });
+    var bloqueLineas = $("bloque-lineas");
+    if (bloqueLineas) {
+      bloqueLineas.hidden = conVenta.length === 0;
+      if (conVenta.length) {
+        $("lineas").innerHTML = LINEAS.map(function (l) {
+          var n = conVenta.filter(function (p) { return p.venta.linea === l[0]; }).length;
+          if (!n) return "";
+          return '<button class="chip chip--sm" data-linea="' + l[0] + '" aria-pressed="false">' +
+                 l[1] + '<span class="chip__n">' + n + "</span></button>";
+        }).join("");
+      }
+    }
+
     var cats = $("cats");
     var html = ['<button class="chip" data-cat="todo" aria-pressed="true">Todo' +
                 '<span class="chip__n">' + BASE.length + "</span></button>"];
@@ -186,15 +207,31 @@
     Array.prototype.forEach.call($("mats").children, function (b) {
       b.setAttribute("aria-pressed", String(state.mats.indexOf(b.dataset.mat) > -1));
     });
+    if ($("lineas")) {
+      Array.prototype.forEach.call($("lineas").children, function (b) {
+        b.setAttribute("aria-pressed", String(b.dataset.linea === state.linea));
+      });
+    }
     var dot = $("filter-dot");
-    if (dot) dot.hidden = state.mats.length === 0;
+    if (dot) dot.hidden = state.mats.length === 0 && !state.linea;
   }
 
   /* ============================ tarjetas ============================ */
   /* Precio: si no hay lista, "bajo cotización". Con `precio` y promo activa,
      se tacha el de lista y se muestra el de oferta. */
-  function precioHTML(p) {
+  function precioHTML(p, vi) {
     var promo = PROMOS[p.id];
+    /* Papel/PET/Kraft se venden por pieza (ver `venta` en productos.js): el
+       precio de la tarjeta sigue la medida elegida en el <select>, igual que
+       en la ficha del producto. */
+    if (p.venta) {
+      var t = p.venta.tam[vi || 0];
+      if (!t || t.precio == null) return "Aún sin precio para esta medida";
+      var precioPza = promo && promo.desc ? t.precio * (1 - promo.desc / 100) : t.precio;
+      return (promo && promo.desc
+        ? "<s>" + money(t.precio) + "</s> <b>" + money(precioPza) + "</b>"
+        : money(precioPza)) + " por pieza";
+    }
     if (!p.precio) {
       return promo && promo.desc
         ? '<b>-' + promo.desc + '%</b> sobre el precio de lista'
@@ -219,6 +256,7 @@
     var opts = p.v.map(function (v, k) {
       return '<option value="' + v + '"' + (line && line.v === v ? " selected" : "") + ">" + v + "</option>";
     }).join("");
+    var selIdx = line ? Math.max(0, p.v.indexOf(line.v)) : 0;
 
     return '' +
       '<article class="pcard rv" data-d="' + (i % 4) + '" data-id="' + p.id + '"' +
@@ -229,11 +267,13 @@
           (promo && promo.desc ? '<span class="pcard__flag pcard__flag--off">-' + promo.desc + '%</span>' :
             p.destacado ? '<span class="pcard__flag">Más pedido</span>' :
             p.servicio ? '<span class="pcard__flag pcard__flag--srv">Pocas unidades</span>' : "") +
+          '<span class="pcard__spec">' + p.v.length + (p.v.length === 1 ? " presentación" : " medidas") + "</span>" +
           (promo && promo.agotado ? '<span class="pcard__out">Agotado</span>' : "") +
         "</a>" +
         '<div class="pcard__body">' +
           '<div class="pcard__tags">' + badges + "</div>" +
           '<h3><a href="producto.html?id=' + p.id + '">' + p.nombre + "</a></h3>" +
+          '<p class="pcard__price">' + precioHTML(p, selIdx) + "</p>" +
           '<p class="pcard__desc">' + p.desc + "</p>" +
           (promo && (promo.nota || promo.hasta)
             ? '<p class="pcard__promo">' +
@@ -243,8 +283,6 @@
           '<div class="pcard__meta">' +
             (p.p ? '<span><svg class="ico" aria-hidden="true"><use href="#i-package"></use></svg>' +
                    p.p.toLocaleString("es-MX") + " pzs por caja</span>" : "") +
-            '<span><svg class="ico" aria-hidden="true"><use href="#i-ruler"></use></svg>' +
-              p.v.length + (p.v.length === 1 ? " presentación" : " medidas") + "</span>" +
           "</div>" +
         "</div>" +
         '<div class="pcard__buy">' +
@@ -267,7 +305,6 @@
               '<svg class="ico" aria-hidden="true"><use href="#' + (line ? "i-check" : "i-plus") + '"></use></svg>' +
             "</button>" +
           "</div>" +
-          '<p class="pcard__price">' + precioHTML(p) + "</p>" +
         "</div>" +
       "</article>";
   }
@@ -399,7 +436,9 @@
     var qs = new URLSearchParams(location.search);
     var cat = qs.get("cat");
     var q = qs.get("q");
+    var linea = qs.get("linea");
     if (cat && CATS.some(function (c) { return c.id === cat; })) state.cat = cat;
+    if (linea && LINEAS.some(function (l) { return l[0] === linea; })) state.linea = linea;
     if (q) {
       state.q = q; $("q").value = q; $("q-clear").hidden = false;
       /* La primera pintura ocurre antes de que cargue la tabla de
@@ -424,10 +463,18 @@
     render();
   });
 
+  if ($("lineas")) {
+    $("lineas").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-linea]"); if (!b) return;
+      state.linea = state.linea === b.dataset.linea ? "" : b.dataset.linea;
+      render();
+    });
+  }
+
   var clearBtn = $("facets-clear");
   if (clearBtn) {
     clearBtn.addEventListener("click", function () {
-      state.mats = []; state.cat = "todo"; state.q = ""; state.stock = "todo";
+      state.mats = []; state.cat = "todo"; state.q = ""; state.stock = "todo"; state.linea = "";
       $("q").value = ""; $("q-clear").hidden = true;
       var sb = $("stock");
       if (sb) Array.prototype.forEach.call(sb.children, function (x) {
@@ -551,6 +598,14 @@
       toast(qty + (qty === 1 ? " caja de " : " cajas de ") + prod.nombre.toLowerCase() + " en tu carrito");
       return;
     }
+
+    /* clic en cualquier parte de la tarjeta (fuera de la franja de compra y de
+       los enlaces que ya navegan solos) también manda a la ficha del producto */
+    var body = e.target.closest(".pcard__body");
+    if (body && !e.target.closest("a") && !(window.getSelection() + "")) {
+      window.location.href = "producto.html?id=" + body.closest(".pcard").dataset.id;
+      return;
+    }
   });
 
   document.addEventListener("change", function (e) {
@@ -571,6 +626,14 @@
          Sin esta guarda, cambiar de medida con el carrito lleno reventaba con
          "Cannot read properties of null (reading 'dataset')". No saltaba con el
          carrito vacío porque `filter` no llega a ejecutar el callback. */
+      if (pc) {
+        var prodSel = PRODS.filter(function (x) { return x.id === pc.dataset.id; })[0];
+        var precioEl = pc.querySelector(".pcard__price");
+        if (prodSel && precioEl) {
+          var vi = prodSel.v.indexOf(sel.value);
+          precioEl.innerHTML = precioHTML(prodSel, vi < 0 ? 0 : vi);
+        }
+      }
       var l2 = pc && cart.filter(function (x) { return x.id === pc.dataset.id; })[0];
       if (l2 && l2.v !== sel.value) {
         pc.querySelector(".pcard__add .btn__label").textContent = "Actualizar";

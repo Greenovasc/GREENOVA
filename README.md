@@ -643,3 +643,11 @@ al archivo hermano.
 8. **Dos preguntas que faltan en el FAQ**: mínimo de compra y tiempo de producción.
    No están en el catálogo y no se inventaron. Son las dos que más pregunta un cliente
    nuevo; en cuanto las confirmes se agregan a la sección `#preguntas` de `index.html`.
+9. **Recibo animado post-pago (pendiente de llaves de Openpay)**: por ahora, el
+   pie de página de `index.html` solo trae un enlace "Facturar tu compra" que abre
+   un correo a `ventas@` con los datos que pide un CFDI (pedido, RFC, razón social,
+   uso de CFDI) — facturación manual, no automática. En cuanto lleguen las llaves
+   de Openpay y se arme el checkout real, falta construir la pantalla de éxito con
+   el recibo animado (efecto de ticket impreso, como la referencia que mandó Gabriel)
+   y, ahí sí, conectar la factura automática con la API de Facturama en vez del
+   correo manual.

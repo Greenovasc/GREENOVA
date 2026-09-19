@@ -5,3 +5,4 @@ __pycache__/
 .env.*
 dist/
 .venv/
+agente-rag/chroma_db/

@@ -168,9 +168,71 @@
         '<label><span class="campo">Vigente hasta</span>' +
           '<input type="date" data-p="hasta" value="' + esc(pr.hasta || "") + '"></label>' +
         '<p class="adm__sub">id: <code>' + esc(p.id) + "</code></p>" +
-      "</div>";
+      "</div>" +
+
+      ventaHTML(p);
 
     return el;
+  }
+
+  /* Precio, existencias y SKU por tamaño, para las líneas Papel/PET/Kraft del
+     checkout nuevo. Si un producto no tiene `venta`, sigue vendiéndose por
+     caja y bajo cotización como siempre: esto es aparte, no lo reemplaza. */
+  function opcionesLinea(sel) {
+    return [["", "Ninguna (cotización por caja, como hoy)"],
+            ["papel", "Papel"], ["pet", "PET"], ["kraft", "Kraft"]]
+      .map(function (l) {
+        return '<option value="' + l[0] + '"' + (l[0] === (sel || "") ? " selected" : "") + ">" + l[1] + "</option>";
+      }).join("");
+  }
+
+  /* Alinea venta.tam con las medidas (`v`) del producto: una entrada por
+     cada medida, en el mismo orden. Se llama antes de pintar y antes de
+     guardar, nunca en cada tecleo del textarea de medidas (eso perdería el
+     foco de quien está escribiendo). */
+  function sincronizarTam(p) {
+    if (!p.venta) return;
+    var n = p.v.length;
+    var tam = (p.venta.tam || []).slice(0, n);
+    while (tam.length < n) tam.push({ precio: null, stock: 0, sku: null });
+    p.venta.tam = tam;
+  }
+
+  function ventaHTML(p) {
+    var activa = !!p.venta;
+    var html = '<div class="ficha__venta">' +
+      '<label><span class="campo">Venta en línea</span>' +
+        '<select data-c="venta-linea">' + opcionesLinea(activa ? p.venta.linea : "") + "</select></label>";
+
+    if (activa) {
+      sincronizarTam(p);
+      html += '<div class="ficha__tam">' +
+        p.v.map(function (etiqueta, i) {
+          var t = p.venta.tam[i];
+          return '<div class="ficha__tamfila">' +
+            '<span class="ficha__tametq">' + esc(etiqueta) + "</span>" +
+            '<label><span class="campo">Precio (MXN/pza)</span>' +
+              '<input type="number" min="0" step="0.01" data-tam="precio" data-i="' + i + '" placeholder="Cotizar" value="' +
+                (t.precio == null ? "" : t.precio) + '"></label>' +
+            '<label><span class="campo">Existencias</span>' +
+              '<input type="number" min="0" step="1" data-tam="stock" data-i="' + i + '" value="' + (t.stock || 0) + '"></label>' +
+            '<label><span class="campo">SKU</span>' +
+              '<input type="text" data-tam="sku" data-i="' + i + '" value="' + esc(t.sku || "") + '"></label>' +
+          "</div>";
+        }).join("") +
+      "</div>";
+    }
+    html += "</div>";
+    return html;
+  }
+
+  /* Reconstruye solo esta ficha (no todo `pintar()`) para no perder el
+     scroll ni el foco del resto del panel cuando cambia la línea de venta. */
+  function refrescarFicha(id) {
+    var actual = document.querySelector('[data-ficha="' + id + '"]');
+    var p = producto(id);
+    if (!actual || !p) return;
+    actual.replaceWith(ficha(p));
   }
 
   function materialesHTML(p) {
@@ -214,17 +276,18 @@
   }
 
   function pintarResumen() {
-    var agotados = 0, ofertas = 0, conPrecio = 0;
+    var agotados = 0, ofertas = 0, conPrecio = 0, enLinea = 0;
     datos.productos.forEach(function (p) {
       var pr = datos.promos[p.id] || {};
       if (pr.agotado) agotados++;
       if (pr.desc) ofertas++;
       if (p.precio != null) conPrecio++;
+      if (p.venta) enLinea++;
     });
     var pendientes = Object.keys(sucios).length;
     $("resumen").textContent =
       datos.productos.length + " productos · " + conPrecio + " con precio · " +
-      ofertas + " en oferta · " + agotados + " agotados" +
+      ofertas + " en oferta · " + agotados + " agotados · " + enLinea + " en venta en línea" +
       (pendientes ? " · " + pendientes + " con cambios sin guardar" : "");
     $("btn-guardar").disabled = !hayCambios();
   }
@@ -258,6 +321,25 @@
       return;
     }
 
+    var campoTam = e.target.dataset.tam;
+    if (campoTam) {
+      if (!p.venta) return;
+      var iTam = parseInt(e.target.dataset.i, 10);
+      var entrada = p.venta.tam[iTam];
+      if (!entrada) return;
+      if (campoTam === "precio") {
+        var np = parseFloat(e.target.value);
+        entrada.precio = isNaN(np) || np <= 0 ? null : np;
+      } else if (campoTam === "stock") {
+        var ns = parseInt(e.target.value, 10);
+        entrada.stock = isNaN(ns) || ns < 0 ? 0 : ns;
+      } else if (campoTam === "sku") {
+        entrada.sku = e.target.value.trim() || null;
+      }
+      marcarSucio(id);
+      return;
+    }
+
     var campoPromo = e.target.dataset.p;
     if (campoPromo) {
       var pr = promo(id);
@@ -286,8 +368,29 @@
       var ficha = e.target.closest("[data-ficha]");
       var p = producto(ficha.dataset.ficha);
       if (p) { p.cat = e.target.value; marcarSucio(p.id); }
+      return;
+    }
+    if (e.target.dataset.c === "venta-linea") {
+      var fichaV = e.target.closest("[data-ficha]");
+      var pv = producto(fichaV.dataset.ficha);
+      if (!pv) return;
+      var val = e.target.value;
+      if (!val) delete pv.venta;
+      else { pv.venta = { linea: val, tam: (pv.venta || {}).tam || [] }; sincronizarTam(pv); }
+      marcarSucio(pv.id);
+      refrescarFicha(pv.id);
     }
   });
+
+  /* blur no burbujea: hay que escuchar en captura para agarrarlo desde el
+     contenedor. Solo importa cuando se editan las medidas de un producto que
+     ya tiene venta en línea, para que sus tamaños sigan alineados. */
+  $("lista").addEventListener("blur", function (e) {
+    if (e.target.dataset.c !== "v") return;
+    var ficha = e.target.closest("[data-ficha]");
+    var p = producto(ficha.dataset.ficha);
+    if (p && p.venta) refrescarFicha(p.id);
+  }, true);
 
   $("lista").addEventListener("click", function (e) {
     var btn = e.target.closest('[data-accion="borrar"]');
@@ -339,6 +442,11 @@
     btn.disabled = true;
     etiqueta.textContent = "Guardando…";
     aviso("");
+
+    /* Resguardo final: si algo dejó venta.tam desalineado con las medidas,
+       el servidor lo rechaza entero (ver limpia_venta en main.py). Mejor
+       corregirlo aquí que perder los precios/existencias ya capturados. */
+    datos.productos.forEach(function (p) { if (p.venta) sincronizarTam(p); });
 
     fetch("/api/admin/guardar", {
       method: "POST",

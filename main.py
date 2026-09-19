@@ -304,6 +304,42 @@ def texto(valor, largo: int = 400) -> str:
     return valor[:largo].strip() if isinstance(valor, str) else ""
 
 
+LINEAS_VENTA = (
+    "papel", "papel-fsc", "pla", "pet", "kraft",
+    "bagazo", "paja-trigo", "fecula", "madera", "tapioca", "plastico", "carton",
+)
+
+
+def limpia_venta(venta, num_medidas: int):
+    """Valida `venta` (todos los materiales del catálogo, con precio y stock por tamaño).
+
+    Si no cuadra con el número de medidas del producto o la línea no es una
+    de las tres reconocidas, se descarta entero: mejor un producto sin venta
+    en línea que uno con tamaños desalineados vendiendo el equivocado.
+    """
+    if not isinstance(venta, dict):
+        return None
+    linea = texto(venta.get("linea"), 20)
+    if linea not in LINEAS_VENTA:
+        return None
+    tam_in = venta.get("tam")
+    if not isinstance(tam_in, list) or len(tam_in) != num_medidas:
+        return None
+
+    tam = []
+    for t in tam_in:
+        if not isinstance(t, dict):
+            t = {}
+        precio = t.get("precio")
+        precio = float(precio) if isinstance(precio, (int, float)) and precio > 0 else None
+        stock = t.get("stock")
+        stock = int(stock) if isinstance(stock, (int, float)) and stock >= 0 else 0
+        sku = texto(t.get("sku"), 40) or None
+        tam.append({"precio": precio, "stock": stock, "sku": sku})
+
+    return {"linea": linea, "tam": tam}
+
+
 def render_catalogo(datos: dict) -> str:
     """Arma el productos.js a partir de los datos del panel.
 
@@ -354,6 +390,9 @@ def render_catalogo(datos: dict) -> str:
             limpio["destacado"] = True
         if texto(p.get("sello"), 40):
             limpio["sello"] = texto(p.get("sello"), 40)
+        venta = limpia_venta(p.get("venta"), len(limpio["v"]))
+        if venta:
+            limpio["venta"] = venta
         prods.append(limpio)
 
     if not prods:
@@ -429,7 +468,17 @@ def render_catalogo(datos: dict) -> str:
             partes.append("precio: " + (str(p["precio"]) if p["precio"] else "null"))
             lineas.append("    { " + ", ".join(partes) + ",")
             lineas.append("      desc: " + j(p["desc"]) + ",")
-            lineas.append("      v: " + j(p["v"]) + " },")
+            if p.get("venta"):
+                tam = ", ".join(
+                    "{ precio: %s, stock: %d, sku: %s }" % (
+                        str(t["precio"]) if t["precio"] else "null", t["stock"], j(t["sku"]) if t["sku"] else "null"
+                    )
+                    for t in p["venta"]["tam"]
+                )
+                lineas.append("      v: " + j(p["v"]) + ",")
+                lineas.append("      venta: { linea: " + j(p["venta"]["linea"]) + ", tam: [ " + tam + " ] } },")
+            else:
+                lineas.append("      v: " + j(p["v"]) + " },")
         lineas.append("")
 
     lineas += [

@@ -55,6 +55,14 @@
     display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .7rem;
     align-items: end;
   }
+  .ficha__venta { margin-top: .8rem; padding-top: .8rem; border-top: 1px dashed var(--line); }
+  .ficha__venta > label { max-width: 320px; margin-bottom: .7rem; }
+  .ficha__tam { display: flex; flex-direction: column; gap: .5rem; }
+  .ficha__tamfila {
+    display: grid; grid-template-columns: minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);
+    gap: .5rem; align-items: end; padding: .5rem; border-radius: 8px; background: var(--bg);
+  }
+  .ficha__tametq { font-size: .8125rem; color: var(--ink-2); align-self: center; }
   .campo { font-size: .6875rem; font-weight: 600; letter-spacing: .08em;
            text-transform: uppercase; color: var(--ink-3); display: block; margin-bottom: .3rem; }
   .marca { display: flex; align-items: center; gap: .45rem; font-size: .875rem; }
@@ -69,7 +77,6 @@
   }
   .adm__aviso[data-tipo="ok"] { background: var(--tint-accent); border-color: transparent; color: var(--forest); }
   .adm__aviso[data-tipo="error"] { background: #fdecec; border-color: #f3c6c6; color: #8a2222; }
-  :root[data-theme="dark"] .adm__aviso[data-tipo="error"] { background: #3a1c1c; border-color: #5c2a2a; color: #ffb4b4; }
 
   .entrar { max-width: 380px; margin: 12vh auto; padding: 1.6rem; }
   .entrar h1 { font-size: 1.4rem; margin-bottom: .4rem; }
