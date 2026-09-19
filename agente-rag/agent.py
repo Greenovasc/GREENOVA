@@ -40,20 +40,35 @@ TOOLS = [
             "name": "buscar_en_catalogo",
             "description": (
                 "Busca productos en el catálogo de GreeNova por significado, no por "
-                "coincidencia exacta de texto. Úsala con la consulta ya corregida de "
-                "errores ortográficos, en español, describiendo tipo de producto, "
-                "medida/oz, boca en mm o material. Puedes llamarla varias veces en el "
-                "mismo turno: una para el producto que pidió el cliente y otra para "
-                "buscar el complemento de cross-sell (p. ej. su tapa)."
+                "coincidencia exacta de texto. Úsala SIEMPRE que el cliente pida un "
+                "producto, sin importar qué tan destruida o incomprensible esté su "
+                "ortografía — nunca te rindas ni preguntes '¿qué quisiste decir?'. "
+                "Puedes llamarla varias veces en el mismo turno: una para el producto "
+                "que pidió el cliente y otra para buscar el complemento de cross-sell "
+                "(p. ej. su tapa)."
             ),
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "query": {
+                    "traduccion_mental": {
                         "type": "string",
                         "description": (
-                            "Descripción corregida y en español de lo que se busca, p. ej. "
-                            "'vaso de papel biodegradable de 12 onzas' o 'tapa boca 90 mm'."
+                            "Obligatorio y siempre primero: escribe aquí la frase del "
+                            "cliente ya corregida, con ortografía perfecta y deduciendo su "
+                            "intención real por el contexto (vendes empaques, vasos, tapas "
+                            "y desechables biodegradables). Ejemplo: si el cliente escribió "
+                            "'kiero 100 knedorsitos', esto debe decir 'quiero 100 "
+                            "tenedores'. Este paso es tu borrador mental antes de armar la "
+                            "búsqueda — hazlo siempre, aunque el mensaje se vea claro."
+                        ),
+                    },
+                    "query_para_busqueda": {
+                        "type": "string",
+                        "description": (
+                            "El término técnico, limpio y en español que sacas de "
+                            "`traduccion_mental` para buscar en el catálogo: tipo de "
+                            "producto, medida/oz, boca en mm o material, p. ej. 'vaso de "
+                            "papel biodegradable de 12 onzas' o 'tapa boca 90 mm'."
                         ),
                     },
                     "top_k": {
@@ -63,7 +78,7 @@ TOOLS = [
                         "maximum": 10,
                     },
                 },
-                "required": ["query"],
+                "required": ["traduccion_mental", "query_para_busqueda"],
             },
         },
     }
@@ -112,8 +127,14 @@ def buscar_en_catalogo(cliente_openai: OpenAI, coleccion, query: str, top_k: int
 
 def _ejecutar_tool_call(cliente_openai: OpenAI, coleccion, tool_call) -> str:
     argumentos = json.loads(tool_call.function.arguments or "{}")
-    query = argumentos.get("query", "")
+    traduccion = argumentos.get("traduccion_mental", "")
+    query = argumentos.get("query_para_busqueda", "")
     top_k = argumentos.get("top_k", 5)
+    # La traducción mental no se usa para buscar: es el paso de razonamiento
+    # que obliga al modelo a descifrar la ortografía antes de armar la query.
+    # Se imprime para poder ver, al probar en terminal, qué entendió el modelo.
+    if traduccion:
+        print(f"  [entendí] \"{traduccion}\"")
     print(f"  [buscando] \"{query}\" (top_k={top_k})")
     resultados = buscar_en_catalogo(cliente_openai, coleccion, query, top_k)
     if not resultados:
