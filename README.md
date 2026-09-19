@@ -651,3 +651,4 @@ al archivo hermano.
    el recibo animado (efecto de ticket impreso, como la referencia que mandó Gabriel)
    y, ahí sí, conectar la factura automática con la API de Facturama en vez del
    correo manual.
+# GREENOVA
