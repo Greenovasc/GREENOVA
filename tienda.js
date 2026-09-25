@@ -1,6 +1,7 @@
 /* GreeNova SC - tienda.
    Catálogo filtrable + carrito persistente en localStorage. El envío pide
-   cotización: el catálogo no publica precios.
+   cotización por correo. Los productos con `venta` muestran precio por pieza
+   y se piden desde su pedido mínimo; el resto va por caja.
    Sin dependencias, sin listeners de scroll: los reveals los maneja app.js. */
 (function () {
   "use strict";
@@ -10,6 +11,7 @@
   var MATS = window.GREENOVA.MATERIALES;
   var PRODS = window.GREENOVA.PRODUCTOS;
   var PROMOS = window.GREENOVA.PROMOS || {};
+  var TAPAS_POR_VASO = window.GREENOVA.TAPAS_POR_VASO || {};
 
   /* "todo" = catálogo completo (tienda.html) | "ofertas" = outlet (ofertas.html) */
   var MODO = document.body.dataset.modo || "todo";
@@ -29,18 +31,55 @@
   }
 
   /* ============================ estado ============================ */
-  var state = { cat: "todo", mats: [], q: "", sort: "destacado", stock: "todo", linea: "" };
-  /* Papel/PET/Kraft: los productos que ya se venden por unidad con precio y
-     existencias reales (ver `venta` en productos.js), separados por material
-     para que nadie mezcle presentaciones al comprar. */
+  var state = { cat: "todo", mats: [], oz: [], q: "", sort: "destacado", stock: "todo", linea: "" };
   /* Todo material puede traer venta en línea (ver LINEAS_VENTA en main.py):
      se arma de MATERIALES en vez de una lista fija para no desalinearse. */
   var LINEAS = Object.keys(MATS).map(function (k) { return [k, MATS[k]]; });
   var cart = [];
 
+  /* ---------- unidades del carrito ----------
+     Pedido mínimo (Gabriel, 2026-09-24): los productos con `venta` se piden
+     por PIEZA, desde el `min` de cada medida (10,000 por omisión) y en pasos
+     de una caja (o de 1,000 si el producto no declara piezas por caja). Los de
+     cotización se siguen contando en CAJAS, de 1 a 999, como siempre. */
+  var MIN_PIEZAS = 10000;
+  function prodDe(id) { return PRODS.filter(function (x) { return x.id === id; })[0]; }
+  function porPieza(p) { return !!(p && p.venta); }
+  function minDe(p, v) {
+    if (!porPieza(p)) return 1;
+    var t = p.venta.tam[Math.max(0, p.v.indexOf(v))];
+    return (t && t.min) || MIN_PIEZAS;
+  }
+  function pasoDe(p) { return porPieza(p) ? (p.p || 1000) : 1; }
+  function maxDe(p) { return porPieza(p) ? 10000000 : 999; }
+  function cantidadTexto(p, n) {
+    return porPieza(p)
+      ? n.toLocaleString("es-MX") + (n === 1 ? " pieza" : " piezas")
+      : n + (n === 1 ? " caja" : " cajas");
+  }
+  /* El stepper lleva sus propios límites: así el mismo manejador de clics
+     sirve para cajas (1 en 1) y para piezas (de caja en caja). */
+  function stepperAttrs(p, v) {
+    return ' data-min="' + minDe(p, v) + '" data-paso="' + pasoDe(p) + '" data-max="' + maxDe(p) + '"';
+  }
+  function limites(el) {
+    var w = el.closest("[data-min]");
+    return {
+      min: w ? Number(w.dataset.min) : 1,
+      paso: w ? Number(w.dataset.paso) || 1 : 1,
+      max: w ? Number(w.dataset.max) : 999
+    };
+  }
+
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || "[]");
     if (Array.isArray(saved)) cart = saved.filter(function (l) { return l && l.id && l.qty > 0; });
+    /* Carritos guardados antes del pedido mínimo traían cajas (1, 2, 3…) en
+       productos que ahora van por pieza: se suben al mínimo de su medida. */
+    cart.forEach(function (l) {
+      var p = prodDe(l.id);
+      if (porPieza(p) && l.qty < minDe(p, l.v)) l.qty = minDe(p, l.v);
+    });
   } catch (e) { cart = []; }
 
   function persist() {
@@ -109,12 +148,28 @@
     return out;
   }
 
+  /* Capacidad: no es un campo aparte, son las "N oz" que cada variante ya
+     trae en `v` (p.ej. "12 oz · boca 90 mm"). Se lee de ahí en vez de
+     inventar un dato de capacidad que el catálogo no declara aparte. */
+  function ozDe(p) {
+    if (!p._oz) {
+      var out = [];
+      p.v.forEach(function (v) {
+        var m = v.match(/(\d+)\s*oz/i);
+        if (m && out.indexOf(m[1]) === -1) out.push(m[1]);
+      });
+      p._oz = out;
+    }
+    return p._oz;
+  }
+
   function pasaFiltros(p) {
     if (state.linea && (!p.venta || p.venta.linea !== state.linea)) return false;
     if (state.cat !== "todo" && p.cat !== state.cat) return false;
     if (state.stock === "disponible" && (PROMOS[p.id] || {}).agotado) return false;
     if (state.stock === "agotado" && !(PROMOS[p.id] || {}).agotado) return false;
     if (state.mats.length && !state.mats.some(function (m) { return p.mat.indexOf(m) > -1; })) return false;
+    if (state.oz.length && !ozDe(p).some(function (o) { return state.oz.indexOf(o) > -1; })) return false;
     return true;
   }
 
@@ -197,6 +252,20 @@
         return '<button class="chip chip--sm" data-mat="' + m + '" aria-pressed="false">' +
                MATS[m] + '<span class="chip__n">' + used[m] + "</span></button>";
       }).join("");
+
+    var bloqueCap = $("bloque-cap");
+    if (bloqueCap) {
+      var usedOz = {};
+      BASE.forEach(function (p) { ozDe(p).forEach(function (o) { usedOz[o] = (usedOz[o] || 0) + 1; }); });
+      var ozKeys = Object.keys(usedOz).sort(function (a, b) { return Number(a) - Number(b); });
+      bloqueCap.hidden = ozKeys.length === 0;
+      if (ozKeys.length) {
+        $("caps").innerHTML = ozKeys.map(function (o) {
+          return '<button class="chip chip--sm" data-oz="' + o + '" aria-pressed="false">' +
+                 o + " oz" + '<span class="chip__n">' + usedOz[o] + "</span></button>";
+        }).join("");
+      }
+    }
   }
 
   function syncChips() {
@@ -212,8 +281,13 @@
         b.setAttribute("aria-pressed", String(b.dataset.linea === state.linea));
       });
     }
+    if ($("caps")) {
+      Array.prototype.forEach.call($("caps").children, function (b) {
+        b.setAttribute("aria-pressed", String(state.oz.indexOf(b.dataset.oz) > -1));
+      });
+    }
     var dot = $("filter-dot");
-    if (dot) dot.hidden = state.mats.length === 0 && !state.linea;
+    if (dot) dot.hidden = state.mats.length === 0 && state.oz.length === 0 && !state.linea;
   }
 
   /* ============================ tarjetas ============================ */
@@ -253,10 +327,20 @@
     if (p.sello) badges = '<span class="tag tag--sello"><svg class="ico" aria-hidden="true">' +
       '<use href="#i-seal-check"></use></svg>' + p.sello + "</span>" + badges;
 
+    /* Medidas agotadas una por una (panel): salen en el selector pero no se
+       pueden elegir, y la tarjeta arranca en la primera que sí hay. */
+    var agotadas = p.agotadas || [];
+    var libres = p.v.filter(function (v) { return agotadas.indexOf(v) === -1; });
+    var todasAgotadas = libres.length === 0;
+    var selIdx = line ? Math.max(0, p.v.indexOf(line.v)) : Math.max(0, p.v.indexOf(libres[0]));
     var opts = p.v.map(function (v, k) {
-      return '<option value="' + v + '"' + (line && line.v === v ? " selected" : "") + ">" + v + "</option>";
+      var ag = agotadas.indexOf(v) > -1;
+      return '<option value="' + v + '"' + (k === selIdx ? " selected" : "") + (ag ? " disabled" : "") + ">" +
+             v + (ag ? " — agotado" : "") + "</option>";
     }).join("");
-    var selIdx = line ? Math.max(0, p.v.indexOf(line.v)) : 0;
+    var selV = p.v[selIdx];
+    var pz = porPieza(p);
+    var minimo = pz ? minDe(p, selV) : MIN_PIEZAS;
 
     return '' +
       '<article class="pcard rv" data-d="' + (i % 4) + '" data-id="' + p.id + '"' +
@@ -268,7 +352,7 @@
             p.destacado ? '<span class="pcard__flag">Más pedido</span>' :
             p.servicio ? '<span class="pcard__flag pcard__flag--srv">Pocas unidades</span>' : "") +
           '<span class="pcard__spec">' + p.v.length + (p.v.length === 1 ? " presentación" : " medidas") + "</span>" +
-          (promo && promo.agotado ? '<span class="pcard__out">Agotado</span>' : "") +
+          ((promo && promo.agotado) || todasAgotadas ? '<span class="pcard__out">Agotado</span>' : "") +
         "</a>" +
         '<div class="pcard__body">' +
           '<div class="pcard__tags">' + badges + "</div>" +
@@ -283,6 +367,7 @@
           '<div class="pcard__meta">' +
             (p.p ? '<span><svg class="ico" aria-hidden="true"><use href="#i-package"></use></svg>' +
                    p.p.toLocaleString("es-MX") + " pzs por caja</span>" : "") +
+            '<span data-role="min">Mínimo ' + minimo.toLocaleString("es-MX") + " pzs</span>" +
           "</div>" +
         "</div>" +
         '<div class="pcard__buy">' +
@@ -292,12 +377,13 @@
             '<svg class="ico" aria-hidden="true"><use href="#i-caret-down"></use></svg>' +
           "</label>" +
           '<div class="pcard__row">' +
-            '<div class="stepper" data-role="stepper">' +
-              '<button type="button" data-step="-1" aria-label="Quitar una caja">' +
+            '<div class="stepper' + (pz ? " stepper--pz" : "") + '" data-role="stepper"' + stepperAttrs(p, selV) + '>' +
+              '<button type="button" data-step="-1" aria-label="' + (pz ? "Quitar piezas" : "Quitar una caja") + '">' +
                 '<svg class="ico" aria-hidden="true"><use href="#i-minus"></use></svg></button>' +
-              '<input type="number" min="1" max="999" value="' + (line ? line.qty : 1) +
-                '" data-role="qty" aria-label="Cajas de ' + p.nombre + '">' +
-              '<button type="button" data-step="1" aria-label="Agregar una caja">' +
+              '<input type="number" min="' + minDe(p, selV) + '" max="' + maxDe(p) + '" value="' +
+                (line ? line.qty : minDe(p, selV)) +
+                '" data-role="qty" aria-label="' + (pz ? "Piezas de " : "Cajas de ") + p.nombre + '">' +
+              '<button type="button" data-step="1" aria-label="' + (pz ? "Agregar piezas" : "Agregar una caja") + '">' +
                 '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></button>' +
             "</div>" +
             '<button class="btn btn--primary btn--sm pcard__add" type="button" data-role="add">' +
@@ -309,12 +395,42 @@
       "</article>";
   }
 
+  /* Tapas relacionadas: la unión de TAPAS_POR_VASO de todos los vasos de la
+     categoría activa (no de la lista ya filtrada por búsqueda/material, para
+     que la barra no aparezca y desaparezca mientras el cliente escribe). */
+  function tapasDeCategoria(catId) {
+    var ids = [];
+    BASE.filter(function (p) { return p.cat === catId && TAPAS_POR_VASO[p.id]; })
+      .forEach(function (v) {
+        TAPAS_POR_VASO[v.id].forEach(function (id) { if (ids.indexOf(id) === -1) ids.push(id); });
+      });
+    return ids.map(function (id) { return PRODS.filter(function (p) { return p.id === id; })[0]; }).filter(Boolean);
+  }
+
+  function renderTapasRel() {
+    var box = $("tapas-rel");
+    if (!box) return;
+    var tapas = tapasDeCategoria(state.cat);
+    box.hidden = tapas.length === 0;
+    if (!tapas.length) return;
+    box.innerHTML =
+      '<p class="tapas-rel__label">Tapas para estos vasos</p>' +
+      '<div class="tapas-rel__list">' +
+      tapas.map(function (t) {
+        return '<a class="tapas-rel__chip" href="producto.html?id=' + t.id + '">' +
+          '<img src="' + src(t.img) + '" alt="" loading="lazy" decoding="async">' +
+          "<span>" + t.nombre + "</span></a>";
+      }).join("") +
+      "</div>";
+  }
+
   function render() {
     var grid = $("grid");
     if (!grid) return;
     var list = filtered();
     grid.innerHTML = list.map(card).join("");
     $("empty").hidden = list.length > 0;
+    renderTapasRel();
 
     var n = list.length;
     $("result-line").textContent = n === 0 ? "" :
@@ -331,8 +447,10 @@
   }
 
   /* ============================ carrito ============================ */
+  /* Productos distintos en la lista. Antes sumaba cajas, pero ya hay líneas
+     que se cuentan en piezas (10,000+) y el globito del carrito explotaba. */
   function total() {
-    return cart.reduce(function (s, l) { return s + l.qty; }, 0);
+    return cart.length;
   }
 
   function paintCount() {
@@ -357,12 +475,13 @@
         '<img src="' + src(p.img) + '" alt="" loading="lazy">' +
         '<div class="cart__info">' +
           "<h4>" + p.nombre + "</h4>" +
-          '<p class="cart__var">' + l.v + "</p>" +
-          '<div class="stepper stepper--sm" data-role="stepper">' +
-            '<button type="button" data-step="-1" aria-label="Quitar una caja">' +
+          '<p class="cart__var">' + l.v + (porPieza(p) ? " · en piezas" : " · en cajas") + "</p>" +
+          '<div class="stepper stepper--sm' + (porPieza(p) ? " stepper--pz" : "") + '" data-role="stepper"' + stepperAttrs(p, l.v) + '>' +
+            '<button type="button" data-step="-1" aria-label="' + (porPieza(p) ? "Quitar piezas" : "Quitar una caja") + '">' +
               '<svg class="ico" aria-hidden="true"><use href="#i-minus"></use></svg></button>' +
-            '<input type="number" min="1" max="999" value="' + l.qty + '" data-role="qty" aria-label="Cajas">' +
-            '<button type="button" data-step="1" aria-label="Agregar una caja">' +
+            '<input type="number" min="' + minDe(p, l.v) + '" max="' + maxDe(p) + '" value="' + l.qty +
+              '" data-role="qty" aria-label="' + (porPieza(p) ? "Piezas" : "Cajas") + '">' +
+            '<button type="button" data-step="1" aria-label="' + (porPieza(p) ? "Agregar piezas" : "Agregar una caja") + '">' +
               '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></button>' +
           "</div>" +
         "</div>" +
@@ -384,7 +503,7 @@
     box.innerHTML = "<h3>" + cart.length + (cart.length === 1 ? " producto en tu lista" : " productos en tu lista") + "</h3><ul>" +
       cart.map(function (l) {
         var p = PRODS.filter(function (x) { return x.id === l.id; })[0];
-        return p ? "<li><b>" + l.qty + "×</b> " + p.nombre + " <span>" + l.v + "</span></li>" : "";
+        return p ? "<li><b>" + cantidadTexto(p, l.qty) + "</b> " + p.nombre + " <span>" + l.v + "</span></li>" : "";
       }).join("") + "</ul>";
   }
 
@@ -463,6 +582,15 @@
     render();
   });
 
+  if ($("caps")) {
+    $("caps").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-oz]"); if (!b) return;
+      var o = b.dataset.oz, i = state.oz.indexOf(o);
+      if (i > -1) state.oz.splice(i, 1); else state.oz.push(o);
+      render();
+    });
+  }
+
   if ($("lineas")) {
     $("lineas").addEventListener("click", function (e) {
       var b = e.target.closest("[data-linea]"); if (!b) return;
@@ -474,7 +602,7 @@
   var clearBtn = $("facets-clear");
   if (clearBtn) {
     clearBtn.addEventListener("click", function () {
-      state.mats = []; state.cat = "todo"; state.q = ""; state.stock = "todo"; state.linea = "";
+      state.mats = []; state.oz = []; state.cat = "todo"; state.q = ""; state.stock = "todo"; state.linea = "";
       $("q").value = ""; $("q-clear").hidden = true;
       var sb = $("stock");
       if (sb) Array.prototype.forEach.call(sb.children, function (x) {
@@ -560,7 +688,9 @@
     if (stepBtn) {
       var wrap = stepperOf(stepBtn);
       var input = wrap.querySelector("[data-role='qty']");
-      var next = Math.min(999, Math.max(1, (parseInt(input.value, 10) || 1) + Number(stepBtn.dataset.step)));
+      var lim = limites(wrap);
+      var next = Math.min(lim.max, Math.max(lim.min,
+        (parseInt(input.value, 10) || lim.min) + Number(stepBtn.dataset.step) * lim.paso));
       input.value = next;
       var item = stepBtn.closest(".cart__item");
       if (item) {
@@ -587,15 +717,17 @@
     var addBtn = e.target.closest("[data-role='add']");
     if (addBtn) {
       var pc = addBtn.closest(".pcard, .ficha__compra");
-      var qty = Math.max(1, parseInt(pc.querySelector("[data-role='qty']").value, 10) || 1);
       var v = pc.querySelector("[data-role='variant']").value;
       var prod = PRODS.filter(function (x) { return x.id === pc.dataset.id; })[0];
+      if ((prod.agotadas || []).indexOf(v) > -1) { toast("Esa medida está agotada por ahora"); return; }
+      var qty = Math.min(maxDe(prod), Math.max(minDe(prod, v),
+        parseInt(pc.querySelector("[data-role='qty']").value, 10) || 0));
       add(pc.dataset.id, v, qty);
       pc.dataset.in = "true";
       addBtn.querySelector(".btn__label").textContent = "Actualizar";
       addBtn.querySelector("use").setAttribute("href", "#i-check");
       if (!reduce) { addBtn.classList.remove("did"); void addBtn.offsetWidth; addBtn.classList.add("did"); }
-      toast(qty + (qty === 1 ? " caja de " : " cajas de ") + prod.nombre.toLowerCase() + " en tu carrito");
+      toast(cantidadTexto(prod, qty) + " de " + prod.nombre.toLowerCase() + " en tu carrito");
       return;
     }
 
@@ -611,7 +743,8 @@
   document.addEventListener("change", function (e) {
     var input = e.target.closest("[data-role='qty']");
     if (input) {
-      input.value = Math.min(999, Math.max(1, parseInt(input.value, 10) || 1));
+      var lim = limites(input);
+      input.value = Math.min(lim.max, Math.max(lim.min, parseInt(input.value, 10) || lim.min));
       var item = input.closest(".cart__item");
       if (item) {
         var l = cart.filter(function (x) { return x.id === item.dataset.id; })[0];
@@ -632,6 +765,16 @@
         if (prodSel && precioEl) {
           var vi = prodSel.v.indexOf(sel.value);
           precioEl.innerHTML = precioHTML(prodSel, vi < 0 ? 0 : vi);
+        }
+        /* Cada medida puede tener su propio pedido mínimo. */
+        if (porPieza(prodSel)) {
+          var m = minDe(prodSel, sel.value);
+          var st = pc.querySelector("[data-role='stepper']");
+          var q = st.querySelector("[data-role='qty']");
+          st.dataset.min = m; q.min = m;
+          if ((parseInt(q.value, 10) || 0) < m) q.value = m;
+          var etq = pc.querySelector("[data-role='min']");
+          if (etq) etq.textContent = "Mínimo " + m.toLocaleString("es-MX") + " pzs";
         }
       }
       var l2 = pc && cart.filter(function (x) { return x.id === pc.dataset.id; })[0];
@@ -717,7 +860,7 @@
       var d = Object.fromEntries(new FormData(form).entries());
       var lines = cart.map(function (l) {
         var p = PRODS.filter(function (x) { return x.id === l.id; })[0];
-        return "- " + l.qty + " x " + (p ? p.nombre : l.id) + " (" + l.v + ")";
+        return "- " + (p ? cantidadTexto(p, l.qty) : l.qty) + " de " + (p ? p.nombre : l.id) + " (" + l.v + ")";
       }).join("\n");
 
       var body = [
@@ -726,7 +869,7 @@
         "Correo: " + d.correo,
         "Telefono: " + (d.telefono || "No indicado"),
         "",
-        "PRODUCTOS SOLICITADOS (" + total() + " cajas en total):",
+        "PRODUCTOS SOLICITADOS (" + total() + (total() === 1 ? " producto" : " productos") + "):",
         lines,
         "",
         "Notas:",

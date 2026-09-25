@@ -4,8 +4,8 @@
    y el toast los sigue manejando tienda.js, que en esta página corre en modo
    solo-carrito (no hay #grid), así que no hay dos versiones de esa lógica.
 
-   Sin precio y sin existencias: GreeNova no publica lista de precios ni tiene
-   inventario en vivo. Cada dato de aquí sale del catálogo 2026.
+   Los productos con `venta` muestran precio por pieza y pedido mínimo (los
+   captura el panel); el resto sigue bajo cotización por caja.
    =========================================================================== */
 (function () {
   "use strict";
@@ -14,6 +14,7 @@
   var G = window.GREENOVA;
   var PRODS = G.PRODUCTOS, CATS = G.CATEGORIAS, MATS = G.MATERIALES;
   var PROMOS = G.PROMOS || {};
+  var TAPAS_POR_VASO = G.TAPAS_POR_VASO || {};
 
   var id = new URLSearchParams(location.search).get("id");
   var p = PRODS.filter(function (x) { return x.id === id; })[0];
@@ -21,6 +22,24 @@
   var ficha = document.getElementById("ficha");
   var migas = document.getElementById("migas");
   var rel = document.getElementById("relacionados");
+
+  /* Botón "Volver" (Gabriel, 2026-09-24): en el teléfono no había cómo salir
+     de la ficha sin el gesto de atrás. Si la persona llegó desde el propio
+     sitio, regresa a esa misma página (con sus filtros y su scroll); si
+     entró directo (enlace compartido, Google), el href la lleva a la tienda. */
+  var volver = document.getElementById("volver");
+  if (volver) volver.addEventListener("click", function (e) {
+    var ref = document.referrer;
+    if (ref && location.origin !== "null" && ref.indexOf(location.origin + "/") === 0 && history.length > 1) {
+      e.preventDefault();
+      history.back();
+    }
+  });
+
+  /* Pedido mínimo en piezas (Gabriel, 2026-09-24). Los productos con `venta`
+     lo traen por medida en venta.tam[i].min; los de cotización usan este. */
+  var MIN_PIEZAS = 10000;
+  function fmt(n) { return n.toLocaleString("es-MX"); }
 
   /* ---------- producto inexistente: no dejamos la página en blanco ---------- */
   if (!p) {
@@ -45,6 +64,13 @@
   }
 
   var cat = CATS.filter(function (c) { return c.id === p.cat; })[0] || { nombre: "Catálogo", id: "" };
+
+  /* Medidas agotadas una por una (las marca el panel). La ficha arranca en la
+     primera medida que sí hay; si todas están agotadas, en la primera. */
+  var AGOTADAS = p.agotadas || [];
+  function agotada(i) { return AGOTADAS.indexOf(p.v[i]) > -1; }
+  var INI = 0;
+  while (INI < p.v.length - 1 && agotada(INI)) INI++;
   var promo = PROMOS[p.id];
 
   /* Igual que en tienda.js: las rutas pasan por aquí para que build-single.py
@@ -188,6 +214,14 @@
   cars.push({ ico: "i-ruler", t: p.v.length === 1 ? "Presentación" : "Medidas disponibles",
               c: p.v.length + (p.v.length === 1 ? " presentación" : " medidas") + ": " + p.v.join(" · ") });
   if (p.p) cars.push({ ico: "i-shopping-bag", t: "Piezas por caja", c: p.p.toLocaleString("es-MX") + " piezas" });
+  var minimos = p.venta
+    ? p.venta.tam.map(function (t) { return t.min || MIN_PIEZAS; })
+    : [MIN_PIEZAS];
+  var minMenor = Math.min.apply(null, minimos);
+  cars.push({ ico: "i-package", t: "Pedido mínimo",
+              c: minimos.every(function (m) { return m === minMenor; })
+                ? fmt(minMenor) + " piezas"
+                : "Desde " + fmt(minMenor) + " piezas, según la medida" });
   cars.push({ ico: "i-truck", t: "Envío", c: "A nivel nacional, con salida desde la Ciudad de México." });
   cars.push({ ico: "i-paint-brush-broad", t: "Personalización",
               c: "Se puede imprimir tu logo en serigrafía. También producimos formatos a medida." });
@@ -216,14 +250,18 @@
 
       '<div class="ficha__bloque">' +
         '<label class="ficha__label" for="f-cant">Cantidad</label>' +
-        '<div class="stepper stepper--cant" data-role="stepper-venta">' +
-          '<button type="button" data-vstep="-1" aria-label="Quitar una pieza">' +
+        /* data-min/data-max: los lee también el `change` de tienda.js, que
+           antes recortaba cualquier cantidad a 999 (tope pensado para cajas). */
+        '<div class="stepper stepper--cant stepper--pz" data-role="stepper-venta" data-min="' +
+            (p.venta.tam[INI].min || MIN_PIEZAS) + '" data-max="10000000">' +
+          '<button type="button" data-vstep="-1" aria-label="Quitar piezas">' +
             '<svg class="ico" aria-hidden="true"><use href="#i-minus"></use></svg></button>' +
-          '<input id="f-cant" type="number" min="1" value="1" data-role="qty" aria-label="Piezas">' +
-          '<button type="button" data-vstep="1" aria-label="Agregar una pieza">' +
+          '<input id="f-cant" type="number" min="' + (p.venta.tam[INI].min || MIN_PIEZAS) + '" value="' +
+            (p.venta.tam[INI].min || MIN_PIEZAS) + '" data-role="qty" aria-label="Piezas">' +
+          '<button type="button" data-vstep="1" aria-label="Agregar piezas">' +
             '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></button>' +
         "</div>" +
-        '<p class="ficha__hint" id="hint-stock"></p>' +
+        '<p class="ficha__hint" id="hint-min"></p>' +
         '<p class="ficha__total" id="total-compra"></p>' +
       "</div>" +
 
@@ -238,10 +276,6 @@
         '<button class="btn btn--ghost btn--block" type="button" ' +
           'data-agente="Cuéntame más sobre ' + esc(p.nombre) + '. ¿Qué medidas hay y para qué se usa?">' +
           '<span class="btn__label">Preguntar por este producto</span>' +
-        "</button>" +
-        '<button class="btn btn--ghost btn--block" type="button" id="btn-mas-unidades" hidden>' +
-          '<svg class="ico" aria-hidden="true"><use href="#i-sparkle"></use></svg>' +
-          '<span class="btn__label">¿Necesitas más unidades? Habla con nuestro agente</span>' +
         "</button>" +
       "</div>" +
 
@@ -304,18 +338,23 @@
 
       '<div class="ficha__bloque">' +
         '<p class="ficha__label" id="lbl-variante">Presentación: ' +
-          '<b class="ficha__variante" id="variante-actual">' + esc(p.v[0]) + "</b></p>" +
+          '<b class="ficha__variante" id="variante-actual">' + esc(p.v[INI]) + "</b></p>" +
         /* Chips visibles + un campo oculto con el valor: el carrito lee
            `[data-role="variant"]`.value, así que el contrato con tienda.js no
            cambia y no hubo que tocar su lógica. */
         '<div class="vchips" role="radiogroup" aria-labelledby="lbl-variante">' +
           p.v.map(function (v, k) {
-            return '<button type="button" class="vchip" role="radio" data-v="' + esc(v) + '" data-i="' + k + '"' +
-                   ' aria-checked="' + (k === 0 ? "true" : "false") + '">' + esc(v) + "</button>";
+            return '<button type="button" class="vchip' + (agotada(k) ? " vchip--agotada" : "") +
+                   '" role="radio" data-v="' + esc(v) + '" data-i="' + k + '"' +
+                   ' aria-checked="' + (k === INI ? "true" : "false") + '">' + esc(v) +
+                   (agotada(k) ? ' <small>Agotado</small>' : "") + "</button>";
           }).join("") +
         "</div>" +
-        '<input type="hidden" id="f-variante" data-role="variant" value="' + esc(p.v[0]) + '">' +
+        '<input type="hidden" id="f-variante" data-role="variant" value="' + esc(p.v[INI]) + '">' +
+        '<p class="ficha__agotado" id="nota-agotada" hidden>Esta medida está agotada por ahora. ' +
+          "Elige otra o pregúntanos cuándo vuelve.</p>" +
         (p.p && !p.venta ? '<p class="ficha__hint">Cada caja trae ' + p.p.toLocaleString("es-MX") + " piezas.</p>" : "") +
+        (!p.venta ? '<p class="ficha__hint">Pedido mínimo: ' + fmt(MIN_PIEZAS) + " piezas.</p>" : "") +
       "</div>" +
 
       bloqueCompra +
@@ -328,26 +367,34 @@
       "</ul>" +
     "</div>";
 
-  /* ======================= precio y existencias en vivo (venta en línea) =======================
-     Solo corre para las fichas con `venta` (líneas Papel, PET, Kraft). Lee
-     precio/stock de productos.js (los captura el panel de admin) y ajusta el
-     tope de piezas al tamaño elegido. Sin pasarela de pago todavía: "Comprar
-     ahora" abre al agente con la pieza y cantidad ya escritas, para no dejar
-     un botón que no lleve a ningún lado mientras se conecta Openpay. */
+  /* ======================= precio y pedido mínimo (venta en línea) =======================
+     Solo corre para las fichas con `venta`. Lee precio y pedido mínimo de
+     productos.js (los captura el panel de admin). La cantidad arranca en el
+     mínimo de la medida elegida y avanza de caja en caja (o de 1,000 en 1,000
+     si el producto no declara piezas por caja); no hay tope, porque ya no se
+     publican existencias. Sin pasarela de pago todavía: "Comprar ahora" abre
+     al agente con la pieza y la cantidad ya escritas. */
   if (p.venta) (function () {
     var TAM = p.venta.tam;
-    var sel = 0;
+    var PASO = p.p || 1000;
+    var sel = INI;
     var cantEl = document.getElementById("f-cant");
+    var stepper = document.querySelector('[data-role="stepper-venta"]');
     var precioEl = document.getElementById("precio-unidad");
     var skuEl = document.getElementById("sku-actual");
-    var hintEl = document.getElementById("hint-stock");
+    var hintEl = document.getElementById("hint-min");
     var totalEl = document.getElementById("total-compra");
     var btnComprar = document.getElementById("btn-comprar");
-    var btnMas = document.getElementById("btn-mas-unidades");
 
     function money(n) {
       return "$" + n.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
+
+    function minimo() { return (TAM[sel] && TAM[sel].min) || MIN_PIEZAS; }
+
+    /* Lo que se cobra nunca baja del mínimo, aunque el campo tenga un número
+       a medio escribir: el campo se corrige al salir de él (`change`). */
+    function cantidad() { return Math.max(minimo(), parseInt(cantEl.value, 10) || 0); }
 
     /* Si el producto tiene una oferta activa (mismo mecanismo que ya usa el
        resto del sitio, capturado en el panel de admin), el precio por pieza
@@ -370,37 +417,25 @@
     }
 
     function actualizar() {
-      var t = TAM[sel] || { precio: null, stock: 0 };
-      var stock = t.stock || 0;
+      var t = TAM[sel] || { precio: null };
+      var min = minimo();
+      var cant = cantidad();
       precioEl.innerHTML = precioHTML(t);
       skuEl.textContent = t.sku ? "Código: " + t.sku : "";
-
-      var cant = parseInt(cantEl.value, 10) || 1;
-      if (stock > 0 && cant > stock) cant = stock;
-      cantEl.value = stock > 0 ? cant : 1;
-      cantEl.disabled = stock === 0;
+      stepper.dataset.min = min;
+      cantEl.min = min;
 
       var final = precioFinal(t);
       totalEl.textContent = final != null ? "Total: " + money(final * cant) + " MXN" : "";
+      hintEl.textContent = "Pedido mínimo: " + fmt(min) + " piezas.";
 
-      hintEl.textContent = stock === 0
-        ? "Sin existencia por ahora en esta presentación."
-        : "Quedan " + stock.toLocaleString("es-MX") + " piezas disponibles.";
-
-      var sinExistencia = stock === 0 || t.precio == null;
-      btnComprar.disabled = sinExistencia;
-      if (!sinExistencia) {
-        btnComprar.dataset.agente = "Quiero comprar " + cant + " piezas de " + p.nombre +
+      btnComprar.disabled = final == null || agotada(sel);
+      if (agotada(sel)) totalEl.textContent = "";
+      if (final != null && !agotada(sel)) {
+        btnComprar.dataset.agente = "Quiero comprar " + fmt(cant) + " piezas de " + p.nombre +
           " en presentación " + p.v[sel] + " (total " + money(final * cant) + " MXN). ¿Cómo completo el pago?";
       } else {
         delete btnComprar.dataset.agente;
-      }
-
-      var tope = stock > 0 && cant >= stock;
-      btnMas.hidden = !tope;
-      if (tope) {
-        btnMas.dataset.agente = "Necesito más de " + stock + " piezas de " + p.nombre +
-          " en presentación " + p.v[sel] + ". ¿Pueden conseguirme más?";
       }
     }
 
@@ -408,28 +443,48 @@
       var chip = e.target.closest(".vchip");
       if (!chip || chip.dataset.i == null) return;
       sel = parseInt(chip.dataset.i, 10);
+      cantEl.value = cantidad();   /* otra medida puede tener otro mínimo */
       actualizar();
     });
 
-    var stepper = document.querySelector('[data-role="stepper-venta"]');
     stepper.addEventListener("click", function (e) {
       var b = e.target.closest("[data-vstep]"); if (!b) return;
-      var stock = (TAM[sel] || {}).stock || 0;
-      var v = (parseInt(cantEl.value, 10) || 1) + parseInt(b.dataset.vstep, 10);
-      if (v < 1) v = 1;
-      if (stock > 0 && v > stock) v = stock;
-      cantEl.value = v;
+      cantEl.value = Math.max(minimo(), cantidad() + parseInt(b.dataset.vstep, 10) * PASO);
       actualizar();
     });
     cantEl.addEventListener("input", actualizar);
+    cantEl.addEventListener("change", function () { cantEl.value = cantidad(); actualizar(); });
 
     actualizar();
   })();
+
+  /* Medida agotada: se avisa y no se puede añadir ni comprar. Sirve igual
+     para los productos por pieza y los de cotización por caja. */
+  function marcarAgotada(i) {
+    var nota = document.getElementById("nota-agotada");
+    var sin = agotada(i);
+    nota.hidden = !sin;
+    ficha.querySelectorAll('[data-role="add"], #btn-comprar').forEach(function (b) {
+      if (sin) b.disabled = true;
+      else if (b.id !== "btn-comprar") b.disabled = false;
+    });
+  }
+  ficha.addEventListener("click", function (e) {
+    var chip = e.target.closest(".vchip");
+    if (chip && chip.dataset.i != null) marcarAgotada(parseInt(chip.dataset.i, 10));
+  });
+  marcarAgotada(INI);
 
   /* ======================= certificaciones + relacionados ======================= */
   /* Los relacionados son del mismo grupo del catálogo, tal como el catálogo
      los divide: no se arman kits ni combinaciones inventadas. */
   var hermanos = PRODS.filter(function (x) { return x.cat === p.cat && x.id !== p.id; }).slice(0, 4);
+
+  /* Tapas para este vaso: mismo cruce boca/oz que ya usa la tienda
+     (ver TAPAS_POR_VASO en productos.js), no una lista aparte. */
+  var tapasVaso = (TAPAS_POR_VASO[p.id] || [])
+    .map(function (tid) { return PRODS.filter(function (x) { return x.id === tid; })[0]; })
+    .filter(Boolean);
 
   rel.innerHTML =
     '<div class="wrap">' +
@@ -442,6 +497,18 @@
                 (s.img ? '<img src="' + s.img + '" alt="" height="54" loading="lazy">' :
                          '<svg class="ico" aria-hidden="true"><use href="#' + s.ico + '"></use></svg>') +
                 "<div><b>" + s.t + "</b><span>" + esc(s.c) + "</span></div></div>";
+            }).join("") +
+          "</div>" +
+        "</div>" : "") +
+
+      (tapasVaso.length ?
+        '<div class="tapas-rel rv" style="margin-top:56px">' +
+          '<p class="tapas-rel__label">Tapas para este vaso</p>' +
+          '<div class="tapas-rel__list">' +
+            tapasVaso.map(function (t) {
+              return '<a class="tapas-rel__chip" href="producto.html?id=' + t.id + '">' +
+                '<img src="' + src(t.img) + '" alt="" loading="lazy">' +
+                "<span>" + esc(t.nombre) + "</span></a>";
             }).join("") +
           "</div>" +
         "</div>" : "") +

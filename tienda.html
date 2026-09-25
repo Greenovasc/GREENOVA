@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tienda GreeNova SC | Catálogo de empaque biodegradable y compostable</title>
-<meta name="description" content="Catálogo completo de GreeNova SC: vasos de papel, vasos PET y PLA, tapas, contenedores kraft, bagazo, paja de trigo y accesorios. Arma tu lista y pide una sola cotización.">
+<meta name="description" content="Catálogo completo de GreeNova SC: vasos de papel, vasos PET y PLA, tapas, contenedores kraft, bagazo, paja de trigo y accesorios. Arma tu lista y pide tu cotización.">
 <meta name="theme-color" content="#224539">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="alternate icon" href="/favicon.ico" sizes="32x32">
@@ -17,7 +17,7 @@
 <meta property="og:site_name" content="GreeNova SC">
 <meta property="og:locale" content="es_MX">
 <meta property="og:title" content="Tienda GreeNova SC | Catálogo 2026">
-<meta property="og:description" content="Todo el catálogo de empaque compostable en una pantalla. Elige medida, marca cajas y pide una sola cotización.">
+<meta property="og:description" content="Todo el catálogo de empaque compostable en una pantalla. Elige medida, marca cajas y pide tu cotización.">
 <meta property="og:image" content="https://www.greenovasc.com.mx/assets/prod/life-greenova.webp">
 <meta property="og:image:width" content="2112">
 <meta property="og:image:height" content="1407">
@@ -99,12 +99,12 @@
 <main id="main">
 
   <!-- ---------------- encabezado de tienda ---------------- -->
-  <section class="shop-head">
+  <section class="shop-head shop-head--arte">
     <div class="wrap">
       <p class="eyebrow rv" data-d="0">Catálogo 2026</p>
       <h1 class="shop-head__title rv" data-d="1">
         <span class="line">Arma tu pedido</span>
-        <span class="line">y pide <em>una sola</em> cotización.</span>
+        <span class="line">y pide tu <em>cotización</em>.</span>
       </h1>
       <p class="shop-head__sub rv" data-d="2">
         Todo el catálogo en una pantalla. Elige medida, marca cuántas cajas necesitas y
@@ -152,6 +152,11 @@
         <div class="chips chips--stack" id="cats" role="group" aria-label="Filtrar por categoría"></div>
       </div>
 
+      <div class="side__block" id="bloque-cap" hidden>
+        <h2 class="side__h">Capacidad</h2>
+        <div class="chips chips--sm chips--wrap" id="caps" role="group" aria-label="Filtrar por capacidad en onzas"></div>
+      </div>
+
       <div class="side__block">
         <h2 class="side__h">Material</h2>
         <div class="chips chips--sm chips--wrap" id="mats" role="group" aria-label="Filtrar por material"></div>
@@ -195,6 +200,8 @@
           <svg class="ico sort__ico" aria-hidden="true"><use href="#i-caret-down"></use></svg>
         </label>
       </div>
+
+      <div class="tapas-rel" id="tapas-rel" hidden></div>
 
       <h2 class="sr-only">Catálogo de productos</h2>
       <div class="grid-prod grid-prod--cols" id="grid"></div>

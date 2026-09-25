@@ -52,7 +52,7 @@
   --r-pill:  999px;
 
   --ease: cubic-bezier(.16, 1, .3, 1);
-  --nav-h: 68px;
+  --nav-h: 76px;
 
   --font-display: "Outfit", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-body: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -187,7 +187,7 @@ p { margin: 0; }
 }
 .nav[data-stuck="true"] { border-bottom-color: var(--line); }
 .nav__inner { display: flex; align-items: center; gap: 1.5rem; width: 100%; }
-.nav__logo img { height: 30px; width: auto; }
+.nav__logo img { height: 40px; width: auto; }
 .nav__logo .logo--light { display: none; }
 .nav__links { display: flex; align-items: center; gap: 1.75rem; margin-left: auto; }
 .nav__links a:not(.btn) {
@@ -718,6 +718,32 @@ p { margin: 0; }
 }
 .shop-stats span { font-size: .88rem; color: var(--ink-2); }
 
+/* ---------- ilustración del encabezado de la tienda ----------
+   Es la referencia que mandó Gabriel (render de IA, 2026-09-22) con el texto
+   pintado borrado; el texto real va encima. Las piezas vienen dentro de la
+   imagen, así que el encuadre se cuida por ancho:
+   - < 1000px: solo se ve el lado izquierdo (acuarela sin producto), para
+     que nada quede detrás del texto.
+   - >= 1000px: imagen completa; el alto sigue su proporción (1764x642)
+     para que no se recorten la estrella de arriba ni las tapas de abajo.
+   - 1000-1279px: la imagen se corre a la derecha (20%) para que la tapa
+     negra no quede detrás de "MX envío nacional"; a cambio se recorta
+     parte del vaso PET en la orilla. */
+.shop-head--arte {
+  background: var(--bg) url("assets/tienda-encabezado.webp") left center / cover no-repeat;
+}
+.shop-head--arte::before { display: none; }
+@media (min-width: 1000px) {
+  .shop-head--arte {
+    display: flex; flex-direction: column; justify-content: center;
+    min-height: min(100vw / 2.75, 700px);
+    background-position: 20% center;
+  }
+}
+@media (min-width: 1280px) {
+  .shop-head--arte { background-position: center; }
+}
+
 /* ---------- barra de filtros ---------- */
 .toolbar {
   position: sticky; top: var(--nav-h); z-index: 30;
@@ -791,6 +817,27 @@ p { margin: 0; }
 
 .section--tight { padding-top: 26px; }
 .result-line { margin: 0 0 20px; font-size: .9rem; color: var(--ink-3); }
+
+/* ---------- tapas relacionadas (cross-sell por categoría de vaso) ---------- */
+.tapas-rel {
+  display: flex; flex-direction: column; gap: 10px;
+  margin: 0 0 22px; padding: 14px 16px;
+  background: var(--tint-sage); border-radius: var(--r-card);
+}
+.tapas-rel__label { margin: 0; font-size: .82rem; font-weight: 600; color: var(--ink-2); }
+.tapas-rel__list { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+.tapas-rel__list::-webkit-scrollbar { display: none; }
+.tapas-rel__chip {
+  display: inline-flex; align-items: center; gap: 8px; flex: none;
+  padding: 6px 14px 6px 6px; border-radius: var(--r-pill);
+  background: var(--surface); border: 1px solid var(--line);
+  font-size: .85rem; font-weight: 500; color: inherit; white-space: nowrap;
+}
+.tapas-rel__chip:hover { border-color: var(--green); }
+.tapas-rel__chip img {
+  width: 32px; height: 32px; border-radius: 999px; object-fit: cover;
+  flex: none; background: var(--surface-2);
+}
 
 /* ---------- rejilla de producto ---------- */
 .grid-prod {
@@ -1217,14 +1264,25 @@ body[data-locked="true"] { overflow: hidden; }
 
 .shop-layout {
   display: grid; gap: clamp(20px, 3vw, 40px);
-  grid-template-columns: 236px minmax(0, 1fr);
+  grid-template-columns: 272px minmax(0, 1fr);
   align-items: start;
   padding-top: 8px; padding-bottom: 72px;
 }
 
 .side {
   position: sticky; top: calc(var(--nav-h) + 16px);
-  display: grid; gap: 22px;
+  /* Con los filtros de Capacidad y Material ya no cabe entero en pantallas
+     bajas: sin el tope de alto, un panel más alto que el viewport rompe el
+     "sticky" (nunca se despega del todo) y da la sensación de que baja con
+     la página. Con max-height + su propio scroll, el panel se queda fijo
+     en su lugar y el que se desplaza es su contenido, no la barra. */
+  max-height: calc(100vh - var(--nav-h) - 32px);
+  overflow-y: auto;
+  /* minmax(0, 1fr): sin esto la columna crece al ancho natural del <input>
+     del buscador (Ofertas) y, con el overflow de arriba, todo se corta por
+     la derecha. */
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  gap: 22px; align-content: start;
   padding: 20px; border: 1px solid var(--line);
   border-radius: var(--r-card); background: var(--surface);
 }
@@ -1295,7 +1353,7 @@ body[data-locked="true"] { overflow: hidden; }
 /* ---------- responsive ---------- */
 @media (max-width: 900px) {
   .shop-layout { grid-template-columns: 1fr; }
-  .side { position: static; }
+  .side { position: static; max-height: none; overflow-y: visible; }
   .filter-btn--side { display: inline-flex; align-self: start; margin-bottom: 4px; }
   .side[hidden] { display: none; }
   .grid-prod--cols { grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); }
@@ -1687,9 +1745,25 @@ body[data-locked="true"] { overflow: hidden; }
    FICHA DE PRODUCTO
    ========================================================================== */
 
+/* Fila de arriba de la ficha: botón "Volver" + migas. */
+.ficha-top {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+  padding-top: calc(var(--nav-h) + 26px); padding-bottom: 22px;
+}
+/* Discreto pero visible (pedido de Gabriel, 2026-09-24): píldora chica con
+   flecha, del mismo peso visual que las migas. */
+.volver {
+  display: inline-flex; align-items: center; gap: 6px; flex: none;
+  padding: 6px 12px 6px 9px; border: 1px solid var(--line);
+  border-radius: var(--r-pill); background: var(--surface);
+  font-size: .82rem; font-weight: 500; color: var(--ink-2);
+  transition: border-color .2s, color .2s;
+}
+.volver:hover { border-color: var(--green); color: var(--green); }
+.volver .ico { width: 14px; height: 14px; transform: scaleX(-1); }
+
 .migas {
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
-  padding-top: calc(var(--nav-h) + 26px); padding-bottom: 22px;
   font-size: .82rem; color: var(--ink-3);
 }
 .migas a { color: var(--ink-2); }
@@ -1774,6 +1848,10 @@ body[data-locked="true"] { overflow: hidden; }
 .ficha__sku { margin: 5px 2px 0; font-size: .78rem; color: var(--ink-3); }
 
 .stepper--cant { width: 100%; max-width: 160px; }
+/* Cantidades por pieza (10,000 y más): el campo de 38px era para cajas. */
+.stepper--pz input { width: 64px; }
+.stepper--pz.stepper--sm input { width: 56px; }
+.stepper--cant.stepper--pz { max-width: 190px; }
 
 .ficha__cta { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
 .ficha__cta .btn--block { margin-bottom: 0; }
@@ -1825,7 +1903,7 @@ a.pcard__media { cursor: pointer; }
 @media (max-width: 900px) {
   .ficha { grid-template-columns: 1fr; }
   .ficha__media { position: static; }
-  .migas { padding-top: calc(var(--nav-h) + 16px); }
+  .ficha-top { padding-top: calc(var(--nav-h) + 16px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .ficha__foto:hover img { scale: none !important; }
@@ -1935,6 +2013,10 @@ a.pcard__media { cursor: pointer; }
 /* ---------- chips de presentación en la ficha (patrón de e-commerce) ---------- */
 .ficha__variante { font-weight: 600; color: var(--ink); }
 .vchips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }
+/* Medida agotada (la marca el panel, una por una): tachada y con aviso. */
+.vchip--agotada { opacity: .6; text-decoration: line-through; }
+.vchip--agotada small { text-decoration: none; display: inline-block; margin-left: 4px; font-size: .72em; color: #8a2222; font-weight: 600; }
+.ficha__agotado { margin: 10px 0 0; font-size: .85rem; color: #8a2222; }
 .vchip {
   padding: 9px 15px; cursor: pointer;
   border: 1px solid var(--line-strong); border-radius: var(--r-input);
@@ -2008,12 +2090,16 @@ a.pcard__media { cursor: pointer; }
 
 .hero-foto__copy { position: relative; z-index: 2; }
 
+/* Lleva el eslogan "El futuro se sirve en GreeNova": más grande y en blanco
+   pleno para que se lea sobre la foto (Gabriel, 2026-09-24). */
 .hero-foto__eyebrow {
   margin: 0 0 clamp(1rem, 2vw, 1.6rem);
   font-family: var(--font-body);
-  font-size: .74rem; font-weight: 500;
-  letter-spacing: .26em; text-transform: uppercase;
-  color: rgba(244, 248, 242, .78);
+  font-size: clamp(.9rem, 1.35vw, 1.15rem); font-weight: 600;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: #fdfefc;
+  text-shadow: 0 1px 14px rgba(10, 22, 17, .55);
+  text-wrap: balance; /* en celular parte en 2 líneas parejas */
 }
 
 .hero-foto__title {

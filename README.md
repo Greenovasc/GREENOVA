@@ -180,8 +180,11 @@ Configuración del **Web Service**:
 | Start Command | `uvicorn main:app --host 0.0.0.0 --port $PORT` |
 | Root Directory | *(vacío)* |
 
-Variables de entorno: `OPENAI_API_KEY` y, opcional, `OPENAI_MODEL`. El `PORT` lo
-pone Render solo.
+Variables de entorno: `OPENAI_API_KEY` y, opcional, `OPENAI_MODEL`, más las del
+panel (`ADMIN_PASSWORD` y `GITHUB_TOKEN`, ver "Panel de catálogo"). El `PORT` lo
+pone Render solo. La rama que despliega Render tiene que ser la misma a la que
+escribe el panel (`GITHUB_BRANCH`, por omisión `main`): así cada guardado del
+panel es un commit que dispara el redeploy.
 
 El tope diario de 300 preguntas vive en memoria en esta versión, protegido con
 un candado porque uvicorn atiende varias peticiones a la vez; si el servicio se
@@ -228,9 +231,14 @@ pasos no cuestan nada y cubren la mayoría de las preguntas reales.
 
 ### Panel de catálogo (`admin.html`)
 
-Para editar productos, precios, existencias y ofertas sin tocar código. Vive en
-`/admin.html` del servicio de Render y **solo funciona ahí**, porque necesita los
-endpoints de `main.py`.
+Para editar productos, precios por medida, pedido mínimo y ofertas sin tocar
+código. Vive en `/admin.html` y funciona donde corra `main.py` (Render, o tu
+computadora con uvicorn); en Hostinger compartido no, porque no ejecuta Python.
+
+Cada producto que se vende en línea (`venta`) trae, por cada medida, el precio
+**por pieza**, el **pedido mínimo** en piezas (10,000 por omisión) y el código.
+Es lo primero de cada tarjeta. La búsqueda también encuentra medidas y códigos
+("4 oz", "63 mm", "VASO-PAPEL").
 
 Cómo guarda: el panel manda el catálogo editado al servidor, el servidor **genera
 `productos.js`** (no lo genera el navegador: así lo que se commitea siempre tiene
@@ -241,21 +249,67 @@ Variables de entorno que necesita, todas en Render:
 
 | Variable | Para qué |
 |---|---|
-| `ADMIN_PASSWORD` | la contraseña del panel |
+| `ADMIN_USUARIOS` | un administrador por línea: `usuario:pbkdf2_sha256$…`. La línea se genera en el panel local (botón **Administradores para Render**) o con `.venv/bin/python main.py usuario NOMBRE`; ninguna de las dos muestra ni guarda la contraseña, solo su huella. |
+| `SESION_SECRETO` | texto largo al azar que firma las sesiones (en Render, botón **Generate**). |
 | `GITHUB_TOKEN` | token con permiso de escritura sobre el repo |
-| `GITHUB_REPO` | opcional, por omisión `agenciainam00-bot/GreeNova` |
-| `GITHUB_BRANCH` | opcional, por omisión `main` |
+| `GITHUB_REPO` | opcional; por omisión el repo que despliega Render (`RENDER_GIT_REPO_SLUG`) o `Greenovasc/GREENOVA` |
+| `GITHUB_BRANCH` | opcional; por omisión la rama que despliega Render (`RENDER_GIT_BRANCH`) o `main` |
+| `ADMIN_PASSWORD` | forma vieja, una sola contraseña (usuario `admin`). Solo se usa si no hay `ADMIN_USUARIOS`. |
+| `MODO_LOCAL` | solo en tu computadora: `1` guarda `productos.js` en el disco en vez de GitHub. **No** se pone en Render (ahí el disco se borra en cada deploy). |
 
-El acceso no usa cookies ni base de datos: el servidor devuelve un token firmado
-con la propia contraseña que caduca a las 8 horas y vive en `sessionStorage`. Si
-cambias `ADMIN_PASSWORD`, todas las sesiones abiertas mueren.
+**Seguridad del panel** (revisada el 2026-09-24, con pruebas de ataque en
+local):
+
+- Cada administrador entra con su usuario y contraseña; cada guardado es un
+  commit que dice quién lo hizo, y los registros de Render anotan cada entrada
+  y cada intento fallido con su IP.
+- Contraseñas guardadas solo como PBKDF2-SHA256 con sal; el usuario que no
+  existe tarda lo mismo que la contraseña equivocada (no se pueden adivinar
+  usuarios).
+- 5 fallos desde una IP o 30 en total en 15 minutos bloquean el acceso 15
+  minutos; cada fallo además tarda casi un segundo.
+- Sesión firmada (HMAC) de 8 horas; se invalida sola si cambia la contraseña
+  de ese usuario o `SESION_SECRETO`. No hay cookies, así que no hay CSRF. El
+  panel no abre con un token guardado si el servidor no lo confirma.
+- Lo que se guarda se limpia en el servidor: sin `< > " \``, ids, imágenes y
+  códigos solo con letras, números, punto y guion; cuerpo máximo de 2 MB.
+- `admin.html`, `editor.html` y `/api/admin/*` salen con CSP estricta,
+  `X-Frame-Options: DENY` y `noindex`; todo el sitio con `nosniff` y HSTS.
+- El servidor solo entrega archivos del sitio: nada que empiece con punto, ni
+  `.py`, `.md`, `.command`, ni `agente-rag/`, `php/`, `api/`.
+- En Render no se puede crear ni cambiar contraseñas desde el panel: se cambian
+  en Environment. Para dar de baja a alguien, se borra su línea.
+
+El `GITHUB_TOKEN` se saca en GitHub → Settings → Developer settings → Personal
+access tokens → *Fine-grained*, con acceso solo al repo `Greenovasc/GREENOVA` y
+permiso **Contents: Read and write**. Se pega directo en Render, nunca en el
+código ni en un chat.
+
+Probarlo en tu computadora: doble clic en `abrir-panel.command` (la primera vez
+instala lo necesario en `.venv/`). Prende el panel con `MODO_LOCAL=1` y lo abre
+en `http://localhost:8000/admin.html`. Ahí mismo:
+
+- la primera vez pide **crear** la contraseña (se guarda solo su hash en
+  `.clave-panel.json`, fuera de git y bloqueado por HTTP);
+- el botón **Cambiar contraseña** la cambia y cierra las sesiones abiertas;
+- **Guardar cambios** reescribe `productos.js` de esa carpeta, y
+  `http://localhost:8000/tienda.html` ya muestra el cambio.
+
+En Render nada de esto aplica: los administradores son `ADMIN_USUARIOS` y se
+cambian en Environment; crear/cambiar/generar desde el panel responden 403.
 
 Al guardar se manda el `sha` del archivo actual, así que si alguien más cambió
 `productos.js` mientras tenías el panel abierto, GitHub rechaza el guardado en
 vez de pisar ese cambio.
 
 **Ojo con `productos.js`**: desde que lo escribe el panel, editarlo a mano se
-pierde en el siguiente guardado.
+pierde en el siguiente guardado. El servidor conserva todo lo que usa el sitio
+(incluidos `fotoPropia`, `servicio`, `placa` y `TAPAS_POR_VASO`); si agregas un
+campo nuevo a los productos, agrégalo también en `render_catalogo()` de
+`main.py` o el panel lo va a borrar al guardar.
+
+`productos.js` se sirve con `Cache-Control: no-cache` para que un precio nuevo
+se vea en cuanto termine el redeploy, no una hora después.
 
 ### Editor visual (`editor.html`)
 

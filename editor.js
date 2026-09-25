@@ -39,15 +39,17 @@
 
     fetch("/api/admin/entrar", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clave: clave })
+      body: JSON.stringify({ usuario: $("usuario").value.trim().toLowerCase(), clave: clave })
     }).then(function (r) {
       return r.json().then(function (j) { return { ok: r.ok, j: j }; });
     }).then(function (res) {
       var av = $("aviso-entrar");
       if (!res.ok) {
         av.textContent = res.j.error === "panel_sin_configurar"
-          ? "El panel no tiene contraseña configurada en el servidor."
-          : "Contraseña incorrecta.";
+          ? "El panel no tiene administradores configurados en el servidor."
+          : res.j.error === "demasiados_intentos"
+            ? "Demasiados intentos fallidos. Por seguridad el acceso queda bloqueado 15 minutos."
+            : "Usuario o contraseña incorrectos.";
         av.hidden = false;
         return;
       }
@@ -74,7 +76,9 @@
         categorias: clonar(marco.GREENOVA.CATEGORIAS),
         materiales: clonar(marco.GREENOVA.MATERIALES),
         productos: clonar(marco.GREENOVA.PRODUCTOS),
-        promos: clonar(marco.GREENOVA.PROMOS || {})
+        promos: clonar(marco.GREENOVA.PROMOS || {}),
+        /* viaja sin editarse: el servidor reescribe productos.js completo */
+        tapasPorVaso: clonar(marco.GREENOVA.TAPAS_POR_VASO || {})
       };
       original = clonar(datos);
     }
@@ -138,7 +142,7 @@
   /* ============================ mapa de calor ============================ */
 
   function traerPulso() {
-    fetch("/api/admin/pulso?token=" + encodeURIComponent(token()))
+    fetch("/api/admin/pulso", { headers: { Authorization: "Bearer " + token() } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (j) {
         if (!j) return;
@@ -365,5 +369,14 @@
     marcoEl.addEventListener("load", alCargarTienda);
   }
 
-  if (token()) abrir();
+  /* Igual que el panel: pide usuario si el servidor lo pide, y solo abre si
+     el servidor confirma que la sesión de esta pestaña sigue valiendo. */
+  fetch("/api/admin/estado", { headers: { Authorization: "Bearer " + token() } })
+    .then(function (r) { return r.json(); })
+    .then(function (e) {
+      $("usuario").hidden = !e.pide_usuario;
+      $("usuario").required = !!e.pide_usuario;
+      if (e.sesion) abrir();
+      else try { sessionStorage.removeItem(LLAVE_SESION); } catch (err) {}
+    }).catch(function () { /* sin servidor: el formulario lo avisa al entrar */ });
 })();

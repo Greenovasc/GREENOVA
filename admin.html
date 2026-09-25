@@ -37,7 +37,12 @@
   .adm__buscar { flex: 1 1 260px; }
   .adm__filtros select { width: auto; }
 
+  /* styles.css usa .ficha para la ficha de producto (rejilla de 2 columnas).
+     Aquí es una tarjeta: sin display:block cada producto salía partido en dos
+     columnas, y sin el [hidden] de abajo el acceso nunca se ocultaba. */
+  [hidden] { display: none !important; }
   .ficha {
+    display: block;
     border: 1px solid var(--line); border-radius: var(--r-tile);
     background: var(--surface); padding: 1rem; margin-bottom: .75rem;
   }
@@ -55,14 +60,29 @@
     display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .7rem;
     align-items: end;
   }
-  .ficha__venta { margin-top: .8rem; padding-top: .8rem; border-top: 1px dashed var(--line); }
-  .ficha__venta > label { max-width: 320px; margin-bottom: .7rem; }
+  /* Precios por medida: es lo que más se toca, va arriba y resaltado. */
+  .ficha__venta { margin-top: .8rem; padding: .8rem; border-radius: 10px; background: var(--tint-sage); }
+  .ficha__venta > label { max-width: 360px; margin-bottom: .7rem; }
   .ficha__tam { display: flex; flex-direction: column; gap: .5rem; }
   .ficha__tamfila {
-    display: grid; grid-template-columns: minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);
+    display: grid; grid-template-columns: minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) auto;
     gap: .5rem; align-items: end; padding: .5rem; border-radius: 8px; background: var(--bg);
   }
-  .ficha__tametq { font-size: .8125rem; color: var(--ink-2); align-self: center; }
+  .ficha__tametq { font-size: .875rem; font-weight: 600; color: var(--ink); align-self: center; }
+  .ficha__tamfila--simple { grid-template-columns: minmax(0,1fr) auto; }
+  .ficha__tamfila [data-med="v"] { font-weight: 600; }
+  .ficha__agotada { align-self: end; padding-bottom: 9px; white-space: nowrap; }
+  /* Medida agotada: se atenúa y el "Agotado" se pinta en rojo. */
+  .ficha__tamfila--agotada { background: #fdf1f1; }
+  .ficha__tamfila--agotada input:not([type="checkbox"]) { opacity: .55; }
+  .ficha__tamfila--agotada .ficha__agotada { color: #8a2222; font-weight: 600; }
+  .ficha__agregar { margin-top: .6rem; }
+  @media (max-width: 640px) {
+    .ficha__fila1 { grid-template-columns: 1fr 1fr; }
+    .ficha__tamfila { grid-template-columns: 1fr 1fr; }
+    .ficha__tametq, .ficha__tamfila > label:first-child { grid-column: 1 / -1; }
+  }
+  .adm__ayuda { font-size: .875rem; color: var(--ink-2); margin: 0 0 .4rem; }
   .campo { font-size: .6875rem; font-weight: 600; letter-spacing: .08em;
            text-transform: uppercase; color: var(--ink-3); display: block; margin-bottom: .3rem; }
   .marca { display: flex; align-items: center; gap: .45rem; font-size: .875rem; }
@@ -82,6 +102,12 @@
   .entrar h1 { font-size: 1.4rem; margin-bottom: .4rem; }
   .entrar p { color: var(--ink-2); font-size: .9375rem; margin-bottom: 1.2rem; }
   .entrar label { display: block; margin-bottom: .9rem; }
+  .cambio { max-width: 420px; margin-top: 1rem; }
+  .cambio h2 { font-size: 1.1rem; margin: 0 0 .8rem; }
+  .cambio label { display: block; margin-bottom: .8rem; }
+  .cambio textarea { font: .8rem/1.4 ui-monospace, monospace; word-break: break-all; }
+  .cambio input { font: inherit; width: 100%; padding: 10px 12px; border-radius: 10px;
+                  border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
   .entrar input { font: inherit; width: 100%; padding: 10px 12px; border-radius: 10px;
                   border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
 </style>
@@ -90,15 +116,25 @@
 
 <!-- ---------------- pantalla de acceso ---------------- -->
 <section class="entrar ficha" id="entrar">
-  <h1>Panel de catálogo</h1>
-  <p>Aquí se editan productos, precios, existencias y ofertas de GreeNova SC.</p>
+  <h1 id="entrar-titulo">Panel de catálogo</h1>
+  <p id="entrar-texto">Aquí se editan productos, precios por medida, pedido mínimo y ofertas de GreeNova SC.</p>
   <form id="form-entrar">
+    <!-- Solo en Render: cada administrador entra con su propio usuario. -->
+    <label id="usuario-wrap" hidden>
+      <span class="campo">Usuario</span>
+      <input type="text" id="usuario" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="30">
+    </label>
     <label>
-      <span class="campo">Contraseña</span>
+      <span class="campo" id="clave-etq">Contraseña</span>
       <input type="password" id="clave" autocomplete="current-password" required>
     </label>
+    <!-- Solo la primera vez en tu computadora: crear la contraseña. -->
+    <label id="repite-wrap" hidden>
+      <span class="campo">Repítela</span>
+      <input type="password" id="clave2" autocomplete="new-password">
+    </label>
     <p class="adm__aviso" id="aviso-entrar" hidden></p>
-    <button class="btn btn--primary" type="submit"><span class="btn__label">Entrar</span></button>
+    <button class="btn btn--primary" type="submit"><span class="btn__label" id="entrar-btn">Entrar</span></button>
   </form>
 </section>
 
@@ -108,8 +144,15 @@
     <div>
       <h1>Catálogo GreeNova</h1>
       <p class="adm__sub" id="resumen">—</p>
+      <p class="adm__sub" id="quien"></p>
     </div>
     <div class="adm__acciones">
+      <button class="btn btn--ghost btn--sm" type="button" id="btn-clave" hidden>
+        <span class="btn__label">Cambiar contraseña</span>
+      </button>
+      <button class="btn btn--ghost btn--sm" type="button" id="btn-admins" hidden>
+        <span class="btn__label">Administradores para Render</span>
+      </button>
       <button class="btn btn--ghost btn--sm" type="button" id="btn-respaldo">
         <span class="btn__label">Descargar respaldo</span>
       </button>
@@ -119,13 +162,64 @@
       <button class="btn btn--primary btn--sm" type="button" id="btn-guardar" disabled>
         <span class="btn__label">Guardar cambios</span>
       </button>
+      <button class="btn btn--ghost btn--sm" type="button" id="btn-salir">
+        <span class="btn__label">Salir</span>
+      </button>
     </div>
   </header>
 
   <p class="adm__aviso" id="aviso" hidden></p>
 
+  <!-- Cambiar contraseña: solo en tu computadora. En Render se cambia en
+       Environment -> ADMIN_PASSWORD. -->
+  <section class="ficha cambio" id="cambio" hidden>
+    <h2>Cambiar contraseña</h2>
+    <form id="form-cambio">
+      <label><span class="campo">Contraseña actual</span>
+        <input type="password" id="clave-actual" autocomplete="current-password" required></label>
+      <label><span class="campo">Contraseña nueva (mínimo 8 letras o números)</span>
+        <input type="password" id="clave-nueva" autocomplete="new-password" required></label>
+      <label><span class="campo">Repite la nueva</span>
+        <input type="password" id="clave-nueva2" autocomplete="new-password" required></label>
+      <p class="adm__aviso" id="aviso-cambio" hidden></p>
+      <div class="adm__acciones">
+        <button class="btn btn--primary btn--sm" type="submit"><span class="btn__label">Guardar contraseña</span></button>
+        <button class="btn btn--ghost btn--sm" type="button" id="cambio-cancelar"><span class="btn__label">Cancelar</span></button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Solo en tu computadora: arma la línea de cada administrador para Render.
+       La contraseña no se guarda ni se envía a ningún lado más que a tu propio
+       panel local; lo que sale es su huella (hash), que es lo que va en Render. -->
+  <section class="ficha cambio" id="admins" hidden>
+    <h2>Administradores para Render</h2>
+    <p class="adm__sub">Escribe el usuario y la contraseña de cada persona (mínimo 12 caracteres).
+      Copia la línea que sale y pégala en Render → Environment → <b>ADMIN_USUARIOS</b>,
+      una línea por persona. La línea no contiene la contraseña.</p>
+    <form id="form-admins">
+      <label><span class="campo">Usuario (minúsculas, sin espacios)</span>
+        <input type="text" id="adm-usuario" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="30" required></label>
+      <label><span class="campo">Contraseña (mínimo 12)</span>
+        <input type="password" id="adm-clave" autocomplete="new-password" required></label>
+      <label><span class="campo">Repítela</span>
+        <input type="password" id="adm-clave2" autocomplete="new-password" required></label>
+      <p class="adm__aviso" id="aviso-admins" hidden></p>
+      <label id="adm-linea-wrap" hidden><span class="campo">Línea para Render</span>
+        <textarea id="adm-linea" readonly rows="3"></textarea></label>
+      <div class="adm__acciones">
+        <button class="btn btn--primary btn--sm" type="submit"><span class="btn__label">Generar línea</span></button>
+        <button class="btn btn--ghost btn--sm" type="button" id="admins-copiar" hidden><span class="btn__label">Copiar</span></button>
+        <button class="btn btn--ghost btn--sm" type="button" id="admins-cerrar"><span class="btn__label">Cerrar</span></button>
+      </div>
+    </form>
+  </section>
+
+  <p class="adm__ayuda">Para cambiar un precio: busca el producto o la medida (por ejemplo
+    <b>vaso de papel blanco</b> o <b>4 oz</b>), escribe el nuevo precio por pieza en esa medida
+    y pulsa <b>Guardar cambios</b>.</p>
   <div class="adm__filtros">
-    <div class="adm__buscar"><input type="text" id="buscar" placeholder="Buscar por nombre, id o descripción…"></div>
+    <div class="adm__buscar"><input type="text" id="buscar" placeholder="Buscar por nombre, medida (4 oz, 63 mm) o código…"></div>
     <select id="filtro-cat"><option value="">Todas las categorías</option></select>
     <select id="filtro-estado">
       <option value="">Todos</option>
@@ -141,6 +235,7 @@
 </main>
 
 <script src="productos.js"></script>
-<script src="admin.js"></script>
+<!-- ?v= obliga al navegador a bajar la versión nueva aunque tenga la vieja guardada -->
+<script src="admin.js?v=2026-09-24c"></script>
 </body>
 </html>

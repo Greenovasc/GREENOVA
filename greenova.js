@@ -130,6 +130,10 @@
     megaBtn.addEventListener("click", function () {
       setMega(mega.dataset.open !== "true");
     });
+    /* doble clic en "Productos" = atajo a la tienda completa (pedido de Gabriel) */
+    megaBtn.addEventListener("dblclick", function () {
+      window.location.href = "tienda.html";
+    });
 
     /* hover solo donde hay cursor de verdad y hay espacio para el panel */
     function hoverActivo() { return puntero.matches && !angosto.matches; }

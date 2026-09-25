@@ -88,6 +88,15 @@
     return pregunta + extra;
   }
 
+  /* Pedido mínimo en piezas: el de cada medida (venta.tam[i].min) o 10,000,
+     que es el mínimo general que fijó Gabriel el 2026-09-24. */
+  function minimoTexto(p) {
+    var mins = p.venta ? p.venta.tam.map(function (t) { return t.min || 10000; }) : [10000];
+    var menor = Math.min.apply(null, mins);
+    var fmt = menor.toLocaleString("es-MX") + " piezas";
+    return mins.every(function (m) { return m === menor; }) ? fmt : "desde " + fmt + " según la medida";
+  }
+
   /* Cada documento: título, cuerpo, y un enlace opcional. */
   var DOCS = [];
 
@@ -100,7 +109,8 @@
       titulo: p.nombre,
       cuerpo: p.desc + " Categoría: " + cat + ". Material: " + mats + "." +
               (p.p ? " Caja de " + p.p.toLocaleString("es-MX") + " piezas." : "") +
-              " Medidas disponibles: " + p.v.join("; ") + ".",
+              " Medidas disponibles: " + p.v.join("; ") + "." +
+              " Pedido mínimo: " + minimoTexto(p) + ".",
       enlace: "tienda.html?cat=" + p.cat,
       prod: p
     });
@@ -166,7 +176,8 @@
       guardado.forEach(function (l) {
         if (!l || !l.id || !l.qty) return;
         var p = PRODS.filter(function (x) { return x.id === l.id; })[0];
-        if (p) lineas.push({ nombre: p.nombre, v: l.v || "", qty: l.qty });
+        /* pz: los productos con `venta` se piden en piezas, no en cajas */
+        if (p) lineas.push({ nombre: p.nombre, v: l.v || "", qty: l.qty, pz: !!p.venta });
       });
     } catch (e) { /* modo privado, o dato viejo que ya no parsea */ }
     return lineas;
@@ -174,8 +185,10 @@
 
   function carritoTexto(lineas) {
     return lineas.map(function (l) {
-      return l.qty + (l.qty === 1 ? " caja de " : " cajas de ") +
-             l.nombre.toLowerCase() + (l.v ? " (" + l.v + ")" : "");
+      var cant = l.pz
+        ? l.qty.toLocaleString("es-MX") + (l.qty === 1 ? " pieza de " : " piezas de ")
+        : l.qty + (l.qty === 1 ? " caja de " : " cajas de ");
+      return cant + l.nombre.toLowerCase() + (l.v ? " (" + l.v + ")" : "");
     }).join("; ");
   }
 
@@ -297,6 +310,7 @@
     var partes = [p.nombre + ". " + p.desc];
     partes.push("Medidas: " + p.v.join(" · ") + ".");
     if (p.p) partes.push("Caja de " + p.p.toLocaleString("es-MX") + " piezas.");
+    partes.push("Pedido mínimo: " + minimoTexto(p) + ".");
     return {
       texto: partes.join(" "),
       fuente: "Catálogo",
