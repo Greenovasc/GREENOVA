@@ -384,12 +384,18 @@
     } catch (e) { /* modo privado */ }
   }
 
-  /* ---------- ventana de bienvenida (registro) ----------
+  /* ---------- ventana de registro ----------
      Como la de Life, con la marca GreeNova. Pide nombre y, al menos, correo o
      WhatsApp: sin ninguno de los dos no deja pasar, y un correo sin @ tampoco.
-     Sale una vez a los 8 s. Si la cierran no vuelve en 14 días; si se
-     registran, nunca más. `?bienvenida=1` la abre al momento para revisarla.
-     Los datos van a /api/suscribir (main.py) y se ven en el panel. */
+     Sale en dos momentos (Gabriel, 2026-09-26):
+     1. Al entrar al sitio: una vez por visita, en la primera página. Quien ya
+        se registró no la vuelve a ver.
+     2. Antes de mandar el pedido o comprar: todo lo marcado con
+        `data-requiere-registro` (el botón "Enviar mi pedido", el formulario
+        del pedido, "Comprar ahora"; y el paso de paquetería y pago cuando
+        exista) no deja seguir sin registro. Al registrarse, sigue solo.
+     `?bienvenida=1` la abre al momento para revisarla. Los datos van a
+     /api/suscribir (main.py) y se ven en el panel. */
   (function () {
     var KEY = "greenova.bienvenida.v1";
     var CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -398,9 +404,28 @@
     function guarda(estado) { try { localStorage.setItem(KEY, JSON.stringify({ estado: estado, t: Date.now() })); } catch (e) { /* modo privado */ } }
     function metrica(evento) { if (window.GNmetrica) window.GNmetrica(evento); }
     var previo = lee();
-    if (!forzar && previo && (previo.estado === "suscrito" || Date.now() - previo.t < 14 * 864e5)) return;
+    var registrado = !!(previo && previo.estado === "suscrito");
+    var host, caja, form, estado, barra, anterior, pendiente = null, modo = "entrada";
+    var TEXTOS = {
+      entrada: ["Estás a un paso de <em>cambiar tu empaque</em>",
+                "Recibe precios de mayoreo y una muestra física gratis de tus 3 productos favoritos.",
+                "Quiero mi muestra y precios"],
+      pedido:  ["Regístrate para <em>continuar tu pedido</em>",
+                "Antes de enviar tu pedido déjanos tus datos: así te mandamos la cotización y el seguimiento.",
+                "Registrarme y continuar"]
+    };
 
-    var host, caja, form, estado, barra, anterior, registrado = false;
+    /* Lo que dejó al registrarse llena solo el formulario del pedido. */
+    function rellena() {
+      var d;
+      try { d = JSON.parse(localStorage.getItem("greenova.registro") || "null"); } catch (e) { d = null; }
+      if (!d) return;
+      [["s-nombre", d.nombre], ["s-correo", d.correo], ["s-tel", d.telefono]].forEach(function (c) {
+        var el = document.getElementById(c[0]);
+        if (el && !el.value && c[1]) el.value = c[1];
+      });
+    }
+    rellena();
 
     function arma() {
       host = document.createElement("div");
@@ -494,8 +519,14 @@
       }
     }
 
-    function abre() {
+    function abre(como, luego) {
       if (!host) arma();
+      modo = como || "entrada";
+      pendiente = luego || null;
+      host.querySelector("h2").innerHTML = TEXTOS[modo][0];
+      host.querySelector(".bienv__txt").textContent = TEXTOS[modo][1];
+      host.querySelector(".bienv__btn .btn__label").textContent = TEXTOS[modo][2];
+      estado.textContent = "";
       anterior = document.activeElement;
       host.hidden = false;
       document.documentElement.classList.add("bienv-abierta");
@@ -506,7 +537,8 @@
 
     function cierra() {
       if (!host || host.hidden) return;
-      if (!registrado) { guarda("cerrada"); metrica("popup_cerrado"); }
+      if (!registrado) metrica("popup_cerrado");
+      pendiente = null;
       host.dataset.open = "false";
       document.documentElement.classList.remove("bienv-abierta");
       setTimeout(function () { host.hidden = true; }, reduce ? 0 : 260);
@@ -537,7 +569,7 @@
         return r.json().catch(function () { return {}; }).then(function (j) { throw { s: r.status, e: j.error }; });
       }).catch(function (x) {
         btn.disabled = false;
-        btn.querySelector(".btn__label").textContent = "Quiero mi muestra y precios";
+        btn.querySelector(".btn__label").textContent = TEXTOS[modo][2];
         var err = (x && x.e) || "";
         if (err === "correo_invalido") return error("correo", "Revisa tu correo, parece que tiene un error.");
         if (err === "telefono_invalido") return error("telefono", "Escribe tu número a 10 dígitos.");
@@ -551,7 +583,20 @@
     function listo(nombre) {
       registrado = true;
       guarda("suscrito");
+      try {
+        localStorage.setItem("greenova.registro", JSON.stringify({
+          nombre: nombre, correo: form.correo.value.trim(), telefono: form.telefono.value.trim() }));
+      } catch (e) { /* modo privado */ }
+      rellena();
       avance(100);
+      /* Venía de "Enviar mi pedido" o "Comprar ahora": se cierra y sigue. */
+      if (pendiente) {
+        var sigue = pendiente;
+        pendiente = null;
+        cierra();
+        setTimeout(sigue, reduce ? 0 : 280);
+        return;
+      }
       var primer = nombre.split(" ")[0];
       var cont = host.querySelector(".bienv__contenido");
       cont.innerHTML =
@@ -574,7 +619,39 @@
       }
       abre();
     }
-    setTimeout(cuandoSePueda, forzar ? 300 : 8000);
+    /* 1. Al entrar: una vez por visita (la primera página que se abre). */
+    var yaSalio = false;
+    try { yaSalio = !!sessionStorage.getItem("greenova.bienvenida.sesion"); } catch (e) { /* modo privado */ }
+    if (forzar || (!registrado && !yaSalio)) {
+      try { sessionStorage.setItem("greenova.bienvenida.sesion", "1"); } catch (e) { /* modo privado */ }
+      setTimeout(cuandoSePueda, forzar ? 300 : 1200);
+    }
+
+    /* 2. Antes de mandar el pedido o pagar: sin registro no se sigue. Se
+       escucha en captura para detener el clic antes que su propio código. */
+    document.addEventListener("click", function (e) {
+      var el = e.target.closest && e.target.closest("[data-requiere-registro]");
+      if (!el || el.tagName === "FORM" || registrado) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      abre("pedido", function () { el.click(); });
+    }, true);
+    document.addEventListener("submit", function (e) {
+      var f = e.target;
+      if (!f.hasAttribute || !f.hasAttribute("data-requiere-registro") || registrado) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      abre("pedido", function () {
+        if (f.requestSubmit) f.requestSubmit();
+        else f.dispatchEvent(new Event("submit", { cancelable: true }));
+      });
+    }, true);
+
+    window.GNRegistro = {
+      registrado: function () { return registrado; },
+      /* Para el paso de paquetería y pago: GNRegistro.exigir(seguir). */
+      exigir: function (seguir) { if (registrado) seguir(); else abre("pedido", seguir); }
+    };
   })();
 
   window.GN = { observe: observe, burst: burst };

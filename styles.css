@@ -951,6 +951,12 @@ p { margin: 0; }
   width: 14px; height: 14px; pointer-events: none; color: var(--ink-3);
 }
 .pcard__row { display: flex; gap: 8px; align-items: stretch; }
+/* Una sola medida: texto, no un menú con una opción. */
+.pcard__pick--unica { cursor: default; }
+.pcard__unica {
+  display: block; padding: 10px 12px; font-size: .85rem; color: var(--ink-2);
+  border: 1px dashed var(--line-strong); border-radius: var(--r-input);
+}
 .pcard__add { flex: 1; justify-content: center; }
 .pcard__add.did { animation: nudge .45s var(--ease); }
 @keyframes nudge {
@@ -1325,8 +1331,12 @@ body[data-locked="true"] { overflow: hidden; }
 }
 .shop-main__bar .result-line { margin: 0; }
 
-/* el selector de columnas manda sobre el auto-fill */
-.grid-prod--cols { grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); }
+/* Columnas fijas (Gabriel, 2026-09-26): 3 en computadora, 2 en celular. El
+   cliente ya no las elige. */
+.grid-prod--cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 760px) {
+  .grid-prod--cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 /* ---------- badges de oferta ---------- */
 .pcard__flag--off {
@@ -1359,8 +1369,6 @@ body[data-locked="true"] { overflow: hidden; }
   .side { position: static; max-height: none; overflow-y: visible; }
   .filter-btn--side { display: inline-flex; align-self: start; margin-bottom: 4px; }
   .side[hidden] { display: none; }
-  .grid-prod--cols { grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); }
-  .side__block--cols { display: none; }
 }
 
 /* ==========================================================================
@@ -2270,4 +2278,10 @@ a.pcard__media { cursor: pointer; }
 }
 @media (prefers-reduced-motion: reduce) {
   .bienv__fondo, .bienv__caja, .bienv__barra span { transition: none; }
+}
+.field__hint { font-weight: 400; color: var(--ink-3); }
+/* A 2 columnas en celular, "Más pedido" y "6 medidas" se enciman: el
+   conteo de medidas se quita (el menú de medida ya las muestra). */
+@media (max-width: 760px) {
+  .pcard__spec { display: none; }
 }

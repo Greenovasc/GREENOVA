@@ -313,15 +313,27 @@ campo nuevo a los productos, agrégalo también en `render_catalogo()` de
 `productos.js` se sirve con `Cache-Control: no-cache` para que un precio nuevo
 se vea en cuanto termine el redeploy, no una hora después.
 
-### Ventana de bienvenida (registro)
+### Ventana de registro
 
-A los 8 segundos de entrar sale una ventana al estilo de la de Life (fondo
-oscuro, barra de avance, botón que brilla) con la marca GreeNova: pide
+Una ventana al estilo de la de Life (fondo oscuro, barra de avance, botón que
+brilla) con la marca GreeNova. Sale en dos momentos:
+
+1. **Al entrar al sitio**: una vez por visita, en la primera página que se abre.
+   Quien ya se registró no la vuelve a ver.
+2. **Antes de mandar el pedido o comprar**: todo lo marcado con
+   `data-requiere-registro` ("Enviar mi pedido", el formulario del pedido,
+   "Comprar ahora") no deja seguir sin registro; al registrarse, la acción
+   sigue sola y el formulario del pedido ya trae nombre, correo y teléfono.
+   Cuando exista el paso de **paquetería y pago**, se protege igual: con
+   `data-requiere-registro` en su botón o con `GNRegistro.exigir(seguir)`.
+   Ojo: esto vive en el navegador; cuando el pago pase por el servidor, el
+   servidor también debe comprobar el registro.
+
+Pide
 **nombre** y, al menos, **correo o WhatsApp**, más "¿qué necesita tu negocio?"
 opcional. Reglas: sin nombre no pasa; sin correo **ni** teléfono no pasa; un
 correo sin @ no pasa aunque haya teléfono; el teléfono debe tener 10 dígitos o
-más. Si la cierran no vuelve en 14 días; si se registran, nunca más. Para
-verla al momento: `index.html?bienvenida=1`. Código al final de `greenova.js`,
+más. Para verla al momento: `index.html?bienvenida=1`. Código al final de `greenova.js`,
 estilos al final de `styles.css`.
 
 `/api/suscribir` (`main.py`) vuelve a validar todo, descarta bots (campo
@@ -461,10 +473,14 @@ externas, se pueden autohospedar con `@font-face` (pendiente, ver abajo).
 de medida.
 
 Usa el mismo armazón que el outlet: `shop-layout` + `<aside id="side">` +
-`shop-main`, con barra lateral de categoría, material, disponibilidad y selector
-de columnas, y con el conteo de productos en cada chip. `tienda.js` lee `#cats`,
-`#mats`, `#stock`, `#cols` y `#filter-open` de forma genérica, así que las dos
-páginas comparten la lógica y montar la barra fue solo marcado.
+`shop-main`, con barra lateral de categoría, material y disponibilidad, y con el
+conteo de productos en cada chip. `tienda.js` lee `#cats`, `#mats`, `#stock` y
+`#filter-open` de forma genérica, así que las dos páginas comparten la lógica y
+montar la barra fue solo marcado.
+
+Columnas fijas (Gabriel, 2026-09-26): **3 en computadora y 2 en celular**; el
+cliente ya no las elige. Un producto con una sola medida la muestra como texto,
+no como un menú de una opción.
 
 **En móvil la barra arranca plegada** tras el botón «Filtros». Ese estado lo fija
 `tienda.js` según el viewport: el CSS ya traía `.side[hidden] { display: none }`

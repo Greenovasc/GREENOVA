@@ -270,7 +270,7 @@
           '<span class="btn__label">Añadir al carrito</span>' +
           '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg>' +
         "</button>" +
-        '<button class="btn btn--primary btn--block" type="button" id="btn-comprar">' +
+        '<button class="btn btn--primary btn--block" type="button" id="btn-comprar" data-requiere-registro>' +
           '<span class="btn__label">Comprar ahora</span>' +
         "</button>" +
         '<button class="btn btn--ghost btn--block" type="button" ' +

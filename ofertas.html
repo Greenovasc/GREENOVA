@@ -149,16 +149,6 @@
         </div>
       </div>
 
-      <div class="side__block side__block--cols">
-        <h2 class="side__h">Columnas</h2>
-        <div class="cols" id="cols" data-def="4" role="group" aria-label="Productos por fila">
-          <button data-cols="2" aria-pressed="false">2</button>
-          <button data-cols="3" aria-pressed="false">3</button>
-          <button data-cols="4" aria-pressed="true">4</button>
-          <button data-cols="5" aria-pressed="false">5</button>
-        </div>
-      </div>
-
       <button class="link-btn" id="facets-clear" type="button">Quitar todos los filtros</button>
     </aside>
 
@@ -239,7 +229,7 @@
       <svg class="ico" aria-hidden="true"><use href="#i-seal-check"></use></svg>
       Sin compromiso. Te contestamos con precio por caja y tiempo de entrega.
     </p>
-    <a class="btn btn--primary btn--block" id="cart-send" href="#cotizar-ofertas">
+    <a class="btn btn--primary btn--block" id="cart-send" data-requiere-registro href="#cotizar-ofertas">
       <span class="btn__label">Enviar mi pedido</span>
       <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg>
     </a>
@@ -265,7 +255,7 @@
         <div class="quote__summary" id="quote-summary" hidden></div>
       </div>
 
-      <form class="form rv" id="shop-form" novalidate>
+      <form class="form rv" id="shop-form" data-requiere-registro novalidate>
         <div class="row">
           <div class="field">
             <label for="s-nombre">Nombre <span aria-hidden="true">*</span></label>
@@ -279,8 +269,8 @@
         </div>
         <div class="row">
           <div class="field">
-            <label for="s-correo">Correo <span aria-hidden="true">*</span></label>
-            <input id="s-correo" name="correo" type="email" autocomplete="email" required>
+            <label for="s-correo">Correo <span class="field__hint">(o teléfono)</span></label>
+            <input id="s-correo" name="correo" type="email" autocomplete="email">
             <p class="field__err" data-err="s-correo"></p>
           </div>
           <div class="field">

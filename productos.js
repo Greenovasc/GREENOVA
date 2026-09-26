@@ -248,7 +248,7 @@ window.GREENOVA = (function () {
       venta: { linea: "papel", tam: [ { precio: 1.65, min: 10000, sku: "CONO-CREPA-GRANDE" } ] } },
     { id: "papel-encerado", nombre: "Papel encerado grado alimenticio", cat: "accesorios", mat: ["papel"], img: "papel-encerado", p: 1000, fotoPropia: true, precio: null,
       desc: "Barrera contra grasa. Para envolver, forrar charola y canasta.",
-      v: ["Varias medidas"] },
+      v: ["Tamaño variado"] },
 
     /* ---------------- papel y bolsas ---------------- */
     { id: "servilleta-larga", nombre: "Servilleta larga", cat: "papel", mat: ["papel"], img: "papel-encerado", p: 1200, fotoPropia: true, precio: null,
@@ -257,7 +257,7 @@ window.GREENOVA = (function () {
       venta: { linea: "papel", tam: [ { precio: 0.35, min: 10000, sku: "SERVILLETA-LARGA-390X375CM" } ] } },
     { id: "papel-rh", nombre: "Papel RH grado alimenticio", cat: "papel", mat: ["papel"], img: "papel-encerado", p: 1000, fotoPropia: true, precio: null,
       desc: "Papel de uso general en cocina y mostrador.",
-      v: ["Varias medidas"] },
+      v: ["Tamaño variado"] },
     { id: "bolsa-kraft-asa", nombre: "Bolsa de papel kraft con asa", cat: "papel", mat: ["kraft"], img: "srv-bolsa-kraft", destacado: true, servicio: true, precio: null,
       desc: "Fabricación a medida, con o sin asa, con o sin impresión.",
       v: ["Chica", "Mediana", "Grande", "A medida"] },

@@ -371,10 +371,13 @@
           "</div>" +
         "</div>" +
         '<div class="pcard__buy">' +
-          '<label class="pcard__pick">' +
+          /* Con una sola medida no hay nada que elegir: se muestra como texto
+             (el select se queda oculto porque el carrito lee su valor). */
+          '<label class="pcard__pick' + (p.v.length === 1 ? " pcard__pick--unica" : "") + '">' +
             '<span class="sr-only">Medida de ' + p.nombre + "</span>" +
-            "<select data-role=\"variant\">" + opts + "</select>" +
-            '<svg class="ico" aria-hidden="true"><use href="#i-caret-down"></use></svg>' +
+            (p.v.length === 1 ? '<span class="pcard__unica">' + p.v[0] + "</span>" : "") +
+            "<select data-role=\"variant\"" + (p.v.length === 1 ? " hidden" : "") + ">" + opts + "</select>" +
+            (p.v.length === 1 ? "" : '<svg class="ico" aria-hidden="true"><use href="#i-caret-down"></use></svg>') +
           "</label>" +
           '<div class="pcard__row">' +
             '<div class="stepper' + (pz ? " stepper--pz" : "") + '" data-role="stepper"' + stepperAttrs(p, selV) + '>' +
@@ -661,22 +664,6 @@
     });
   }
 
-  var colsBox = $("cols");
-  if (colsBox) {
-    var savedCols = null;
-    try { savedCols = localStorage.getItem("greenova.columnas"); } catch (e) { /* modo privado */ }
-    function setCols(n) {
-      $("grid").style.setProperty("--cols", n);
-      Array.prototype.forEach.call(colsBox.children, function (x) {
-        x.setAttribute("aria-pressed", String(x.dataset.cols === String(n)));
-      });
-      try { localStorage.setItem("greenova.columnas", n); } catch (e) { /* modo privado */ }
-    }
-    colsBox.addEventListener("click", function (e) {
-      var b = e.target.closest("[data-cols]"); if (b) setCols(b.dataset.cols);
-    });
-    setCols(savedCols || colsBox.dataset.def || 4);
-  }
 
   }   /* fin del bloque de catálogo */
 
@@ -838,10 +825,14 @@
       e.preventDefault();
       status.dataset.state = "";
 
+      /* Igual que el registro: nombre y, al menos, correo o teléfono; un
+         correo escrito tiene que ser válido (con @). */
       var ok = true;
+      var correo = $("s-correo").value.trim(), tel = $("s-tel").value.replace(/\D/g, "");
       setError("s-nombre", $("s-nombre").value.trim() ? "" : (ok = false, "Escribe tu nombre."));
       setError("s-correo",
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($("s-correo").value.trim()) ? "" : (ok = false, "Escribe un correo válido."));
+        correo ? (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo) ? "" : (ok = false, "Escribe un correo válido (con @)."))
+               : (tel.length >= 10 ? "" : (ok = false, "Escribe tu correo o tu teléfono.")));
       if (!ok) {
         status.textContent = "Revisa los campos marcados.";
         form.querySelector('[data-invalid="true"] input').focus();
@@ -866,7 +857,7 @@
       var body = [
         "Nombre: " + d.nombre,
         "Negocio: " + (d.negocio || "No indicado"),
-        "Correo: " + d.correo,
+        "Correo: " + (d.correo || "No indicado"),
         "Telefono: " + (d.telefono || "No indicado"),
         "",
         "PRODUCTOS SOLICITADOS (" + total() + (total() === 1 ? " producto" : " productos") + "):",
