@@ -16,6 +16,11 @@
 (function () {
   "use strict";
 
+  /* Con ADMIN_RUTA el editor vive en /secreto-editor: la liga de regreso va a
+     /secreto, porque /admin.html ya no existe. */
+  var alPanel = document.querySelector('a[href="admin.html"]');
+  if (alPanel && /-editor$/.test(location.pathname)) alPanel.href = location.pathname.replace(/-editor$/, "");
+
   var LLAVE_SESION = "greenova.panel.token";
   var $ = function (id) { return document.getElementById(id); };
 

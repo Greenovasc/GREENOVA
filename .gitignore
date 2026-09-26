@@ -7,4 +7,4 @@ dist/
 .venv/
 agente-rag/chroma_db/
 .clave-panel.json
-.suscriptores-local.csv
+.datos-local.sqlite

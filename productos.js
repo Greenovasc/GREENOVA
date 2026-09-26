@@ -219,7 +219,7 @@ window.GREENOVA = (function () {
       venta: { linea: "fecula", tam: [ { precio: 0.35, min: 10000, sku: "SOUFFLE-FECULA-1OZ" }, { precio: 0.45, min: 10000, sku: "SOUFFLE-FECULA-2OZ" }, { precio: 0.6, min: 10000, sku: "SOUFFLE-FECULA-4OZ" } ] } },
 
     /* ---------------- accesorios ---------------- */
-    { id: "fajilla-ajustable", nombre: "Fajilla ajustable para vaso", cat: "accesorios", mat: ["kraft"], img: "fajilla-kraft", p: 1000, destacado: true, precio: null,
+    { id: "fajilla-ajustable", nombre: "Fajilla ajustable para vaso", cat: "accesorios", mat: ["kraft"], img: "fajilla-kraft", p: 1000, destacado: true, fotoPropia: true, precio: null,
       desc: "Aísla el calor y da superficie para tu marca.",
       v: ["Ajustable", "Pegada", "Impresión completa"],
       venta: { linea: "kraft", tam: [ { precio: 0.4, min: 10000, sku: "FAJILLA-AJUSTABLE-AJUSTABLE" }, { precio: 0.91, min: 10000, sku: "FAJILLA-AJUSTABLE-PEGADA" }, { precio: null, min: 10000, sku: "FAJILLA-AJUSTABLE-IMPRESIONCOMPLETA" } ] } },

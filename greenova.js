@@ -384,19 +384,23 @@
     } catch (e) { /* modo privado */ }
   }
 
-  /* ---------- ventana de bienvenida (nombre y correo) ----------
+  /* ---------- ventana de bienvenida (registro) ----------
+     Como la de Life, con la marca GreeNova. Pide nombre y, al menos, correo o
+     WhatsApp: sin ninguno de los dos no deja pasar, y un correo sin @ tampoco.
      Sale una vez a los 8 s. Si la cierran no vuelve en 14 días; si se
-     suscriben, nunca más. `?bienvenida=1` la abre al momento para revisarla.
-     Los datos van a /api/suscribir (main.py), que los anota en la hoja. */
+     registran, nunca más. `?bienvenida=1` la abre al momento para revisarla.
+     Los datos van a /api/suscribir (main.py) y se ven en el panel. */
   (function () {
     var KEY = "greenova.bienvenida.v1";
+    var CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     var forzar = /[?&]bienvenida=1\b/.test(location.search);
     function lee() { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } }
     function guarda(estado) { try { localStorage.setItem(KEY, JSON.stringify({ estado: estado, t: Date.now() })); } catch (e) { /* modo privado */ } }
+    function metrica(evento) { if (window.GNmetrica) window.GNmetrica(evento); }
     var previo = lee();
     if (!forzar && previo && (previo.estado === "suscrito" || Date.now() - previo.t < 14 * 864e5)) return;
 
-    var host, caja, form, estado, anterior;
+    var host, caja, form, estado, barra, anterior, registrado = false;
 
     function arma() {
       host = document.createElement("div");
@@ -405,29 +409,38 @@
       host.innerHTML =
         '<div class="bienv__fondo" data-cerrar></div>' +
         '<div class="bienv__caja" role="dialog" aria-modal="true" aria-labelledby="bienv-t">' +
-          '<button class="bienv__x" type="button" aria-label="Cerrar" data-cerrar>' +
-            '<svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg></button>' +
-          '<div class="bienv__foto"><img src="assets/prod/contenedor-kraft-rect.webp" alt="" width="900" height="900" decoding="async"></div>' +
+          '<div class="bienv__foto"><img src="assets/prod/fajilla-kraft.webp" alt="Vaso de papel con fajilla kraft GreeNova SC" width="900" height="900" decoding="async"></div>' +
           '<div class="bienv__cuerpo">' +
-            '<p class="bienv__eyebrow">El futuro se sirve en GreeNova</p>' +
-            '<h2 id="bienv-t">Bienvenido a GreeNova</h2>' +
-            '<p class="bienv__txt">Déjanos tu nombre y tu correo y recibe antes que nadie los lanzamientos, precios de mayoreo y promociones.</p>' +
-            '<form class="bienv__form" novalidate>' +
-              '<label class="sr-only" for="bienv-nombre">Tu nombre</label>' +
-              '<input id="bienv-nombre" name="nombre" autocomplete="name" placeholder="Tu nombre" maxlength="80">' +
-              '<label class="sr-only" for="bienv-correo">Tu correo electrónico</label>' +
-              '<input id="bienv-correo" name="correo" type="email" autocomplete="email" inputmode="email" placeholder="Tu correo electrónico" maxlength="120" required>' +
-              '<input class="bienv__trampa" name="sitio_web" tabindex="-1" autocomplete="off" aria-hidden="true">' +
-              '<button class="btn btn--primary bienv__btn" type="submit"><span class="btn__label">Suscribirme</span></button>' +
-              '<p class="bienv__estado" role="status" aria-live="polite"></p>' +
-            "</form>" +
-            '<p class="bienv__nota">Solo te escribimos para novedades de GreeNova. Puedes darte de baja cuando quieras.</p>' +
+            '<div class="bienv__top">' +
+              '<div class="bienv__barra" role="progressbar" aria-label="Avance del registro" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30"><span></span></div>' +
+              '<button class="bienv__x" type="button" aria-label="Cerrar" data-cerrar>' +
+                '<svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg></button>' +
+            "</div>" +
+            '<div class="bienv__contenido">' +
+              '<h2 id="bienv-t">Estás a un paso de <em>cambiar tu empaque</em></h2>' +
+              '<p class="bienv__txt">Recibe precios de mayoreo y una muestra física gratis de tus 3 productos favoritos.</p>' +
+              '<form class="bienv__form" novalidate>' +
+                '<label class="sr-only" for="bienv-nombre">Nombre</label>' +
+                '<input id="bienv-nombre" name="nombre" autocomplete="name" placeholder="Nombre" maxlength="80">' +
+                '<label class="sr-only" for="bienv-correo">Correo</label>' +
+                '<input id="bienv-correo" name="correo" type="email" autocomplete="email" inputmode="email" placeholder="Correo" maxlength="120">' +
+                '<label class="sr-only" for="bienv-tel">WhatsApp o teléfono</label>' +
+                '<input id="bienv-tel" name="telefono" type="tel" autocomplete="tel" inputmode="tel" placeholder="WhatsApp o teléfono" maxlength="20">' +
+                '<label class="sr-only" for="bienv-nec">¿Qué necesita tu negocio?</label>' +
+                '<textarea id="bienv-nec" name="necesidad" rows="2" maxlength="500" placeholder="¿Qué necesita tu negocio? (opcional)"></textarea>' +
+                '<input class="bienv__trampa" name="sitio_web" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+                '<p class="bienv__estado" role="status" aria-live="polite"></p>' +
+                '<button class="bienv__btn" type="submit"><span class="btn__label">Quiero mi muestra y precios</span></button>' +
+              "</form>" +
+              '<p class="bienv__nota">Déjanos tu correo o tu WhatsApp. Te contactamos pronto, sin spam.</p>' +
+            "</div>" +
           "</div>" +
         "</div>";
       document.body.appendChild(host);
       caja = host.querySelector(".bienv__caja");
       form = host.querySelector("form");
       estado = host.querySelector(".bienv__estado");
+      barra = host.querySelector(".bienv__barra");
 
       host.addEventListener("click", function (e) {
         if (e.target.closest("[data-cerrar]")) cierra();
@@ -435,12 +448,50 @@
       host.addEventListener("keydown", function (e) {
         if (e.key === "Escape") { e.stopPropagation(); cierra(); return; }
         if (e.key !== "Tab") return;
-        var f = caja.querySelectorAll("button, input:not([tabindex='-1'])");
+        var f = caja.querySelectorAll("button, input:not([tabindex='-1']), textarea");
         var primero = f[0], ultimo = f[f.length - 1];
         if (e.shiftKey && document.activeElement === primero) { e.preventDefault(); ultimo.focus(); }
         else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus(); }
       });
+      form.addEventListener("input", function (e) {
+        if (e.target.getAttribute("aria-invalid") === "true") e.target.removeAttribute("aria-invalid");
+        avance();
+      });
       form.addEventListener("submit", envia);
+    }
+
+    function digitos(t) { return t.replace(/\D/g, ""); }
+
+    /* La barra premia cada paso: nombre, un medio de contacto y la nota. */
+    function avance(valor) {
+      var n = form.nombre.value.trim().length >= 2;
+      var c = CORREO.test(form.correo.value.trim()) || digitos(form.telefono.value).length >= 10;
+      var p = valor || 30 + (n ? 30 : 0) + (c ? 30 : 0) + (form.necesidad.value.trim() ? 10 : 0);
+      barra.style.setProperty("--avance", p + "%");
+      barra.setAttribute("aria-valuenow", String(p));
+    }
+
+    /* Nombre obligatorio; correo O teléfono. Un correo sin @ no pasa aunque
+       haya teléfono: casi siempre es un dato falso. */
+    function revisa() {
+      var c = form.correo.value.trim(), t = digitos(form.telefono.value);
+      if (form.nombre.value.trim().length < 2) return ["nombre", "Escribe tu nombre."];
+      if (c && !CORREO.test(c)) {
+        return ["correo", c.indexOf("@") < 0 ? "A tu correo le falta la @ (ejemplo: nombre@negocio.com)." :
+                                              "Revisa tu correo, parece incompleto."];
+      }
+      if (t && (t.length < 10 || t.length > 15)) return ["telefono", "Escribe tu número a 10 dígitos."];
+      if (!c && !t) return ["correo", "Déjanos tu correo o tu WhatsApp para contactarte."];
+      return null;
+    }
+
+    function error(campo, texto) {
+      estado.dataset.state = "error";
+      estado.textContent = texto;
+      if (campo) {
+        form[campo].setAttribute("aria-invalid", "true");
+        form[campo].focus();
+      }
     }
 
     function abre() {
@@ -448,13 +499,14 @@
       anterior = document.activeElement;
       host.hidden = false;
       document.documentElement.classList.add("bienv-abierta");
-      requestAnimationFrame(function () { host.dataset.open = "true"; });
-      setTimeout(function () { host.querySelector("#bienv-nombre").focus({ preventScroll: true }); }, 60);
+      requestAnimationFrame(function () { host.dataset.open = "true"; avance(); });
+      setTimeout(function () { form.nombre.focus({ preventScroll: true }); }, 60);
+      metrica("popup_visto");
     }
 
     function cierra() {
       if (!host || host.hidden) return;
-      if (lee() === null || (lee().estado !== "suscrito")) guarda("cerrada");
+      if (!registrado) { guarda("cerrada"); metrica("popup_cerrado"); }
       host.dataset.open = "false";
       document.documentElement.classList.remove("bienv-abierta");
       setTimeout(function () { host.hidden = true; }, reduce ? 0 : 260);
@@ -463,48 +515,52 @@
 
     function envia(e) {
       e.preventDefault();
-      var correo = form.correo.value.trim();
-      var nombre = form.nombre.value.trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) {
-        estado.dataset.state = "error";
-        estado.textContent = "Escribe un correo válido.";
-        form.correo.focus();
-        return;
-      }
+      var mal = revisa();
+      if (mal) return error(mal[0], mal[1]);
       var btn = form.querySelector(".bienv__btn");
       btn.disabled = true;
       btn.querySelector(".btn__label").textContent = "Enviando…";
       estado.dataset.state = "";
       estado.textContent = "";
+      var fuente = window.GNfuente ? window.GNfuente() : {};
       fetch("/api/suscribir", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre: nombre, correo: correo, sitio_web: form.sitio_web.value,
-                               pagina: (location.pathname.split("/").pop() || "index.html").replace(".html", "") })
+        body: JSON.stringify({
+          nombre: form.nombre.value.trim(), correo: form.correo.value.trim(),
+          telefono: form.telefono.value.trim(), necesidad: form.necesidad.value.trim(),
+          sitio_web: form.sitio_web.value, ref: fuente.ref || "", utm: fuente.utm || "",
+          pagina: (location.pathname.split("/").pop() || "index").replace(/\.html$/, "") || "index"
+        })
       }).then(function (r) {
-        if (r.ok) return listo(nombre);
-        throw r.status;
-      }).catch(function (s) {
+        if (r.ok) return listo(form.nombre.value.trim());
+        return r.json().catch(function () { return {}; }).then(function (j) { throw { s: r.status, e: j.error }; });
+      }).catch(function (x) {
         btn.disabled = false;
-        btn.querySelector(".btn__label").textContent = "Suscribirme";
-        estado.dataset.state = "error";
-        estado.textContent = s === 400 ? "Revisa tu correo, parece que tiene un error." :
-          s === 429 ? "Recibimos varios registros desde aquí. Intenta más tarde." :
-          "No pudimos registrarte ahora. Intenta de nuevo en un momento.";
+        btn.querySelector(".btn__label").textContent = "Quiero mi muestra y precios";
+        var err = (x && x.e) || "";
+        if (err === "correo_invalido") return error("correo", "Revisa tu correo, parece que tiene un error.");
+        if (err === "telefono_invalido") return error("telefono", "Escribe tu número a 10 dígitos.");
+        if (err === "sin_contacto") return error("correo", "Déjanos tu correo o tu WhatsApp para contactarte.");
+        if (err === "nombre") return error("nombre", "Escribe tu nombre.");
+        error(null, x && x.s === 429 ? "Recibimos varios registros desde aquí. Intenta más tarde." :
+                                       "No pudimos registrarte ahora. Intenta de nuevo en un momento.");
       });
     }
 
     function listo(nombre) {
+      registrado = true;
       guarda("suscrito");
+      avance(100);
       var primer = nombre.split(" ")[0];
-      var cuerpo = host.querySelector(".bienv__cuerpo");
-      cuerpo.innerHTML =
-        '<p class="bienv__eyebrow">Suscripción lista</p>' +
+      var cont = host.querySelector(".bienv__contenido");
+      cont.innerHTML =
         '<h2 id="bienv-t"></h2>' +
-        '<p class="bienv__txt">Te avisaremos de lanzamientos, precios de mayoreo y promociones. Gracias por elegir empaque que sí se degrada.</p>' +
-        '<button class="btn btn--primary bienv__btn" type="button" data-cerrar><span class="btn__label">Seguir viendo</span></button>';
-      cuerpo.querySelector("h2").textContent = "¡Gracias" + (primer ? ", " + primer : "") + "!";
-      cuerpo.querySelector("button").focus({ preventScroll: true });
+        '<p class="bienv__txt">Recibimos tus datos. Te contactamos pronto con precios de mayoreo y tu muestra gratis.</p>' +
+        '<button class="bienv__btn" type="button" data-cerrar><span class="btn__label">Seguir viendo</span></button>';
+      cont.querySelector("h2").innerHTML = "¡Listo<em></em>!";
+      cont.querySelector("em").textContent = primer ? ", " + primer : "";
+      cont.querySelector("button").focus({ preventScroll: true });
     }
 
     /* No interrumpir: si están escribiendo (buscador, chat) o tienen abierto

@@ -1,8 +1,13 @@
-/* GreeNova SC - pulso del catálogo.
+/* GreeNova SC - pulso del sitio.
    ===========================================================================
-   Cuenta qué productos mira la gente, para el mapa de calor del panel. Manda
-   solo el id del producto y el tipo de evento: ni cookies, ni identificadores,
-   ni nada que diga quién es la persona.
+   Cuenta lo que ve el panel (admin.html → Métricas):
+   - cada página vista, de dónde llegó la visita y si es celular o computadora;
+   - qué productos se ven, se abren y se agregan (también el mapa de calor);
+   - clics a WhatsApp, correo y teléfono, y las cotizaciones enviadas.
+
+   Nada dice quién es la persona: el visitante es un código al azar que guarda
+   su navegador (sin cookies), solo para no contar dos veces a la misma persona
+   en un día.
 
    Usa sendBeacon, que entrega el dato sin retrasar la navegación y sobrevive a
    que el visitante cambie de página en ese momento. Si el servidor no existe
@@ -12,12 +17,56 @@
   "use strict";
   if (!navigator.sendBeacon) return;
 
-  function manda(id, tipo) {
-    if (!id) return;
+  function manda(url, datos) {
     try {
-      navigator.sendBeacon("/api/pulso",
-        new Blob([JSON.stringify({ id: id, tipo: tipo })], { type: "application/json" }));
+      navigator.sendBeacon(url, new Blob([JSON.stringify(datos)], { type: "application/json" }));
     } catch (e) { /* sin servidor: da igual */ }
+  }
+
+  var pagina = (location.pathname.split("/").pop() || "index").replace(/\.html$/, "") || "index";
+
+  function visitante() {
+    try {
+      var v = localStorage.getItem("greenova.vid");
+      if (!v) {
+        v = (window.crypto && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36))
+          .replace(/-/g, "").slice(0, 24);
+        localStorage.setItem("greenova.vid", v);
+      }
+      return v;
+    } catch (e) { return ""; }
+  }
+
+  /* La fuente (Google, Instagram, directo…) se toma en la primera página de
+     la visita y se guarda para la sesión: la ventana de bienvenida la manda
+     junto con el registro. */
+  var entrada = false, ref = "", utm = "";
+  try {
+    var r = document.referrer ? new URL(document.referrer) : null;
+    if (r && r.host !== location.host) ref = r.hostname;
+    utm = new URLSearchParams(location.search).get("utm_source") || "";
+    if (!sessionStorage.getItem("greenova.fuente")) {
+      entrada = true;
+      sessionStorage.setItem("greenova.fuente", JSON.stringify({ ref: ref, utm: utm }));
+    }
+  } catch (e) { /* modo privado */ }
+
+  manda("/api/visita", {
+    tipo: "vista", pagina: pagina, vid: visitante(), entrada: entrada, ref: ref, utm: utm,
+    movil: window.matchMedia("(max-width: 760px)").matches
+  });
+
+  /* Para el resto del sitio: GNmetrica("popup_visto"), GNfuente(). */
+  window.GNmetrica = function (evento) {
+    manda("/api/visita", { tipo: "evento", evento: evento, pagina: pagina });
+  };
+  window.GNfuente = function () {
+    try { return JSON.parse(sessionStorage.getItem("greenova.fuente") || "{}"); } catch (e) { return {}; }
+  };
+
+  /* ---------- productos ---------- */
+  function producto(id, tipo) {
+    if (id) manda("/api/pulso", { id: id, tipo: tipo });
   }
 
   /* Una tarjeta se cuenta como vista cuando de verdad se ve, no cuando se
@@ -30,7 +79,7 @@
         var id = e.target.dataset.id;
         if (!id || contadas[id]) return;
         contadas[id] = true;
-        manda(id, "ver");
+        producto(id, "ver");
         ojo.unobserve(e.target);
       });
     }, { threshold: 0.6 });
@@ -44,9 +93,20 @@
     if (grid) new MutationObserver(mirar).observe(grid, { childList: true });
   }
 
+  /* ---------- clics que valen: contacto y productos ---------- */
   document.addEventListener("click", function (e) {
+    var a = e.target.closest("a[href]");
+    if (a) {
+      var h = a.getAttribute("href");
+      if (/wa\.me|whatsapp/i.test(h)) window.GNmetrica("whatsapp");
+      else if (/^mailto:/i.test(h)) window.GNmetrica("correo");
+      else if (/^tel:/i.test(h)) window.GNmetrica("telefono");
+    }
     var card = e.target.closest(".pcard[data-id]");
-    if (!card) return;
-    manda(card.dataset.id, e.target.closest(".pcard__add") ? "carrito" : "click");
+    if (card) producto(card.dataset.id, e.target.closest(".pcard__add") ? "carrito" : "click");
   });
+
+  document.addEventListener("submit", function (e) {
+    if (e.target.id === "quote-form") window.GNmetrica("cotizacion");
+  }, true);
 })();

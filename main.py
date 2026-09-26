@@ -25,12 +25,13 @@ import json
 import os
 import pathlib
 import re
+import sqlite3
 import threading
 import time
 
 import httpx
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, StreamingResponse
 import openai
 from openai import AsyncOpenAI
 
@@ -259,6 +260,11 @@ async def chat(request: Request):
 #   MODO_LOCAL       "1" = guardar productos.js en el disco en vez de GitHub.
 #                    Solo en tu computadora: en Render el disco se borra en cada
 #                    deploy, así que ahí NO se pone.
+#   ADMIN_RUTA       opcional, recomendado en Render: la dirección secreta del
+#                    panel (8 a 60 letras minúsculas, números o guiones). Con
+#                    ella, /admin.html y /editor.html dan 404 y el panel vive en
+#                    /ADMIN_RUTA (y el editor en /ADMIN_RUTA-editor).
+#   DATABASE_URL     Postgres para registros y métricas (ver "DATOS" abajo)
 #
 # Seguridad (revisada 2026-09-24):
 #   - un usuario y contraseña por administrador; el commit dice quién guardó
@@ -882,84 +888,301 @@ async def admin_guardar(request: Request):
 
 
 # ---------------------------------------------------------------------------
-# el pulso: qué productos mira la gente
+# DATOS — registros de la ventana de bienvenida y métricas del sitio.
 #
-# Alimenta el mapa de calor del editor. Solo se cuentan eventos por id de
-# producto: no hay cookies, ni sesiones, ni nada que identifique a la persona.
-# Vive en memoria, así que un reinicio del servicio lo pone en cero; es una
-# señal de tendencia, no una contabilidad.
+#   DATABASE_URL   Postgres donde se guarda todo (Neon, gratis: ver README).
+#                  Sin ella, en tu computadora (MODO_LOCAL=1) se usa el archivo
+#                  .datos-local.sqlite, y en Render un archivo temporal que se
+#                  borra cada vez que el servicio se duerme (el panel lo avisa).
+#
+# Las métricas se suman en memoria y se escriben cada 10 minutos, al apagarse
+# el servicio y cada vez que un administrador abre el panel: así la base casi
+# no se despierta. Los registros se escriben al momento: son lo que importa.
+#
+# Nada identifica a quien navega: el visitante es un código al azar que guarda
+# su navegador (sin cookies), y la IP solo se usa en memoria para frenar abusos.
 # ---------------------------------------------------------------------------
 
-TIPOS_PULSO = ("ver", "click", "carrito")
-MAX_IDS = 500   # techo de memoria: nadie va a tener más productos que eso
+MX = datetime.timezone(datetime.timedelta(hours=-6))  # CDMX, sin horario de verano
+CADA_CUANTO = 600          # segundos entre escrituras de métricas
+EVENTOS_POR_IP = 240       # eventos por IP cada 10 minutos (más, se ignoran)
+REG_POR_IP = 5             # registros por IP cada 10 minutos
+REG_POR_DIA = 500          # registros en todo el sitio por día
+EVENTOS = ("popup_visto", "popup_cerrado", "whatsapp", "correo", "telefono",
+           "cotizacion", "carrito_enviado")
+BOT = re.compile(r"bot|crawl|spider|slurp|headless|lighthouse|preview|"
+                 r"facebookexternalhit|monitor|curl|wget|python|httpx|go-http", re.I)
+CORREO_VALIDO = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._%+-]{0,63}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,24}$")
+FUENTES = (("google", "Google"), ("facebook", "Facebook"), ("fb.", "Facebook"),
+           ("instagram", "Instagram"), ("tiktok", "TikTok"), ("whatsapp", "WhatsApp"),
+           ("wa.me", "WhatsApp"), ("youtube", "YouTube"), ("linkedin", "LinkedIn"),
+           ("bing", "Bing"), ("t.co", "X (Twitter)"), ("twitter", "X (Twitter)"),
+           ("x.com", "X (Twitter)"), ("chatgpt", "ChatGPT"), ("openai", "ChatGPT"))
 
-_pulso: dict[str, dict[str, int]] = {}
-_pulso_desde = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+ESQUEMA = (
+    "CREATE TABLE IF NOT EXISTS registros ("
+    " id {serial}, fecha TEXT NOT NULL, dia TEXT NOT NULL, nombre TEXT NOT NULL,"
+    " correo TEXT, telefono TEXT, necesidad TEXT, pagina TEXT, fuente TEXT)",
+    "CREATE TABLE IF NOT EXISTS metricas ("
+    " dia TEXT NOT NULL, clave TEXT NOT NULL, valor BIGINT NOT NULL DEFAULT 0,"
+    " PRIMARY KEY (dia, clave))",
+    "CREATE TABLE IF NOT EXISTS visitantes ("
+    " dia TEXT NOT NULL, vid TEXT NOT NULL, PRIMARY KEY (dia, vid))",
+)
+SUMA_METRICA = ("INSERT INTO metricas (dia, clave, valor) VALUES (?, ?, ?) "
+                "ON CONFLICT (dia, clave) DO UPDATE SET valor = metricas.valor + excluded.valor")
+ANOTA_VISITANTE = "INSERT INTO visitantes (dia, vid) VALUES (?, ?) ON CONFLICT DO NOTHING"
+
+
+def hoy() -> str:
+    return datetime.datetime.now(MX).date().isoformat()
+
+
+class Almacen:
+    """Postgres si hay DATABASE_URL; si no, SQLite. El SQL es el mismo en los
+    dos (se escribe con ?, y para Postgres se cambia por $1, $2…)."""
+
+    def __init__(self) -> None:
+        self.tipo = ""
+        self._pool = None
+        self._sqlite: sqlite3.Connection | None = None
+        self._candado = threading.Lock()
+        self._listo = asyncio.Lock()
+
+    @staticmethod
+    def _dsn(url: str) -> str:
+        # asyncpg no entiende channel_binding (Neon lo pone en su dirección).
+        base, _, consulta = url.partition("?")
+        partes = [p for p in consulta.split("&") if p and not p.startswith("channel_binding=")]
+        return base + ("?" + "&".join(partes) if partes else "")
+
+    async def abre(self) -> None:
+        async with self._listo:
+            if self.tipo:
+                return
+            url = os.environ.get("DATABASE_URL", "").strip()
+            if url:
+                import asyncpg
+                self._pool = await asyncpg.create_pool(
+                    self._dsn(url), min_size=0, max_size=3, command_timeout=20,
+                    statement_cache_size=0, max_inactive_connection_lifetime=60)
+                tipo = "postgres"
+            else:
+                if os.environ.get("MODO_LOCAL") == "1":
+                    archivo, tipo = RAIZ / ".datos-local.sqlite", "local"
+                else:
+                    archivo, tipo = pathlib.Path("/tmp/greenova-datos.sqlite"), "temporal"
+                self._sqlite = sqlite3.connect(archivo, check_same_thread=False)
+            serial = "BIGSERIAL PRIMARY KEY" if tipo == "postgres" else "INTEGER PRIMARY KEY AUTOINCREMENT"
+            for sql in ESQUEMA:
+                await self._corre(sql.replace("{serial}", serial), [()], tipo)
+            self.tipo = tipo
+
+    @staticmethod
+    def _pg(sql: str) -> str:
+        n = 0
+
+        def cambia(_m):
+            nonlocal n
+            n += 1
+            return f"${n}"
+        return re.sub(r"\?", cambia, sql)
+
+    async def _corre(self, sql: str, filas: list[tuple], tipo: str | None = None) -> None:
+        if (tipo or self.tipo) == "postgres":
+            async with self._pool.acquire() as con:
+                if filas == [()]:
+                    await con.execute(sql)
+                else:
+                    await con.executemany(self._pg(sql), filas)
+        else:
+            def hazlo():
+                with self._candado:
+                    self._sqlite.executemany(sql, filas)
+                    self._sqlite.commit()
+            await asyncio.to_thread(hazlo)
+
+    async def ejecuta(self, sql: str, *filas: tuple) -> None:
+        await self.abre()
+        if filas:
+            await self._corre(sql, list(filas))
+
+    async def consulta(self, sql: str, args: tuple = ()) -> list[tuple]:
+        await self.abre()
+        if self.tipo == "postgres":
+            async with self._pool.acquire() as con:
+                return [tuple(r) for r in await con.fetch(self._pg(sql), *args)]
+
+        def lee():
+            with self._candado:
+                return self._sqlite.execute(sql, args).fetchall()
+        return await asyncio.to_thread(lee)
+
+
+almacen = Almacen()
+
+# ---- métricas en memoria hasta la siguiente escritura ----------------------
+
+_sumas: dict[tuple[str, str], int] = {}
+_vistos: set[tuple[str, str]] = set()
+_cupo_ip: dict[str, list[float]] = {}
+_cupo_limpio = [0.0]
+_reg_dia = {"dia": "", "n": 0}
+
+
+def suma(dia: str, claves) -> None:
+    with _candado:
+        for c in claves:
+            _sumas[(dia, c)] = _sumas.get((dia, c), 0) + 1
+
+
+def cupo(ip: str, tope: int, clave: str = "") -> bool:
+    """True si esta IP todavía puede mandar (ventana de 10 minutos)."""
+    ahora = time.time()
+    llave = clave + ip
+    with _candado:
+        if ahora - _cupo_limpio[0] > 60:
+            for k in list(_cupo_ip):
+                _cupo_ip[k] = [t for t in _cupo_ip[k] if ahora - t < 600]
+                if not _cupo_ip[k]:
+                    del _cupo_ip[k]
+            _cupo_limpio[0] = ahora
+        marcas = [t for t in _cupo_ip.get(llave, ()) if ahora - t < 600]
+        if len(marcas) >= tope:
+            return False
+        marcas.append(ahora)
+        _cupo_ip[llave] = marcas
+        return True
+
+
+async def vacia_metricas() -> None:
+    with _candado:
+        sumas, vistos = dict(_sumas), set(_vistos)
+        _sumas.clear()
+        _vistos.clear()
+    if not sumas and not vistos:
+        return
+    try:
+        if sumas:
+            await almacen.ejecuta(SUMA_METRICA, *[(d, c, n) for (d, c), n in sumas.items()])
+        if vistos:
+            await almacen.ejecuta(ANOTA_VISITANTE, *list(vistos))
+    except Exception as e:  # noqa: BLE001 — si la base falla, se reintenta luego
+        print(f"[métricas] no se pudieron guardar, se reintenta: {e}", flush=True)
+        with _candado:
+            for k, n in sumas.items():
+                _sumas[k] = _sumas.get(k, 0) + n
+            _vistos.update(vistos)
+
+
+async def _escritor() -> None:
+    while True:
+        await asyncio.sleep(CADA_CUANTO)
+        await vacia_metricas()
+
+
+async def _al_arrancar() -> None:
+    try:
+        await almacen.abre()
+        print(f"[datos] almacén: {almacen.tipo}", flush=True)
+    except Exception as e:  # noqa: BLE001
+        print(f"[datos] no se pudo abrir la base: {e}", flush=True)
+    app.state.escritor = asyncio.create_task(_escritor())
+
+
+async def _al_apagar() -> None:
+    await vacia_metricas()
+
+
+app.add_event_handler("startup", _al_arrancar)
+app.add_event_handler("shutdown", _al_apagar)
+
+# ---- qué existe en el sitio (para no guardar basura) -----------------------
+
+_ids_cache: dict[str, object] = {"mtime": None, "ids": frozenset()}
+
+
+def ids_catalogo() -> frozenset:
+    archivo = RAIZ / ARCHIVO_CATALOGO
+    try:
+        mtime = archivo.stat().st_mtime
+    except OSError:
+        return frozenset()
+    if _ids_cache["mtime"] != mtime:
+        _ids_cache["ids"] = frozenset(re.findall(r'\{ id: "([A-Za-z0-9._-]+)", nombre:', archivo.read_text("utf-8")))
+        _ids_cache["mtime"] = mtime
+    return _ids_cache["ids"]  # type: ignore[return-value]
+
+
+def paginas_publicas() -> frozenset:
+    return frozenset(p.stem for p in RAIZ.glob("*.html") if not p.stem.startswith(("admin", "editor")))
+
+
+def sin_formula(valor: str) -> str:
+    # Una celda que empieza con = + - @ Excel o la hoja la ejecutan como fórmula.
+    return valor.lstrip("=+-@\t\r ")
+
+
+def nombre_fuente(ref: str, utm: str) -> str:
+    if utm:
+        return utm[:40]
+    ref = ref.lower().removeprefix("www.")
+    if not ref:
+        return "Directo"
+    for pista, nombre in FUENTES:
+        if pista in ref:
+            return nombre
+    return ref[:60]
+
+
+# ---- lo que manda el navegador ---------------------------------------------
+
+@app.post("/api/visita")
+async def visita(request: Request):
+    """Una página vista o un evento (clic a WhatsApp, cotización, ventana…)."""
+    nada = Response(status_code=204)
+    if BOT.search(request.headers.get("user-agent") or ""):
+        return nada
+    if not cupo(ip_de(request), EVENTOS_POR_IP, "v:"):
+        return nada
+    cuerpo = await _cuerpo(request)
+    pagina = ident(cuerpo.get("pagina"), 40)
+    if pagina not in paginas_publicas():
+        return nada
+    dia = hoy()
+    if cuerpo.get("tipo") == "vista":
+        claves = ["vistas", "pagina:" + pagina]
+        if cuerpo.get("entrada") is True:
+            fuente = nombre_fuente(ident(cuerpo.get("ref"), 80), texto(cuerpo.get("utm"), 40))
+            claves += ["sesiones", "fuente:" + fuente,
+                       "disp:" + ("celular" if cuerpo.get("movil") is True else "computadora")]
+        suma(dia, claves)
+        vid = ident(cuerpo.get("vid"), 40)
+        if len(vid) >= 8:
+            with _candado:
+                _vistos.add((dia, vid))
+    elif cuerpo.get("tipo") == "evento" and cuerpo.get("evento") in EVENTOS:
+        suma(dia, ["evento:" + cuerpo["evento"]])
+    return nada
 
 
 @app.post("/api/pulso")
 async def pulso(request: Request):
-    try:
-        cuerpo = await request.json()
-    except Exception:
-        return JSONResponse({"ok": False}, status_code=204)
-
-    if not isinstance(cuerpo, dict):
-        return JSONResponse({"ok": False}, status_code=204)
-
-    pid = texto(cuerpo.get("id"), 80)
-    tipo = texto(cuerpo.get("tipo"), 20)
-    if not pid or tipo not in TIPOS_PULSO:
-        return JSONResponse({"ok": False}, status_code=204)
-
-    with _candado:
-        if pid not in _pulso and len(_pulso) >= MAX_IDS:
-            return JSONResponse({"ok": False}, status_code=204)
-        fila = _pulso.setdefault(pid, {"ver": 0, "click": 0, "carrito": 0})
-        fila[tipo] += 1
-
-    return JSONResponse({"ok": True})
-
-
-@app.get("/api/admin/pulso")
-async def admin_pulso(request: Request):
-    # El token va en la cabecera Authorization, no en la URL: las URLs quedan
-    # en los registros del servidor y del navegador.
-    if not token_valido(token_de(request)):
-        return JSONResponse({"error": "sesion_vencida"}, status_code=401)
-    with _candado:
-        datos = {k: dict(v) for k, v in _pulso.items()}
-    return JSONResponse({"desde": _pulso_desde, "productos": datos})
-
-
-# ---------------------------------------------------------------------------
-# SUSCRIPCIÓN — la ventana de bienvenida (nombre y correo).
-#
-#   SUSCRIPCION_URL  dirección del Apps Script de la hoja de Google donde se
-#                    anotan (ver README). Solo la conoce el servidor: el
-#                    navegador nunca la ve, así nadie escribe directo en la hoja.
-#   Sin ella y con MODO_LOCAL=1 se anotan en .suscriptores-local.csv para
-#   probar; en Render sin ella, la ventana avisa que no se pudo.
-#
-# Render borra el disco en cada despliegue: por eso no se guardan aquí, y el
-# repo es público: por eso tampoco van a GitHub.
-# ---------------------------------------------------------------------------
-
-CORREO_VALIDO = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._%+-]{0,63}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,24}$")
-SUSC_POR_IP = 5            # por IP cada 10 minutos
-SUSC_POR_DIA = 500         # en todo el sitio
-ARCHIVO_SUSC_LOCAL = RAIZ / ".suscriptores-local.csv"
-_susc_ip: dict[str, list[float]] = {}
-_susc_dia = {"fecha": "", "n": 0}
-
-
-def sin_formula(valor: str) -> str:
-    # Una celda que empieza con = + - @ la hoja la ejecuta como fórmula.
-    return valor.lstrip("=+-@\t\r ")
+    """Qué productos se ven, se abren y se agregan (mapa de calor y métricas)."""
+    nada = Response(status_code=204)
+    if BOT.search(request.headers.get("user-agent") or "") or not cupo(ip_de(request), EVENTOS_POR_IP, "p:"):
+        return nada
+    cuerpo = await _cuerpo(request)
+    pid = ident(cuerpo.get("id"), 80)
+    tipo = cuerpo.get("tipo")
+    if tipo in ("ver", "click", "carrito") and pid in ids_catalogo():
+        suma(hoy(), [f"prod:{tipo}:{pid}"])
+    return nada
 
 
 @app.post("/api/suscribir")
 async def suscribir(request: Request):
+    """La ventana de bienvenida: nombre y, al menos, correo o teléfono."""
     # Solo JSON: así un formulario de otro sitio no puede mandar registros
     # (el navegador exige permiso previo para JSON entre dominios).
     if "application/json" not in (request.headers.get("content-type") or ""):
@@ -972,46 +1195,168 @@ async def suscribir(request: Request):
 
     nombre = sin_formula(" ".join(texto(cuerpo.get("nombre"), 80).split()))
     correo = texto(cuerpo.get("correo"), 120).lower()
+    telefono = re.sub(r"\D", "", texto(cuerpo.get("telefono"), 40))
+    necesidad = sin_formula(" ".join(texto(cuerpo.get("necesidad"), 500).split()))
     pagina = ident(cuerpo.get("pagina"), 40)
-    if not CORREO_VALIDO.match(correo):
+    if pagina not in paginas_publicas():
+        pagina = ""
+    if len(nombre) < 2 or not re.search(r"[^\W\d_]", nombre):
+        return JSONResponse({"error": "nombre"}, status_code=400)
+    if correo and not CORREO_VALIDO.match(correo):
         return JSONResponse({"error": "correo_invalido"}, status_code=400)
+    if telefono and not 10 <= len(telefono) <= 15:
+        return JSONResponse({"error": "telefono_invalido"}, status_code=400)
+    if not correo and not telefono:
+        return JSONResponse({"error": "sin_contacto"}, status_code=400)
 
-    ahora = time.time()
-    hoy = datetime.date.today().isoformat()
-    ip = ip_de(request)
+    dia = hoy()
     with _candado:
-        for k in list(_susc_ip):
-            _susc_ip[k] = [t for t in _susc_ip[k] if ahora - t < 600]
-            if not _susc_ip[k]:
-                del _susc_ip[k]
-        if _susc_dia["fecha"] != hoy:
-            _susc_dia.update(fecha=hoy, n=0)
-        if len(_susc_ip.get(ip, ())) >= SUSC_POR_IP or _susc_dia["n"] >= SUSC_POR_DIA:
-            return muy_intentos()
-        _susc_ip.setdefault(ip, []).append(ahora)
-        _susc_dia["n"] += 1
+        if _reg_dia["dia"] != dia:
+            _reg_dia.update(dia=dia, n=0)
+        lleno = _reg_dia["n"] >= REG_POR_DIA
+    if lleno or not cupo(ip_de(request), REG_POR_IP, "r:"):
+        return muy_intentos()
 
-    fila = {"nombre": nombre, "correo": correo, "pagina": pagina,
-            "fecha": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")}
-    destino = os.environ.get("SUSCRIPCION_URL", "").strip()
-    if destino:
-        try:
-            async with httpx.AsyncClient(timeout=15, follow_redirects=True) as http:
-                r = await http.post(destino, json=fila)
-            if r.status_code >= 400 or "ok" not in r.text[:200]:
-                raise RuntimeError(f"la hoja contestó {r.status_code}")
-        except Exception as e:  # noqa: BLE001
-            print(f"[suscripción] no se pudo anotar: {e}", flush=True)
-            return JSONResponse({"error": "no_disponible"}, status_code=503)
-    elif os.environ.get("MODO_LOCAL") == "1":
-        nuevo = not ARCHIVO_SUSC_LOCAL.exists()
-        with open(ARCHIVO_SUSC_LOCAL, "a", encoding="utf-8") as f:
-            if nuevo:
-                f.write("fecha,nombre,correo,pagina\n")
-            f.write(",".join(json.dumps(fila[k], ensure_ascii=False) for k in ("fecha", "nombre", "correo", "pagina")) + "\n")
-    else:
-        print("[suscripción] falta SUSCRIPCION_URL en Render", flush=True)
+    fecha = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+    fuente = nombre_fuente(ident(cuerpo.get("ref"), 80), texto(cuerpo.get("utm"), 40))
+    try:
+        # Si ya se registró con ese correo o teléfono, se actualiza en vez de
+        # duplicarlo (y se conserva lo que haya escrito antes si ahora no).
+        previo = await almacen.consulta(
+            "SELECT id FROM registros WHERE (correo = ? AND correo <> '') OR (telefono = ? AND telefono <> '') "
+            "ORDER BY id DESC LIMIT 1", (correo, telefono))
+        if previo:
+            await almacen.ejecuta(
+                "UPDATE registros SET fecha = ?, dia = ?, nombre = ?, "
+                "correo = CASE WHEN ? <> '' THEN ? ELSE correo END, "
+                "telefono = CASE WHEN ? <> '' THEN ? ELSE telefono END, "
+                "necesidad = CASE WHEN ? <> '' THEN ? ELSE necesidad END WHERE id = ?",
+                (fecha, dia, nombre, correo, correo, telefono, telefono, necesidad, necesidad, previo[0][0]))
+        else:
+            await almacen.ejecuta(
+                "INSERT INTO registros (fecha, dia, nombre, correo, telefono, necesidad, pagina, fuente) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (fecha, dia, nombre, correo, telefono, necesidad, pagina, fuente))
+    except Exception as e:  # noqa: BLE001
+        print(f"[registro] no se pudo guardar: {e}", flush=True)
         return JSONResponse({"error": "no_disponible"}, status_code=503)
+    with _candado:
+        _reg_dia["n"] += 1
+    suma(dia, ["evento:registro"])
+    return JSONResponse({"ok": True})
+
+
+# ---- lo que ve el panel ----------------------------------------------------
+
+def sin_sesion() -> JSONResponse:
+    return JSONResponse({"error": "sesion_vencida"}, status_code=401)
+
+
+@app.get("/api/admin/metricas")
+async def admin_metricas(request: Request, dias: int = 30):
+    if not token_valido(token_de(request)):
+        return sin_sesion()
+    dias = max(1, min(dias, 365))
+    await vacia_metricas()
+    fin = datetime.datetime.now(MX).date()
+    desde = (fin - datetime.timedelta(days=dias - 1)).isoformat()
+    try:
+        filas = await almacen.consulta("SELECT dia, clave, valor FROM metricas WHERE dia >= ?", (desde,))
+        vis = await almacen.consulta("SELECT dia, COUNT(*) FROM visitantes WHERE dia >= ? GROUP BY dia", (desde,))
+        unicos = await almacen.consulta("SELECT COUNT(DISTINCT vid) FROM visitantes WHERE dia >= ?", (desde,))
+        reg = await almacen.consulta("SELECT dia, COUNT(*) FROM registros WHERE dia >= ? GROUP BY dia", (desde,))
+        total_reg = await almacen.consulta("SELECT COUNT(*) FROM registros")
+    except Exception as e:  # noqa: BLE001
+        print(f"[métricas] no se pudieron leer: {e}", flush=True)
+        return JSONResponse({"error": "sin_base"}, status_code=503)
+
+    serie = {}
+    for i in range(dias):
+        d = (fin - datetime.timedelta(days=dias - 1 - i)).isoformat()
+        serie[d] = {"dia": d, "vistas": 0, "visitantes": 0, "sesiones": 0, "registros": 0}
+    grupos: dict[str, dict[str, int]] = {}
+    for dia, clave, valor in filas:
+        valor = int(valor)
+        if clave in ("vistas", "sesiones") and dia in serie:
+            serie[dia][clave] += valor
+        tipo, _, resto = clave.partition(":")
+        if resto:
+            grupos.setdefault(tipo, {})
+            grupos[tipo][resto] = grupos[tipo].get(resto, 0) + valor
+    for dia, n in vis:
+        if dia in serie:
+            serie[dia]["visitantes"] = int(n)
+    for dia, n in reg:
+        if dia in serie:
+            serie[dia]["registros"] = int(n)
+
+    productos: dict[str, dict[str, int]] = {}
+    for clave, n in grupos.get("prod", {}).items():
+        tipo, _, pid = clave.partition(":")
+        productos.setdefault(pid, {"ver": 0, "click": 0, "carrito": 0})[tipo] = n
+
+    def top(nombre: str, cuantos: int = 12):
+        return sorted(grupos.get(nombre, {}).items(), key=lambda kv: -kv[1])[:cuantos]
+
+    return JSONResponse({
+        "almacen": almacen.tipo,
+        "dias": list(serie.values()),
+        "visitantes_unicos": int(unicos[0][0]) if unicos else 0,
+        "registros_total": int(total_reg[0][0]) if total_reg else 0,
+        "paginas": top("pagina"),
+        "fuentes": top("fuente"),
+        "dispositivos": top("disp"),
+        "eventos": dict(grupos.get("evento", {})),
+        "productos": productos,
+    })
+
+
+@app.get("/api/admin/pulso")
+async def admin_pulso(request: Request):
+    # El token va en la cabecera Authorization, no en la URL: las URLs quedan
+    # en los registros del servidor y del navegador. Lo usa el mapa de calor.
+    if not token_valido(token_de(request)):
+        return sin_sesion()
+    await vacia_metricas()
+    desde = (datetime.datetime.now(MX).date() - datetime.timedelta(days=89)).isoformat()
+    try:
+        filas = await almacen.consulta(
+            "SELECT clave, SUM(valor), MIN(dia) FROM metricas WHERE dia >= ? AND clave LIKE 'prod:%' GROUP BY clave",
+            (desde,))
+    except Exception:  # noqa: BLE001
+        return JSONResponse({"error": "sin_base"}, status_code=503)
+    datos: dict[str, dict[str, int]] = {}
+    primero = hoy()
+    for clave, n, dia in filas:
+        _, tipo, pid = clave.split(":", 2)
+        datos.setdefault(pid, {"ver": 0, "click": 0, "carrito": 0})[tipo] = int(n)
+        primero = min(primero, dia)
+    return JSONResponse({"desde": primero, "productos": datos})
+
+
+@app.get("/api/admin/registros")
+async def admin_registros(request: Request):
+    if not token_valido(token_de(request)):
+        return sin_sesion()
+    try:
+        filas = await almacen.consulta(
+            "SELECT id, fecha, nombre, correo, telefono, necesidad, pagina, fuente "
+            "FROM registros ORDER BY id DESC LIMIT 5000")
+    except Exception:  # noqa: BLE001
+        return JSONResponse({"error": "sin_base"}, status_code=503)
+    campos = ("id", "fecha", "nombre", "correo", "telefono", "necesidad", "pagina", "fuente")
+    return JSONResponse({"almacen": almacen.tipo, "registros": [dict(zip(campos, f)) for f in filas]})
+
+
+@app.post("/api/admin/registros/borrar")
+async def admin_registros_borrar(request: Request):
+    cuerpo = await _cuerpo(request)
+    if not token_valido(token_de(request, cuerpo)):
+        return sin_sesion()
+    rid = cuerpo.get("id")
+    if not isinstance(rid, int) or rid < 1:
+        return JSONResponse({"error": "id"}, status_code=400)
+    await almacen.ejecuta("DELETE FROM registros WHERE id = ?", (rid,))
     return JSONResponse({"ok": True})
 
 
@@ -1039,8 +1384,14 @@ CSP_PANEL = "; ".join([
 ])
 
 
+def admin_ruta() -> str:
+    ruta = os.environ.get("ADMIN_RUTA", "").strip().strip("/").lower()
+    return ruta if re.fullmatch(r"[a-z0-9-]{8,60}", ruta) else ""
+
+
 def es_panel(ruta: str) -> bool:
-    return ruta.startswith(("/api/admin", "/admin", "/editor"))
+    secreta = admin_ruta()
+    return ruta.startswith(("/api/admin", "/admin", "/editor")) or bool(secreta and ruta.startswith("/" + secreta))
 
 
 @app.middleware("http")
@@ -1102,6 +1453,17 @@ TIPOS = {
 async def sitio(ruta: str):
     rel = ruta or "index.html"
 
+    # Con ADMIN_RUTA el panel solo existe en su dirección secreta: quien pruebe
+    # /admin.html ve lo mismo que en cualquier página que no existe.
+    secreta = admin_ruta()
+    if secreta:
+        if rel.removesuffix(".html") in ("admin", "editor"):
+            rel = "no-existe"
+        elif rel == secreta:
+            rel = "admin.html"
+        elif rel == secreta + "-editor":
+            rel = "editor.html"
+
     if any(rel == p or rel.startswith(p) for p in PROHIBIDO):
         return HTMLResponse("No encontrado", status_code=404)
     if any(parte.startswith(".") for parte in rel.split("/")):
@@ -1129,7 +1491,7 @@ async def sitio(ruta: str):
     # cambió, o un cliente vería el precio viejo hasta una hora después.
     # El panel y el editor siempre frescos (una versión vieja en caché guarda
     # datos con la forma vieja), y en tu computadora todo: ahí se está editando.
-    if rel == ARCHIVO_CATALOGO or rel.startswith(("admin.", "editor.")) or os.environ.get("MODO_LOCAL") == "1":
+    if rel == ARCHIVO_CATALOGO or rel.startswith(("admin", "editor")) or os.environ.get("MODO_LOCAL") == "1":
         cache = "no-cache"
     return FileResponse(
         destino,

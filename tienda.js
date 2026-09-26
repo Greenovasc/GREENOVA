@@ -876,6 +876,7 @@
         d.mensaje || "Sin notas."
       ].join("\n");
 
+      if (window.GNmetrica) window.GNmetrica("carrito_enviado");
       /* PENDIENTE: sustituir por un POST a un endpoint real (ver README). */
       window.location.href = "mailto:ventas@greenovasc.com.mx?subject=" +
         encodeURIComponent("Cotización desde la tienda (" + cart.length + " productos)") +

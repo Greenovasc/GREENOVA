@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Panel de catálogo | GreeNova SC</title>
+<title>Panel | GreeNova SC</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
 <style>
@@ -110,6 +110,52 @@
                   border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
   .entrar input { font: inherit; width: 100%; padding: 10px 12px; border-radius: 10px;
                   border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+  /* ---------- pestañas, métricas y registros ---------- */
+  .adm__tabs { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; padding: .9rem 0 .2rem; }
+  .adm__tabs [role="tab"] {
+    font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer;
+    padding: .55rem 1rem; border-radius: var(--r-pill);
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+  }
+  .adm__tabs [role="tab"][aria-selected="true"] { background: var(--forest); border-color: var(--forest); color: #fff; }
+  .adm__tabn:not(:empty) { margin-left: .3rem; padding: 1px 7px; border-radius: var(--r-pill);
+                            background: var(--accent); color: var(--accent-ink); font-size: .75rem; }
+  .adm__tablink { margin-left: auto; font-size: .875rem; color: var(--green); font-weight: 600; }
+  .adm[data-vista="metricas"] #btn-respaldo, .adm[data-vista="metricas"] #btn-nuevo, .adm[data-vista="metricas"] #btn-guardar,
+  .adm[data-vista="registros"] #btn-respaldo, .adm[data-vista="registros"] #btn-nuevo, .adm[data-vista="registros"] #btn-guardar { display: none; }
+  .met__barra { display: flex; flex-wrap: wrap; gap: .6rem; align-items: end; padding: 1rem 0; }
+  .met__rango select { width: auto; }
+  .met__kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: .75rem; margin-bottom: .9rem; }
+  .met__kpi { border: 1px solid var(--line); border-radius: var(--r-tile); background: var(--surface); padding: 1rem; }
+  .met__kpi b { display: block; font-family: var(--font-display); font-size: 1.9rem; line-height: 1.1; color: var(--ink); }
+  .met__kpi span { font-size: .8rem; color: var(--ink-2); }
+  .met__kpi small { display: block; margin-top: .25rem; font-size: .75rem; color: var(--ink-3); }
+  .met__tarjeta { border: 1px solid var(--line); border-radius: var(--r-tile); background: var(--surface); padding: 1rem 1.1rem; margin-bottom: .9rem; }
+  .met__tarjeta h2 { font-size: 1rem; margin: 0 0 .7rem; }
+  .met__grafica svg { display: block; width: 100%; height: auto; }
+  .met__leyenda { display: flex; gap: .4rem 1rem; align-items: center; font-size: .8rem; color: var(--ink-2); margin-top: .4rem; }
+  .met__punto { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: -.6rem; }
+  .met__punto--vis { background: var(--sage-soft); }
+  .met__punto--reg { background: var(--green); }
+  .met__rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: .9rem; }
+  .met__rejilla .met__tarjeta { margin: 0; }
+  .met__tabla { width: 100%; border-collapse: collapse; font-size: .875rem; }
+  .met__tabla th { text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; padding: .4rem .5rem; border-bottom: 1px solid var(--line); }
+  .met__tabla td { padding: .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .met__tabla td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .met__tabla tr:last-child td { border-bottom: 0; }
+  .met__bar { position: relative; }
+  .met__bar i { position: absolute; left: 0; top: 50%; height: 70%; transform: translateY(-50%); border-radius: 4px; background: var(--tint-sage); z-index: 0; }
+  .met__bar span { position: relative; z-index: 1; }
+  .met__nada { color: var(--ink-3); font-size: .85rem; padding: .4rem 0; }
+  .met__tabla-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-tile); background: var(--surface); }
+  .met__tabla--reg td { min-width: 90px; }
+  .met__tabla--reg td:nth-child(5) { min-width: 220px; max-width: 360px; }
+  .met__tabla--reg td:nth-child(3) { min-width: 190px; }
+  .met__tabla--reg td:nth-child(4) { white-space: nowrap; }
+  .met__tabla--reg a { color: var(--green); font-weight: 600; overflow-wrap: anywhere; }
+  .met__borrar { font: inherit; font-size: .8rem; color: var(--ink-3); background: none; border: 0; cursor: pointer; text-decoration: underline; }
+  .met__borrar:hover { color: #8a2222; }
 </style>
 </head>
 <body>
@@ -142,7 +188,7 @@
 <main class="adm" id="panel" hidden>
   <header class="adm__head">
     <div>
-      <h1>Catálogo GreeNova</h1>
+      <h1>Panel GreeNova</h1>
       <p class="adm__sub" id="resumen">—</p>
       <p class="adm__sub" id="quien"></p>
     </div>
@@ -167,6 +213,13 @@
       </button>
     </div>
   </header>
+
+  <nav class="adm__tabs" role="tablist" aria-label="Secciones del panel">
+    <button type="button" role="tab" id="tab-catalogo" aria-selected="true" aria-controls="vista-catalogo">Catálogo</button>
+    <button type="button" role="tab" id="tab-metricas" aria-selected="false" aria-controls="vista-metricas">Métricas</button>
+    <button type="button" role="tab" id="tab-registros" aria-selected="false" aria-controls="vista-registros">Registros <span class="adm__tabn" id="tab-registros-n"></span></button>
+    <a class="adm__tablink" id="link-editor" href="editor.html">Editor visual ↗</a>
+  </nav>
 
   <p class="adm__aviso" id="aviso" hidden></p>
 
@@ -215,6 +268,7 @@
     </form>
   </section>
 
+  <div id="vista-catalogo" role="tabpanel" aria-labelledby="tab-catalogo">
   <p class="adm__ayuda">Para cambiar un precio: busca el producto o la medida (por ejemplo
     <b>vaso de papel blanco</b> o <b>4 oz</b>), escribe el nuevo precio por pieza en esa medida
     y pulsa <b>Guardar cambios</b>.</p>
@@ -232,10 +286,53 @@
 
   <div id="lista"></div>
   <p class="adm__vacio" id="vacio" hidden>No hay productos que coincidan.</p>
+  </div>
+
+  <!-- ---------------- métricas ---------------- -->
+  <section id="vista-metricas" role="tabpanel" aria-labelledby="tab-metricas" hidden>
+    <div class="met__barra">
+      <label class="met__rango"><span class="campo">Periodo</span>
+        <select id="met-dias">
+          <option value="1">Hoy</option>
+          <option value="7">Últimos 7 días</option>
+          <option value="30" selected>Últimos 30 días</option>
+          <option value="90">Últimos 90 días</option>
+          <option value="365">Último año</option>
+        </select></label>
+      <button class="btn btn--ghost btn--sm" type="button" id="met-actualizar"><span class="btn__label">Actualizar</span></button>
+      <span class="adm__sub" id="met-hora"></span>
+    </div>
+    <p class="adm__aviso" id="met-aviso" hidden></p>
+    <div class="met__kpis" id="met-kpis"></div>
+    <div class="met__tarjeta">
+      <h2>Visitantes y registros por día</h2>
+      <div id="met-grafica" class="met__grafica"></div>
+      <p class="met__leyenda"><span class="met__punto met__punto--vis"></span> Visitantes
+        <span class="met__punto met__punto--reg"></span> Registros</p>
+    </div>
+    <div class="met__rejilla" id="met-tablas"></div>
+  </section>
+
+  <!-- ---------------- registros ---------------- -->
+  <section id="vista-registros" role="tabpanel" aria-labelledby="tab-registros" hidden>
+    <div class="met__barra">
+      <div class="adm__buscar"><input type="text" id="reg-buscar" placeholder="Buscar por nombre, correo, teléfono o lo que necesita…"></div>
+      <button class="btn btn--ghost btn--sm" type="button" id="reg-actualizar"><span class="btn__label">Actualizar</span></button>
+      <button class="btn btn--primary btn--sm" type="button" id="reg-csv"><span class="btn__label">Descargar Excel (CSV)</span></button>
+    </div>
+    <p class="adm__aviso" id="reg-aviso" hidden></p>
+    <p class="adm__sub" id="reg-resumen"></p>
+    <div class="met__tabla-scroll"><table class="met__tabla met__tabla--reg">
+      <thead><tr><th>Fecha</th><th>Nombre</th><th>Correo</th><th>WhatsApp / teléfono</th><th>Qué necesita</th><th>Llegó de</th><th></th></tr></thead>
+      <tbody id="reg-filas"></tbody>
+    </table></div>
+    <p class="adm__vacio" id="reg-vacio" hidden>Todavía no hay registros.</p>
+  </section>
 </main>
 
 <script src="productos.js"></script>
 <!-- ?v= obliga al navegador a bajar la versión nueva aunque tenga la vieja guardada -->
-<script src="admin.js?v=2026-09-24c"></script>
+<script src="admin.js?v=2026-09-26a"></script>
+<script src="admin-metricas.js?v=2026-09-26b"></script>
 </body>
 </html>
