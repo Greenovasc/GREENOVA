@@ -384,5 +384,142 @@
     } catch (e) { /* modo privado */ }
   }
 
+  /* ---------- ventana de bienvenida (nombre y correo) ----------
+     Sale una vez a los 8 s. Si la cierran no vuelve en 14 días; si se
+     suscriben, nunca más. `?bienvenida=1` la abre al momento para revisarla.
+     Los datos van a /api/suscribir (main.py), que los anota en la hoja. */
+  (function () {
+    var KEY = "greenova.bienvenida.v1";
+    var forzar = /[?&]bienvenida=1\b/.test(location.search);
+    function lee() { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } }
+    function guarda(estado) { try { localStorage.setItem(KEY, JSON.stringify({ estado: estado, t: Date.now() })); } catch (e) { /* modo privado */ } }
+    var previo = lee();
+    if (!forzar && previo && (previo.estado === "suscrito" || Date.now() - previo.t < 14 * 864e5)) return;
+
+    var host, caja, form, estado, anterior;
+
+    function arma() {
+      host = document.createElement("div");
+      host.className = "bienv";
+      host.hidden = true;
+      host.innerHTML =
+        '<div class="bienv__fondo" data-cerrar></div>' +
+        '<div class="bienv__caja" role="dialog" aria-modal="true" aria-labelledby="bienv-t">' +
+          '<button class="bienv__x" type="button" aria-label="Cerrar" data-cerrar>' +
+            '<svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg></button>' +
+          '<div class="bienv__foto"><img src="assets/prod/contenedor-kraft-rect.webp" alt="" width="900" height="900" decoding="async"></div>' +
+          '<div class="bienv__cuerpo">' +
+            '<p class="bienv__eyebrow">El futuro se sirve en GreeNova</p>' +
+            '<h2 id="bienv-t">Bienvenido a GreeNova</h2>' +
+            '<p class="bienv__txt">Déjanos tu nombre y tu correo y recibe antes que nadie los lanzamientos, precios de mayoreo y promociones.</p>' +
+            '<form class="bienv__form" novalidate>' +
+              '<label class="sr-only" for="bienv-nombre">Tu nombre</label>' +
+              '<input id="bienv-nombre" name="nombre" autocomplete="name" placeholder="Tu nombre" maxlength="80">' +
+              '<label class="sr-only" for="bienv-correo">Tu correo electrónico</label>' +
+              '<input id="bienv-correo" name="correo" type="email" autocomplete="email" inputmode="email" placeholder="Tu correo electrónico" maxlength="120" required>' +
+              '<input class="bienv__trampa" name="sitio_web" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+              '<button class="btn btn--primary bienv__btn" type="submit"><span class="btn__label">Suscribirme</span></button>' +
+              '<p class="bienv__estado" role="status" aria-live="polite"></p>' +
+            "</form>" +
+            '<p class="bienv__nota">Solo te escribimos para novedades de GreeNova. Puedes darte de baja cuando quieras.</p>' +
+          "</div>" +
+        "</div>";
+      document.body.appendChild(host);
+      caja = host.querySelector(".bienv__caja");
+      form = host.querySelector("form");
+      estado = host.querySelector(".bienv__estado");
+
+      host.addEventListener("click", function (e) {
+        if (e.target.closest("[data-cerrar]")) cierra();
+      });
+      host.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") { e.stopPropagation(); cierra(); return; }
+        if (e.key !== "Tab") return;
+        var f = caja.querySelectorAll("button, input:not([tabindex='-1'])");
+        var primero = f[0], ultimo = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === primero) { e.preventDefault(); ultimo.focus(); }
+        else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus(); }
+      });
+      form.addEventListener("submit", envia);
+    }
+
+    function abre() {
+      if (!host) arma();
+      anterior = document.activeElement;
+      host.hidden = false;
+      document.documentElement.classList.add("bienv-abierta");
+      requestAnimationFrame(function () { host.dataset.open = "true"; });
+      setTimeout(function () { host.querySelector("#bienv-nombre").focus({ preventScroll: true }); }, 60);
+    }
+
+    function cierra() {
+      if (!host || host.hidden) return;
+      if (lee() === null || (lee().estado !== "suscrito")) guarda("cerrada");
+      host.dataset.open = "false";
+      document.documentElement.classList.remove("bienv-abierta");
+      setTimeout(function () { host.hidden = true; }, reduce ? 0 : 260);
+      if (anterior && anterior.focus) anterior.focus({ preventScroll: true });
+    }
+
+    function envia(e) {
+      e.preventDefault();
+      var correo = form.correo.value.trim();
+      var nombre = form.nombre.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) {
+        estado.dataset.state = "error";
+        estado.textContent = "Escribe un correo válido.";
+        form.correo.focus();
+        return;
+      }
+      var btn = form.querySelector(".bienv__btn");
+      btn.disabled = true;
+      btn.querySelector(".btn__label").textContent = "Enviando…";
+      estado.dataset.state = "";
+      estado.textContent = "";
+      fetch("/api/suscribir", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre: nombre, correo: correo, sitio_web: form.sitio_web.value,
+                               pagina: (location.pathname.split("/").pop() || "index.html").replace(".html", "") })
+      }).then(function (r) {
+        if (r.ok) return listo(nombre);
+        throw r.status;
+      }).catch(function (s) {
+        btn.disabled = false;
+        btn.querySelector(".btn__label").textContent = "Suscribirme";
+        estado.dataset.state = "error";
+        estado.textContent = s === 400 ? "Revisa tu correo, parece que tiene un error." :
+          s === 429 ? "Recibimos varios registros desde aquí. Intenta más tarde." :
+          "No pudimos registrarte ahora. Intenta de nuevo en un momento.";
+      });
+    }
+
+    function listo(nombre) {
+      guarda("suscrito");
+      var primer = nombre.split(" ")[0];
+      var cuerpo = host.querySelector(".bienv__cuerpo");
+      cuerpo.innerHTML =
+        '<p class="bienv__eyebrow">Suscripción lista</p>' +
+        '<h2 id="bienv-t"></h2>' +
+        '<p class="bienv__txt">Te avisaremos de lanzamientos, precios de mayoreo y promociones. Gracias por elegir empaque que sí se degrada.</p>' +
+        '<button class="btn btn--primary bienv__btn" type="button" data-cerrar><span class="btn__label">Seguir viendo</span></button>';
+      cuerpo.querySelector("h2").textContent = "¡Gracias" + (primer ? ", " + primer : "") + "!";
+      cuerpo.querySelector("button").focus({ preventScroll: true });
+    }
+
+    /* No interrumpir: si están escribiendo (buscador, chat) o tienen abierto
+       el carrito, se espera y se vuelve a intentar. */
+    function cuandoSePueda() {
+      var ocupado = document.activeElement && /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+      var drawer = document.getElementById("drawer");
+      if (document.hidden || ocupado || (drawer && drawer.dataset.open === "true")) {
+        setTimeout(cuandoSePueda, 5000);
+        return;
+      }
+      abre();
+    }
+    setTimeout(cuandoSePueda, forzar ? 300 : 8000);
+  })();
+
   window.GN = { observe: observe, burst: burst };
 })();

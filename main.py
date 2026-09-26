@@ -933,6 +933,89 @@ async def admin_pulso(request: Request):
 
 
 # ---------------------------------------------------------------------------
+# SUSCRIPCIÓN — la ventana de bienvenida (nombre y correo).
+#
+#   SUSCRIPCION_URL  dirección del Apps Script de la hoja de Google donde se
+#                    anotan (ver README). Solo la conoce el servidor: el
+#                    navegador nunca la ve, así nadie escribe directo en la hoja.
+#   Sin ella y con MODO_LOCAL=1 se anotan en .suscriptores-local.csv para
+#   probar; en Render sin ella, la ventana avisa que no se pudo.
+#
+# Render borra el disco en cada despliegue: por eso no se guardan aquí, y el
+# repo es público: por eso tampoco van a GitHub.
+# ---------------------------------------------------------------------------
+
+CORREO_VALIDO = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._%+-]{0,63}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,24}$")
+SUSC_POR_IP = 5            # por IP cada 10 minutos
+SUSC_POR_DIA = 500         # en todo el sitio
+ARCHIVO_SUSC_LOCAL = RAIZ / ".suscriptores-local.csv"
+_susc_ip: dict[str, list[float]] = {}
+_susc_dia = {"fecha": "", "n": 0}
+
+
+def sin_formula(valor: str) -> str:
+    # Una celda que empieza con = + - @ la hoja la ejecuta como fórmula.
+    return valor.lstrip("=+-@\t\r ")
+
+
+@app.post("/api/suscribir")
+async def suscribir(request: Request):
+    # Solo JSON: así un formulario de otro sitio no puede mandar registros
+    # (el navegador exige permiso previo para JSON entre dominios).
+    if "application/json" not in (request.headers.get("content-type") or ""):
+        return JSONResponse({"error": "formato"}, status_code=415)
+    cuerpo = await _cuerpo(request)
+    # Campo trampa: invisible para personas, los bots lo llenan. Se les
+    # contesta "ok" para que no sepan que los descartamos.
+    if texto(cuerpo.get("sitio_web"), 100):
+        return JSONResponse({"ok": True})
+
+    nombre = sin_formula(" ".join(texto(cuerpo.get("nombre"), 80).split()))
+    correo = texto(cuerpo.get("correo"), 120).lower()
+    pagina = ident(cuerpo.get("pagina"), 40)
+    if not CORREO_VALIDO.match(correo):
+        return JSONResponse({"error": "correo_invalido"}, status_code=400)
+
+    ahora = time.time()
+    hoy = datetime.date.today().isoformat()
+    ip = ip_de(request)
+    with _candado:
+        for k in list(_susc_ip):
+            _susc_ip[k] = [t for t in _susc_ip[k] if ahora - t < 600]
+            if not _susc_ip[k]:
+                del _susc_ip[k]
+        if _susc_dia["fecha"] != hoy:
+            _susc_dia.update(fecha=hoy, n=0)
+        if len(_susc_ip.get(ip, ())) >= SUSC_POR_IP or _susc_dia["n"] >= SUSC_POR_DIA:
+            return muy_intentos()
+        _susc_ip.setdefault(ip, []).append(ahora)
+        _susc_dia["n"] += 1
+
+    fila = {"nombre": nombre, "correo": correo, "pagina": pagina,
+            "fecha": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")}
+    destino = os.environ.get("SUSCRIPCION_URL", "").strip()
+    if destino:
+        try:
+            async with httpx.AsyncClient(timeout=15, follow_redirects=True) as http:
+                r = await http.post(destino, json=fila)
+            if r.status_code >= 400 or "ok" not in r.text[:200]:
+                raise RuntimeError(f"la hoja contestó {r.status_code}")
+        except Exception as e:  # noqa: BLE001
+            print(f"[suscripción] no se pudo anotar: {e}", flush=True)
+            return JSONResponse({"error": "no_disponible"}, status_code=503)
+    elif os.environ.get("MODO_LOCAL") == "1":
+        nuevo = not ARCHIVO_SUSC_LOCAL.exists()
+        with open(ARCHIVO_SUSC_LOCAL, "a", encoding="utf-8") as f:
+            if nuevo:
+                f.write("fecha,nombre,correo,pagina\n")
+            f.write(",".join(json.dumps(fila[k], ensure_ascii=False) for k in ("fecha", "nombre", "correo", "pagina")) + "\n")
+    else:
+        print("[suscripción] falta SUSCRIPCION_URL en Render", flush=True)
+        return JSONResponse({"error": "no_disponible"}, status_code=503)
+    return JSONResponse({"ok": True})
+
+
+# ---------------------------------------------------------------------------
 # cabeceras de seguridad
 #
 # En todo el sitio: sin adivinar tipos de archivo, sin filtrar la URL a otros

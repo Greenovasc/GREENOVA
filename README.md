@@ -181,7 +181,8 @@ Configuración del **Web Service**:
 | Root Directory | *(vacío)* |
 
 Variables de entorno: `OPENAI_API_KEY` y, opcional, `OPENAI_MODEL`, más las del
-panel (`ADMIN_PASSWORD` y `GITHUB_TOKEN`, ver "Panel de catálogo"). El `PORT` lo
+panel (`ADMIN_USUARIOS`, `SESION_SECRETO` y `GITHUB_TOKEN`, ver "Panel de
+catálogo") y `SUSCRIPCION_URL` (ver "Ventana de bienvenida"). El `PORT` lo
 pone Render solo. La rama que despliega Render tiene que ser la misma a la que
 escribe el panel (`GITHUB_BRANCH`, por omisión `main`): así cada guardado del
 panel es un commit que dispara el redeploy.
@@ -310,6 +311,52 @@ campo nuevo a los productos, agrégalo también en `render_catalogo()` de
 
 `productos.js` se sirve con `Cache-Control: no-cache` para que un precio nuevo
 se vea en cuanto termine el redeploy, no una hora después.
+
+### Ventana de bienvenida (suscripción)
+
+A los 8 segundos de entrar sale una ventana que pide nombre y correo (como la
+de wecare). Si la cierran no vuelve en 14 días; si se suscriben, nunca más.
+Para verla al momento: `index.html?bienvenida=1`. El código está al final de
+`greenova.js` y los estilos al final de `styles.css`.
+
+Los registros llegan a `/api/suscribir` (`main.py`), que valida el correo,
+descarta bots (campo trampa invisible), limita 5 por IP cada 10 minutos y 500
+al día, y los anota en una **hoja de Google**. No se guardan en Render (su
+disco se borra en cada deploy) ni en GitHub (el repo es público).
+
+| Variable | Qué es |
+|---|---|
+| `SUSCRIPCION_URL` | la dirección `/exec` del Apps Script de la hoja (abajo). Sin ella, en Render la ventana avisa "No pudimos registrarte"; con `MODO_LOCAL=1` se anotan en `.suscriptores-local.csv`. |
+
+Cómo se conecta la hoja (una sola vez, gratis):
+
+1. En Google Drive crea una hoja nueva, por ejemplo "Suscriptores GreeNova".
+2. Menú **Extensiones → Apps Script**. Borra lo que haya, pega esto y guarda:
+
+   ```js
+   function doPost(e) {
+     var d = JSON.parse(e.postData.contents);
+     var limpio = function (v) { return String(v || "").replace(/^[=+\-@\s]+/, ""); };
+     var hoja = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+     if (hoja.getLastRow() === 0) hoja.appendRow(["Fecha", "Nombre", "Correo", "Página"]);
+     var correo = limpio(d.correo).toLowerCase();
+     var ya = hoja.getLastRow() > 1 && hoja.getRange(2, 3, hoja.getLastRow() - 1, 1)
+       .createTextFinder(correo).matchEntireCell(true).findNext();
+     if (!ya) hoja.appendRow([new Date(), limpio(d.nombre), correo, limpio(d.pagina)]);
+     return ContentService.createTextOutput("ok");
+   }
+   ```
+
+3. **Implementar → Nueva implementación → Aplicación web**. Ejecutar como:
+   **Yo**. Quién tiene acceso: **Cualquier persona**. Autoriza con tu cuenta
+   (Google avisa que la app no está verificada porque es tuya: **Configuración
+   avanzada → Ir a …**).
+4. Copia la **URL de la aplicación web** (termina en `/exec`) y ponla en
+   Render como `SUSCRIPCION_URL`. No la publiques: quien la tenga puede
+   escribir en la hoja. El navegador nunca la ve; solo el servidor.
+
+Un correo repetido no se duplica en la hoja. En Hostinger (sin Python) este
+endpoint no existe: habrá que hacer su versión en `php/` como la del agente.
 
 ### Editor visual (`editor.html`)
 

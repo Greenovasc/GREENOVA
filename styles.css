@@ -1852,6 +1852,12 @@ body[data-locked="true"] { overflow: hidden; }
 .stepper--pz input { width: 64px; }
 .stepper--pz.stepper--sm input { width: 56px; }
 .stepper--cant.stepper--pz { max-width: 190px; }
+/* En la tarjeta, 10000 piezas ya no dejan lugar al botón al lado (salía
+   "adir"): la cantidad va arriba a todo lo ancho y "Añadir" abajo. */
+.pcard__row:has(.stepper--pz) { flex-wrap: wrap; }
+.pcard__row .stepper--pz { flex: 1 1 100%; }
+.pcard__row .stepper--pz input { flex: 1; min-width: 0; }
+.pcard__row:has(.stepper--pz) .pcard__add { flex: 1 1 100%; padding-block: 10px; }
 
 .ficha__cta { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
 .ficha__cta .btn--block { margin-bottom: 0; }
@@ -2146,4 +2152,70 @@ a.pcard__media { cursor: pointer; }
   .hero-foto { min-height: min(calc(100svh - var(--nav-h)), 720px); }
   .hero-foto__title { font-size: clamp(1.55rem, 6.6vw, 2.3rem); }
   .hero-foto__actions .hero-search { width: 100%; }
+}
+
+/* ---------- ventana de bienvenida (greenova.js) ----------
+   Foto de estudio a la izquierda y el formulario a la derecha; en celular la
+   foto queda como franja arriba y la caja sale desde abajo. */
+.bienv {
+  position: fixed; inset: 0; z-index: 300; padding: 16px;
+  display: grid; grid-template-columns: minmax(0, 1fr); place-items: center;
+}
+.bienv[hidden] { display: none; }
+.bienv__fondo {
+  position: absolute; inset: 0; background: rgba(15, 32, 25, .55);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  opacity: 0; transition: opacity .26s var(--ease);
+}
+.bienv__caja {
+  position: relative; display: grid; grid-template-columns: 44% 1fr;
+  width: min(760px, 100%); max-height: calc(100dvh - 32px); overflow: auto;
+  background: var(--surface); color: var(--ink);
+  border-radius: var(--r-card); box-shadow: 0 30px 80px rgba(15, 32, 25, .35);
+  opacity: 0; transform: translateY(14px) scale(.98);
+  transition: opacity .26s var(--ease), transform .26s var(--ease);
+}
+.bienv[data-open="true"] .bienv__fondo { opacity: 1; }
+.bienv[data-open="true"] .bienv__caja { opacity: 1; transform: none; }
+.bienv__foto { background: var(--tint-sage); min-height: 100%; }
+.bienv__foto img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.bienv__cuerpo { display: flex; flex-direction: column; justify-content: center; padding: 42px 34px 30px; }
+.bienv__eyebrow {
+  margin-bottom: 10px; font-size: .6875rem; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--green);
+}
+.bienv h2 { font-family: var(--font-display); font-size: clamp(1.55rem, 3.4vw, 2rem); line-height: 1.1; }
+.bienv__txt { margin-top: 10px; font-size: .95rem; line-height: 1.5; color: var(--ink-2); }
+.bienv__form { display: grid; gap: 10px; margin-top: 20px; }
+.bienv__form input {
+  width: 100%; padding: .78rem .9rem; font: inherit; font-size: .95rem;
+  background: var(--surface-2); color: var(--ink);
+  border: 1px solid var(--line-strong); border-radius: var(--r-input);
+}
+.bienv__form input::placeholder { color: var(--ink-3); }
+.bienv__form input:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; border-color: var(--green); }
+.bienv__btn { justify-content: center; width: 100%; margin-top: 2px; }
+.bienv .bienv__cuerpo > .bienv__btn { margin-top: 22px; }
+.bienv__estado { min-height: 1.2em; font-size: .82rem; color: var(--ink-3); }
+.bienv__estado[data-state="error"] { color: #a4243b; }
+.bienv__nota { margin-top: 4px; font-size: .75rem; line-height: 1.45; color: var(--ink-3); }
+.bienv__trampa { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.bienv__x {
+  position: absolute; top: 12px; right: 12px; z-index: 1;
+  display: grid; place-items: center; width: 38px; height: 38px;
+  border: 0; border-radius: var(--r-pill); cursor: pointer;
+  background: rgba(255, 255, 255, .92); color: var(--ink); box-shadow: var(--shadow-sm);
+}
+.bienv__x:hover { background: #fff; }
+.bienv__x .ico { width: 18px; height: 18px; }
+.bienv-abierta, .bienv-abierta body { overflow: hidden; }
+@media (max-width: 640px) {
+  .bienv { place-items: end center; padding: 12px; }
+  .bienv__caja { grid-template-columns: 1fr; max-height: calc(100dvh - 24px); }
+  .bienv__foto { height: 150px; min-height: 0; }
+  .bienv__foto img { object-position: 50% 60%; }
+  .bienv__cuerpo { padding: 22px 20px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bienv__fondo, .bienv__caja { transition: none; }
 }
