@@ -387,6 +387,18 @@ solo abre en una dirección que solo saben los administradores:
 Y además de la dirección, hay que entrar con usuario y contraseña
 (`ADMIN_USUARIOS`). Tras 5 intentos fallidos esa IP queda bloqueada 15 minutos.
 
+#### Botones de reinicio del panel
+
+- **Reiniciar sitio** (arriba, en todas las pestañas): le pide a Render que
+  vuelva a publicar el sitio con lo último de GitHub (tarda 2–5 minutos). Usa
+  el *Deploy Hook* de Render: en tu servicio → **Settings → Deploy Hook** →
+  copia la dirección (`https://api.render.com/deploy/srv-…?key=…`) y ponla en
+  Environment como `RENDER_DEPLOY_HOOK`. Es secreta: quien la tenga puede
+  republicar el sitio. Se puede pedir una vez cada 2 minutos.
+- **Poner métricas en cero** (pestaña Métricas): borra visitas, fuentes,
+  dispositivos y productos para arrancar limpio. Los **registros no se tocan**
+  (esos se borran uno por uno en su pestaña).
+
 ### Editor visual (`editor.html`)
 
 La misma tienda que ve el cliente, pero editable. No es una copia de la página:

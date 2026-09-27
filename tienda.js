@@ -351,7 +351,10 @@
           (promo && promo.desc ? '<span class="pcard__flag pcard__flag--off">-' + promo.desc + '%</span>' :
             p.destacado ? '<span class="pcard__flag">Más pedido</span>' :
             p.servicio ? '<span class="pcard__flag pcard__flag--srv">Pocas unidades</span>' : "") +
-          '<span class="pcard__spec">' + p.v.length + (p.v.length === 1 ? " presentación" : " medidas") + "</span>" +
+          /* "medidas" solo si son medidas (llevan números); si no, "opciones"
+             (sin asa / con asa, con o sin impresión). */
+          '<span class="pcard__spec">' + p.v.length + (p.v.length === 1 ? " presentación" :
+            (/\d/.test(p.v.join(" ")) ? " medidas" : " opciones")) + "</span>" +
           ((promo && promo.agotado) || todasAgotadas ? '<span class="pcard__out">Agotado</span>' : "") +
         "</a>" +
         '<div class="pcard__body">' +

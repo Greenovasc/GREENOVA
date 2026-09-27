@@ -208,6 +208,9 @@
       <button class="btn btn--primary btn--sm" type="button" id="btn-guardar" disabled>
         <span class="btn__label">Guardar cambios</span>
       </button>
+      <button class="btn btn--ghost btn--sm" type="button" id="btn-reiniciar" title="Vuelve a publicar el sitio en Render con lo último de GitHub">
+        <span class="btn__label">Reiniciar sitio</span>
+      </button>
       <button class="btn btn--ghost btn--sm" type="button" id="btn-salir">
         <span class="btn__label">Salir</span>
       </button>
@@ -300,6 +303,7 @@
           <option value="365">Último año</option>
         </select></label>
       <button class="btn btn--ghost btn--sm" type="button" id="met-actualizar"><span class="btn__label">Actualizar</span></button>
+      <button class="btn btn--ghost btn--sm" type="button" id="met-reiniciar"><span class="btn__label">Poner métricas en cero</span></button>
       <span class="adm__sub" id="met-hora"></span>
     </div>
     <p class="adm__aviso" id="met-aviso" hidden></p>
@@ -333,6 +337,6 @@
 <script src="productos.js"></script>
 <!-- ?v= obliga al navegador a bajar la versión nueva aunque tenga la vieja guardada -->
 <script src="admin.js?v=2026-09-26a"></script>
-<script src="admin-metricas.js?v=2026-09-26b"></script>
+<script src="admin-metricas.js?v=2026-09-26c"></script>
 </body>
 </html>

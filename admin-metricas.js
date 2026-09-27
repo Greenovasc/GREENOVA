@@ -201,6 +201,33 @@
       tabla("Productos que más interesan", productos, ["Producto", "Vistos", "Abiertos", "Al carrito"]);
   }
 
+  /* Métricas en cero: para arrancar limpio (por ejemplo, después de pruebas).
+     Los registros no se tocan. */
+  $("met-reiniciar").addEventListener("click", function () {
+    if (!window.confirm("¿Poner en cero todas las métricas (visitas, fuentes, dispositivos y productos)?\n\nLos registros de la ventana NO se borran. Esto no se puede deshacer.")) return;
+    pide("/api/admin/metricas/reiniciar", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" })
+      .then(function () { cargaMetricas(); aviso("met-aviso", "Listo: las métricas empiezan de cero desde ahora.", "ok"); })
+      .catch(function (e) { aviso("met-aviso", e.message, "error"); });
+  });
+
+  /* Reiniciar el sitio: Render lo vuelve a publicar con lo último de GitHub. */
+  $("btn-reiniciar").addEventListener("click", function () {
+    if (!window.confirm("¿Reiniciar el sitio?\n\nRender lo vuelve a publicar con la última versión de GitHub. Tarda de 2 a 5 minutos; mientras tanto la página puede tardar en abrir.")) return;
+    fetch("/api/admin/reiniciar-sitio", {
+      method: "POST", headers: { Authorization: "Bearer " + token(), "Content-Type": "application/json" }, body: "{}"
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        var m = r.ok ? ["Listo: Render está volviendo a publicar el sitio. En 2 a 5 minutos queda como nuevo.", "ok"] :
+          r.status === 401 ? ["Tu sesión venció. Recarga la página y vuelve a entrar.", "error"] :
+          j.error === "sin_gancho" ? ["Falta conectar el botón: agrega RENDER_DEPLOY_HOOK en Render (ver README). En tu computadora este botón no aplica.", "error"] :
+          j.error === "espera" ? ["Ya se pidió hace un momento. Espera 2 minutos antes de volver a intentarlo.", "error"] :
+          ["Render no respondió. Intenta de nuevo en un momento.", "error"];
+        aviso("aviso", m[0], m[1]);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }).catch(function () { aviso("aviso", "No se pudo contactar al servidor.", "error"); });
+  });
+
   /* =============================== registros =============================== */
 
   function cargaRegistros() {

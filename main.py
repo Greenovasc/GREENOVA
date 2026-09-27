@@ -265,6 +265,8 @@ async def chat(request: Request):
 #                    ella, /admin.html y /editor.html dan 404 y el panel vive en
 #                    /ADMIN_RUTA (y el editor en /ADMIN_RUTA-editor).
 #   DATABASE_URL     Postgres para registros y métricas (ver "DATOS" abajo)
+#   RENDER_DEPLOY_HOOK  opcional: el Deploy Hook de Render, para el botón
+#                    "Reiniciar sitio" del panel
 #
 # Seguridad (revisada 2026-09-24):
 #   - un usuario y contraseña por administrador; el commit dice quién guardó
@@ -1357,6 +1359,61 @@ async def admin_registros_borrar(request: Request):
     if not isinstance(rid, int) or rid < 1:
         return JSONResponse({"error": "id"}, status_code=400)
     await almacen.ejecuta("DELETE FROM registros WHERE id = ?", (rid,))
+    return JSONResponse({"ok": True})
+
+
+@app.post("/api/admin/metricas/reiniciar")
+async def admin_metricas_reiniciar(request: Request):
+    """Pone las métricas en cero (visitas, fuentes, productos…). Los registros
+    de la ventana NO se tocan: esos solo se borran uno por uno."""
+    cuerpo = await _cuerpo(request)
+    usuario = usuario_del_token(token_de(request, cuerpo))
+    if not usuario:
+        return sin_sesion()
+    with _candado:
+        _sumas.clear()
+        _vistos.clear()
+    try:
+        await almacen.ejecuta("DELETE FROM metricas", ())
+        await almacen.ejecuta("DELETE FROM visitantes", ())
+    except Exception:  # noqa: BLE001
+        return JSONResponse({"error": "sin_base"}, status_code=503)
+    print(f"[panel] {usuario} puso las métricas en cero", flush=True)
+    return JSONResponse({"ok": True})
+
+
+# ---- reiniciar el sitio desde el panel -------------------------------------
+#
+#   RENDER_DEPLOY_HOOK  el "Deploy Hook" de Render (Settings → Deploy Hook):
+#                       una dirección secreta que, al llamarla, vuelve a
+#                       publicar el sitio con lo último de GitHub. El botón
+#                       "Reiniciar sitio" del panel la llama. Sin ella, avisa.
+
+_ultimo_reinicio = [0.0]
+
+
+@app.post("/api/admin/reiniciar-sitio")
+async def admin_reiniciar_sitio(request: Request):
+    cuerpo = await _cuerpo(request)
+    usuario = usuario_del_token(token_de(request, cuerpo))
+    if not usuario:
+        return sin_sesion()
+    gancho = os.environ.get("RENDER_DEPLOY_HOOK", "").strip()
+    if not gancho.startswith("https://api.render.com/deploy/"):
+        return JSONResponse({"error": "sin_gancho"}, status_code=400)
+    if time.time() - _ultimo_reinicio[0] < 120:
+        return JSONResponse({"error": "espera"}, status_code=429)
+    await vacia_metricas()  # que no se pierda lo que está en memoria
+    try:
+        async with httpx.AsyncClient(timeout=20) as http:
+            r = await http.post(gancho)
+        if r.status_code >= 400:
+            raise RuntimeError(f"Render contestó {r.status_code}")
+    except Exception as e:  # noqa: BLE001
+        print(f"[panel] no se pudo pedir el reinicio: {e}", flush=True)
+        return JSONResponse({"error": "render"}, status_code=502)
+    _ultimo_reinicio[0] = time.time()
+    print(f"[panel] {usuario} pidió reiniciar el sitio", flush=True)
     return JSONResponse({"ok": True})
 
 
