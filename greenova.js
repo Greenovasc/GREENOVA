@@ -434,7 +434,7 @@
       host.innerHTML =
         '<div class="bienv__fondo" data-cerrar></div>' +
         '<div class="bienv__caja" role="dialog" aria-modal="true" aria-labelledby="bienv-t">' +
-          '<div class="bienv__foto"><img src="assets/prod/fajilla-kraft.webp" alt="Vaso de papel con fajilla kraft GreeNova SC" width="900" height="900" decoding="async"></div>' +
+          '<div class="bienv__foto"><img src="assets/prod/fajilla-kraft.webp?v=20260926c" alt="Vaso de papel con fajilla kraft GreeNova SC" width="900" height="900" decoding="async"></div>' +
           '<div class="bienv__cuerpo">' +
             '<div class="bienv__top">' +
               '<div class="bienv__barra" role="progressbar" aria-label="Avance del registro" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30"><span></span></div>' +

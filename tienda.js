@@ -27,7 +27,8 @@
      sustituirlas por data URIs en el archivo autocontenido. */
   function src(name) {
     var path = "assets/prod/" + name + ".webp";
-    return (window.GN_ASSETS && window.GN_ASSETS[path]) || path;
+    /* ?v= obliga al navegador a bajar la foto nueva si se reemplazó */
+    return (window.GN_ASSETS && window.GN_ASSETS[path]) || path + "?v=20260926c";
   }
 
   /* ============================ estado ============================ */
