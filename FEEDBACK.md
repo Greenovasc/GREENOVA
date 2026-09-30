@@ -120,3 +120,10 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
   externa (portal de autofacturación; falta la liga): la página del sitio solo explica cómo
   facturar con el número de ticket; ya no pide RFC. Aviso y Facturación como landings.
   Documento "Copys del sitio GreeNova SC.pdf" en el escritorio.
+
+## Ronda 10 (2026-09-29): portada con la foto de Gemini
+
+- La portada es un solo cuadro redondeado, como el de WeCare, con la foto de Gemini de la barra con empaques (`assets/landing/portada-greenova.webp`).
+- A la foto se le quitaron el texto pegado ("se sirve en Grinova"), el logo blanco, el botón "Ver empaques" y la marca "texto texto" de la pared.
+- Encima, en la franja oscura: "El futuro se sirve en GreeNova.", "Empaque biodegradable para tu negocio de comida.", "¿Qué empaque necesitas?" (abre el asistente) e "Ir a la tienda".
+- En celular, la foto va arriba y el texto abajo.

@@ -2026,82 +2026,64 @@ a.pcard__media { cursor: pointer; }
    ========================================================================== */
 
 /* ---------- portada ----------
-   Una sola pieza en banner redondeado (Gabriel, 2026-09-29): a la izquierda el
-   eslogan, a la derecha la foto del vaso con la fajilla GreeNova SC en un arco
-   y, encimada, la de la serigrafía "Your logo". Sin sellos ni carrusel, y
-   quieta (a Gabriel no le gusta el fondo animado). Las fotos no pasan de la
-   mitad de su tamaño real, para que se vean nítidas en pantallas retina. */
+   Un solo cuadro redondeado, como el de WeCare (Gabriel, 2026-09-29): la foto
+   de Gemini de la barra con empaques GreeNova y, sobre la franja oscura de la
+   derecha (el 32 % del ancho), el eslogan, "¿Qué empaque necesitas?" y "Ir a la
+   tienda". El texto crece con el cuadro (unidades cqi). En pantallas chicas la
+   foto va arriba y el texto abajo, en el mismo tono oscuro de la foto. */
 .portada { padding-top: clamp(12px, 1.6vw, 20px); background: var(--bg); }
-.hero-gn {
-  --heading: var(--brand-ink);
-  position: relative; isolation: isolate; overflow: hidden;
-  display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); align-items: center;
-  gap: clamp(1.5rem, 4vw, 3.5rem);
-  min-height: min(calc(100svh - var(--nav-h) - 40px), 620px);
-  padding: clamp(2.2rem, 5vw, 4rem) clamp(1.5rem, 5.5vw, 5rem);
-  border-radius: clamp(20px, 2.4vw, 32px);
-  color: var(--brand-ink);
-  background:
-    radial-gradient(55% 75% at 78% 45%, rgba(107, 153, 130, .5), transparent 70%),
-    radial-gradient(40% 55% at 0% 100%, rgba(155, 206, 137, .14), transparent 70%),
-    var(--forest);
+.hero-foto {
+  --oscuro: #15100e;
+  position: relative; overflow: hidden; container-type: inline-size;
+  border-radius: clamp(18px, 2.2vw, 30px);
+  background: var(--oscuro); color: #fff;
+  box-shadow: 0 24px 60px rgba(22, 44, 37, .16);
 }
-.hero-gn__titulo {
-  margin: 0; max-width: 11ch; color: var(--heading);
-  font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(2.8rem, 6.4vw, 5.8rem); line-height: .98; letter-spacing: -.04em;
-  text-wrap: balance;
+.hero-foto__img { display: block; width: 100%; height: auto; aspect-ratio: 2000 / 958; }
+.hero-foto__txt {
+  position: absolute; inset: 0 0 0 67.75%;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 4cqi 1.8cqi; text-align: center;
 }
-.hero-gn__titulo span { color: var(--accent); }
-.hero-gn__lede {
-  margin: clamp(1.1rem, 2vw, 1.5rem) 0 0; max-width: 34ch;
-  font-size: clamp(1rem, 1.35vw, 1.2rem); font-weight: 500; line-height: 1.5;
-  color: rgba(245, 249, 244, .82);
+.hero-foto__titulo {
+  margin: 0; color: #fff; font-family: var(--font-display); font-weight: 700;
+  line-height: .95; letter-spacing: -.03em;
 }
-.hero-gn__acciones { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: clamp(1.8rem, 3.2vw, 2.6rem); }
-.hero-gn .hero-search--gn { width: min(310px, 100%); border-color: transparent; background: #fff; box-shadow: 0 10px 30px rgba(22, 44, 37, .25); }
-.hero-gn .hero-search--gn:focus-within { border-color: var(--accent); background: #fff; }
-.hero-gn .hero-search--gn input { color: var(--ink); }
-.hero-gn .hero-search--gn input::placeholder { color: var(--ink-3); }
-.hero-gn .hero-search--gn input::-webkit-search-cancel-button { filter: none; }
-.hero-gn .hero-search--gn button { background: var(--forest); color: #fff; }
-.hero-gn .hero-search--gn button:hover { background: var(--forest-deep); }
+.hero-foto__titulo small { font-size: 3.2cqi; vertical-align: .9em; margin-right: .1em; }
+.hero-foto__titulo em {
+  font-style: normal; font-size: 7.4cqi; letter-spacing: -.045em; color: var(--accent);
+}
+.hero-foto__titulo span { display: block; margin-top: .45em; font-size: 2.9cqi; letter-spacing: -.02em; }
+.hero-foto__titulo b { color: var(--accent); font-weight: inherit; }
+.hero-foto__lede {
+  margin: 1.4cqi 0 0; max-width: 24ch;
+  font-size: clamp(.9rem, 1.35cqi, 1.2rem); font-weight: 500; line-height: 1.45;
+  color: rgba(245, 249, 244, .84);
+}
+.hero-foto__acciones {
+  display: flex; flex-direction: column; align-items: stretch; gap: 10px;
+  width: min(100%, 330px); margin-top: 2.6cqi;
+}
+.hero-foto__acciones .btn { justify-content: center; }
+.hero-foto .hero-search--gn { width: 100%; border-color: transparent; background: #fff; box-shadow: 0 10px 30px rgba(0, 0, 0, .3); }
+.hero-foto .hero-search--gn:focus-within { border-color: var(--accent); background: #fff; }
+.hero-foto .hero-search--gn input { color: var(--ink); font-size: .92rem; min-width: 0; }
+.hero-foto .hero-search--gn input::placeholder { color: var(--ink-3); }
+.hero-foto .hero-search--gn input::-webkit-search-cancel-button { filter: none; }
+.hero-foto .hero-search--gn button { background: var(--forest); color: #fff; }
+.hero-foto .hero-search--gn button:hover { background: var(--forest-deep); }
 .btn--acento { background: var(--accent); color: var(--accent-ink); }
 .btn--acento:hover { background: var(--accent-soft); transform: translateY(-2px); }
 
-/* Derecha: arco con el vaso GreeNova SC y el recuadro "Your logo" encimado. */
-.hero-gn__arte {
-  position: relative; justify-self: center;
-  width: min(100%, 470px); aspect-ratio: 470 / 520;
-}
-.hero-gn__arco, .hero-gn__recuadro { position: absolute; margin: 0; overflow: hidden; background: var(--brand-ink); }
-.hero-gn__arco img, .hero-gn__recuadro img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.hero-gn__arco {
-  left: 4%; top: 0; width: 76%; height: 88%;
-  border-radius: 999px 999px 28px 28px;
-  box-shadow: 0 30px 60px rgba(14, 34, 27, .35);
-}
-.hero-gn__arco img { object-position: 50% 45%; scale: 1.08; }
-.hero-gn__recuadro {
-  right: 0; bottom: 0; width: 44%; aspect-ratio: 624 / 692;
-  border-radius: 26px; border: 7px solid var(--forest);
-  box-shadow: 0 24px 48px rgba(14, 34, 27, .4);
-}
-/* Contorno fino que sigue al arco, un poco corrido. */
-.hero-gn__aro {
-  position: absolute; left: 4%; top: 0; width: 76%; height: 88%;
-  border: 1.5px solid rgba(155, 206, 137, .6); border-radius: 999px 999px 28px 28px;
-  translate: -18px 18px;
-}
-
-@media (max-width: 900px) {
-  .hero-gn { grid-template-columns: 1fr; min-height: 0; text-align: left; }
-  .hero-gn__titulo { max-width: 12ch; }
-  .hero-gn__arte { width: min(100%, 380px); margin-top: .5rem; }
-}
-@media (max-width: 560px) {
-  .hero-gn__acciones .hero-search--gn, .hero-gn__acciones .btn { width: 100%; justify-content: center; }
-  .hero-gn__arte { width: min(100%, 320px); }
+/* Cuadro angosto: la foto (solo la parte clara) arriba y el texto abajo. */
+@media (max-width: 1000px) {
+  .hero-foto__img { aspect-ratio: 1350 / 958; object-fit: cover; object-position: 0 50%; }
+  .hero-foto__txt { position: static; padding: 1.8rem 1.4rem 2rem; }
+  .hero-foto__titulo small { font-size: clamp(1.4rem, 5cqi, 2rem); }
+  .hero-foto__titulo em { font-size: clamp(3.2rem, 13cqi, 5.4rem); }
+  .hero-foto__titulo span { font-size: clamp(1.35rem, 5.2cqi, 2.2rem); }
+  .hero-foto__lede { margin-top: 1rem; }
+  .hero-foto__acciones { margin-top: 1.5rem; }
 }
 
 /* ---------- bloques ---------- */

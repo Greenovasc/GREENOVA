@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
 <link rel="preload" as="image" href="assets/prod/vaso-papel-par-cutout.webp?v=20260928b">
-<link rel="stylesheet" href="styles.css?v=20260929f">
+<link rel="stylesheet" href="styles.css?v=20260929g">
 <script>document.documentElement.classList.add("js");</script>
 
 <script type="application/ld+json">
@@ -109,17 +109,22 @@
 <main id="main">
 
   <!-- ============ Portada ============
-       Una sola pieza, sin carrusel ni sellos (Gabriel, 2026-09-29): el eslogan
-       grande, "Empaque biodegradable para tu negocio de comida" en chico, y solo
-       las fotos con la marca GreeNova SC y con "Your logo". Colores de la guía:
-       fondo Pine Tail, texto Porcelain y "GreeNova" en Willow Green. -->
+       Como la de WeCare (Gabriel, 2026-09-29): un solo cuadro redondeado con la
+       foto de Gemini de la barra con empaques GreeNova, y el texto a la derecha,
+       sobre la parte oscura de la foto. Al archivo se le quitaron el texto, el
+       logo blanco y el botón que traía pegados: aquí van como texto real. -->
   <section class="portada" aria-labelledby="hero-h">
     <div class="wrap">
-      <div class="hero-gn">
-        <div class="hero-gn__txt">
-          <h1 class="hero-gn__titulo" id="hero-h">El futuro se sirve en <span>GreeNova</span></h1>
-          <p class="hero-gn__lede">Empaque biodegradable para tu negocio de comida.</p>
-          <div class="hero-gn__acciones">
+      <div class="hero-foto">
+        <img class="hero-foto__img" src="assets/landing/portada-greenova.webp?v=20260929a"
+             srcset="assets/landing/portada-greenova-1200.webp?v=20260929a 1200w, assets/landing/portada-greenova.webp?v=20260929a 2000w"
+             sizes="(max-width: 1420px) 100vw, 1360px"
+             alt="Barra de cafetería con vasos, tapas, bowls y contenedores biodegradables de GreeNova SC"
+             width="2000" height="958" fetchpriority="high" decoding="async">
+        <div class="hero-foto__txt">
+          <h1 class="hero-foto__titulo" id="hero-h"><small>El</small> <em>futuro</em> <span>se sirve en <b>GreeNova</b>.</span></h1>
+          <p class="hero-foto__lede">Empaque biodegradable para tu negocio de comida.</p>
+          <div class="hero-foto__acciones">
             <!-- "¿Qué empaque necesitas?" abre el asistente con la pregunta
                  (Gabriel, 2026-09-29). Sin JavaScript, busca en la tienda. -->
             <form class="hero-search hero-search--gn" role="search" action="tienda.html" method="get" data-pregunta-agente>
@@ -134,15 +139,6 @@
               <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg>
             </a>
           </div>
-        </div>
-        <div class="hero-gn__arte">
-          <span class="hero-gn__aro" aria-hidden="true"></span>
-          <figure class="hero-gn__arco">
-            <img src="assets/prod/fajilla-kraft.webp?v=20260928d" alt="Vaso de papel con fajilla kraft impresa con el logo de GreeNova SC" width="900" height="900" fetchpriority="high" decoding="async">
-          </figure>
-          <figure class="hero-gn__recuadro">
-            <img src="assets/catalogo/servicio-serigrafia.webp?v=20260928d" alt="Serigrafía de un logo sobre vasos kraft" width="624" height="692" decoding="async">
-          </figure>
         </div>
       </div>
     </div>
