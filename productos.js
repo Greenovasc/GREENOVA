@@ -3,7 +3,7 @@
    ESTE ARCHIVO LO GENERA EL PANEL (admin.html). Si lo editas a mano, el
    siguiente guardado desde el panel va a sobrescribir tus cambios.
 
-   Última actualización desde el panel: 2026-09-24
+   Última actualización desde el panel: 2026-09-28
    =========================================================================== */
 window.GREENOVA = (function () {
   "use strict";
@@ -11,263 +11,249 @@ window.GREENOVA = (function () {
   /* Categorías del catálogo. */
   var CATEGORIAS = [
     { id: "vasos-papel", nombre: "Vasos de papel", icono: "i-coffee" },
-    { id: "vasos-frios", nombre: "Vasos PET y PLA", icono: "i-cup-cold" },
-    { id: "tapas", nombre: "Tapas", icono: "i-circle-half" },
-    { id: "contenedores", nombre: "Contenedores", icono: "i-package" },
-    { id: "bagazo", nombre: "Bagazo y paja", icono: "i-bowl-food" },
-    { id: "accesorios", nombre: "Accesorios", icono: "i-fork-knife" },
-    { id: "papel", nombre: "Papel y bolsas", icono: "i-shopping-bag" }
+    { id: "tapas-papel", nombre: "Tapas para vaso de papel", icono: "i-circle-half" },
+    { id: "fajillas", nombre: "Fajillas", icono: "i-package" },
+    { id: "removedores", nombre: "Removedores", icono: "i-fork-knife" },
+    { id: "vasos-pet", nombre: "Vasos PET y PP", icono: "i-cup-cold" },
+    { id: "tapas-pet", nombre: "Tapas para vaso PET", icono: "i-circle-half" }
   ];
 
   /* Materiales -> etiqueta visible. */
   var MATERIALES = {
     "papel": "Papel",
-    "papel-fsc": "Papel FSC",
-    "pla": "PLA compostable",
-    "pet": "PET",
     "kraft": "Kraft",
-    "bagazo": "Bagazo de caña",
-    "paja-trigo": "Paja de trigo",
-    "fecula": "Fécula de maíz",
     "madera": "Madera",
-    "tapioca": "Tapioca",
-    "plastico": "Plástico",
-    "carton": "Cartón"
+    "pet": "PET",
+    "pp": "Polipropileno",
+    "ps": "Poliestireno"
   };
 
-  /* p = piezas por caja | v = medidas | precio en MXN por caja (null = cotizar)
-     venta.tam = por medida: precio en MXN por pieza y min = pedido mínimo en piezas */
+  /* v = medidas u opciones | venta.tam = una entrada por medida:
+     paq / caja = piezas por paquete y por caja; pPaq / pCaja = precio en MXN,
+     IVA incluido (null = por confirmar); boca en mm; esp = especificaciones;
+     img = foto propia de esa medida. El pedido mínimo es un paquete. */
   var PRODUCTOS = [
     /* ---------------- vasos de papel ---------------- */
-    { id: "vaso-papel-blanco", nombre: "Vaso de papel blanco", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-par", p: 1000, destacado: true, fotoPropia: true, precio: null,
-      desc: "Para bebidas calientes y frías. La línea base de barra, en seis medidas.",
-      v: ["4 oz · boca 63 mm", "8 oz · boca 80 mm", "10 oz · boca 90 mm", "12 oz · boca 90 mm", "16 oz · boca 90 mm", "20 oz · boca 90 mm"],
-      venta: { linea: "papel", tam: [ { precio: 1.34, min: 10000, sku: "VASO-PAPEL-BLANCO-4OZBOCA63MM" }, { precio: 1.78, min: 10000, sku: "VASO-PAPEL-BLANCO-8OZBOCA80MM" }, { precio: 2.0, min: 10000, sku: "VASO-PAPEL-BLANCO-10OZBOCA90MM" }, { precio: 2.22, min: 10000, sku: "VASO-PAPEL-BLANCO-12OZBOCA90MM" }, { precio: 2.66, min: 10000, sku: "VASO-PAPEL-BLANCO-16OZBOCA90MM" }, { precio: 3.1, min: 10000, sku: "VASO-PAPEL-BLANCO-20OZBOCA90MM" } ] } },
-    { id: "vaso-papel-sedema", nombre: "Vaso de papel con registro SEDEMA", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-sedema", p: 1000, destacado: true, fotoPropia: true, sello: "SEDEMA", precio: null,
-      desc: "Registrado ante la Ciudad de México. El vaso que pide la normativa local.",
-      v: ["4 oz · boca 63 mm", "8 oz · boca 80 mm", "10 oz · boca 90 mm", "12 oz · boca 90 mm", "16 oz · boca 90 mm", "20 oz · boca 90 mm"],
-      venta: { linea: "papel", tam: [ { precio: 1.34, min: 10000, sku: "VASO-PAPEL-SEDEMA-4OZBOCA63MM" }, { precio: 1.78, min: 10000, sku: "VASO-PAPEL-SEDEMA-8OZBOCA80MM" }, { precio: 2.0, min: 10000, sku: "VASO-PAPEL-SEDEMA-10OZBOCA90MM" }, { precio: 2.22, min: 10000, sku: "VASO-PAPEL-SEDEMA-12OZBOCA90MM" }, { precio: 2.66, min: 10000, sku: "VASO-PAPEL-SEDEMA-16OZBOCA90MM" }, { precio: 3.1, min: 10000, sku: "VASO-PAPEL-SEDEMA-20OZBOCA90MM" } ] } },
-    { id: "vaso-papel-compostable", nombre: "Vaso de papel compostable", cat: "vasos-papel", mat: ["papel", "pla"], img: "vaso-papel-compostable", p: 1000, fotoPropia: true, precio: null,
-      desc: "Recubrimiento en PLA. Se composta con la fracción orgánica.",
-      v: ["8 oz · boca 80 mm", "10 oz · boca 90 mm", "12 oz · boca 90 mm", "16 oz · boca 90 mm", "20 oz · boca 90 mm"],
-      venta: { linea: "papel", tam: [ { precio: 1.78, min: 10000, sku: "VASO-PAPEL-COMPOSTABLE-8OZBOCA80MM" }, { precio: 2.0, min: 10000, sku: "VASO-PAPEL-COMPOSTABLE-10OZBOCA90MM" }, { precio: 2.22, min: 10000, sku: "VASO-PAPEL-COMPOSTABLE-12OZBOCA90MM" }, { precio: 2.66, min: 10000, sku: "VASO-PAPEL-COMPOSTABLE-16OZBOCA90MM" }, { precio: 3.1, min: 10000, sku: "VASO-PAPEL-COMPOSTABLE-20OZBOCA90MM" } ] } },
-    { id: "vaso-papel-impreso", nombre: "Vaso de papel con impresión", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-impreso", p: 1000, servicio: true, fotoPropia: true, precio: null,
-      desc: "Tu logo impreso en serigrafía sobre el vaso. Producción bajo pedido.",
-      v: ["8 oz · boca 80 mm", "12 oz · boca 90 mm", "16 oz · boca 90 mm", "20 oz · boca 90 mm"] },
+    { id: "vaso-papel-blanco", nombre: "Vaso de papel blanco", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-par", uso: "Bebida fría o caliente", fotoPropia: true, personalizable: true,
+      desc: "Vaso de papel blanco con recubrimiento interior de polietileno, para bebida fría o caliente.",
+      v: ["4 oz · boca 62 mm", "8 oz · boca 80 mm", "10 oz · boca 90 mm", "12 oz · boca 90 mm", "16 oz · boca 90 mm", "20 oz · boca 90 mm", "32 oz · boca 105 mm", "44 oz · boca 115 mm"],
+      venta: { linea: "papel", tam: [
+        { paq: 50, caja: 1000, pPaq: 52.62, pCaja: 912.31, boca: 62, esp: "Boca 62 mm · Alto 65 mm · Base 46 mm", sku: "GN-VASO-PAPEL-BLANCO-01", img: null },
+        { paq: 50, caja: 1000, pPaq: 53.15, pCaja: 923.03, boca: 80, esp: "Boca 80 mm · Alto 92 mm · Base 52 mm", sku: "GN-VASO-PAPEL-BLANCO-02", img: null },
+        { paq: 50, caja: 1000, pPaq: 61.3, pCaja: 1086.05, boca: 90, esp: "Boca 90 mm · Alto 96 mm · Base 60 mm", sku: "GN-VASO-PAPEL-BLANCO-03", img: null },
+        { paq: 50, caja: 1000, pPaq: 67.25, pCaja: 1205.0, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-BLANCO-04", img: null },
+        { paq: 50, caja: 1000, pPaq: 75.24, pCaja: 1364.9, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-BLANCO-05", img: null },
+        { paq: 50, caja: 1000, pPaq: 87.51, pCaja: 1610.22, boca: 90, esp: "Boca 90 mm · Alto 163 mm · Base 60 mm", sku: "GN-VASO-PAPEL-BLANCO-06", img: null },
+        { paq: 25, caja: 500, pPaq: 65.93, pCaja: 1248.68, boca: 105, esp: "Boca 105 mm", sku: "GN-VASO-PAPEL-BLANCO-07", img: null },
+        { paq: 25, caja: 500, pPaq: 76.15, pCaja: 1453.04, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-BLANCO-08", img: null }
+      ] } },
+    { id: "vaso-papel-negro", nombre: "Vaso de papel negro", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-negro", uso: "Bebida fría o caliente", fotoPropia: true, personalizable: true,
+      desc: "Vaso de papel negro con recubrimiento interior de polietileno, para bebida fría o caliente.",
+      v: ["4 oz · boca 62 mm", "8 oz · boca 80 mm", "10 oz · boca 90 mm", "12 oz · boca 90 mm", "16 oz · boca 90 mm", "20 oz · boca 90 mm", "44 oz · boca 115 mm"],
+      venta: { linea: "papel", tam: [
+        { paq: 50, caja: 1000, pPaq: 52.62, pCaja: 912.31, boca: 62, esp: "Boca 62 mm · Alto 65 mm · Base 46 mm", sku: "GN-VASO-PAPEL-NEGRO-01", img: null },
+        { paq: 50, caja: 1000, pPaq: 57.17, pCaja: 1003.38, boca: 80, esp: "Boca 80 mm · Alto 92 mm · Base 52 mm", sku: "GN-VASO-PAPEL-NEGRO-02", img: null },
+        { paq: 50, caja: 1000, pPaq: 66.16, pCaja: 1183.17, boca: 90, esp: "Boca 90 mm · Alto 96 mm · Base 60 mm", sku: "GN-VASO-PAPEL-NEGRO-03", img: null },
+        { paq: 50, caja: 1000, pPaq: 72.69, pCaja: 1313.82, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-NEGRO-04", img: null },
+        { paq: 50, caja: 1000, pPaq: 81.47, pCaja: 1489.32, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-NEGRO-05", img: null },
+        { paq: 50, caja: 1000, pPaq: 94.98, pCaja: 1759.58, boca: 90, esp: "Boca 90 mm · Alto 163 mm · Base 60 mm", sku: "GN-VASO-PAPEL-NEGRO-06", img: null },
+        { paq: 50, caja: 500, pPaq: 156.28, pCaja: 1492.83, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-NEGRO-07", img: null }
+      ] } },
+    { id: "vaso-papel-kraft", nombre: "Vaso de papel kraft", cat: "vasos-papel", mat: ["papel", "kraft"], img: "vaso-papel-kraft", uso: "Bebida fría o caliente", fotoPropia: true, personalizable: true,
+      desc: "Vaso de papel kraft con recubrimiento interior de polietileno, para bebida fría o caliente.",
+      v: ["8 oz · boca 80 mm", "12 oz · boca 90 mm", "16 oz · boca 90 mm"],
+      venta: { linea: "papel", tam: [
+        { paq: 50, caja: 1000, pPaq: 53.15, pCaja: 923.03, boca: 80, esp: "Boca 80 mm · Alto 92 mm · Base 52 mm", sku: "GN-VASO-PAPEL-KRAFT-01", img: null },
+        { paq: 50, caja: 1000, pPaq: 67.25, pCaja: 1205.0, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-KRAFT-02", img: null },
+        { paq: 50, caja: 1000, pPaq: 75.24, pCaja: 1364.9, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-KRAFT-03", img: null }
+      ] } },
+    { id: "vaso-papel-doble-pared", nombre: "Vaso de papel doble pared", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-doble-pared-blanco", uso: "Bebida caliente", fotoPropia: true, personalizable: true,
+      desc: "Vaso de papel de doble pared para bebida caliente, con recubrimiento interior de polietileno.",
+      v: ["Blanco · 8 oz · boca 80 mm", "Blanco · 12 oz · boca 90 mm", "Blanco · 16 oz · boca 90 mm", "Negro · 12 oz · boca 90 mm", "Negro · 16 oz · boca 90 mm", "Genérico · 12 oz · boca 90 mm"],
+      venta: { linea: "papel", tam: [
+        { paq: 50, caja: 1000, pPaq: 50.42, pCaja: 868.43, boca: 80, esp: "Boca 80 mm · Alto 92 mm · Base 52 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-01", img: "vaso-papel-doble-pared-blanco" },
+        { paq: 50, caja: 1000, pPaq: 60.58, pCaja: 1071.63, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-02", img: "vaso-papel-doble-pared-blanco" },
+        { paq: 25, caja: 500, pPaq: 68.53, pCaja: 1300.55, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-03", img: "vaso-papel-doble-pared-blanco" },
+        { paq: 50, caja: 1000, pPaq: 82.89, pCaja: 1517.78, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-04", img: "vaso-papel-doble-pared-negro" },
+        { paq: 28, caja: 560, pPaq: 83.46, pCaja: 1590.72, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-05", img: "vaso-papel-doble-pared-negro" },
+        { paq: 25, caja: 500, pPaq: 57.39, pCaja: 1077.87, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-06", img: "vaso-papel-doble-pared-generico" }
+      ] } },
+    { id: "vaso-papel-color-44", nombre: "Vaso de papel de color 44 oz", cat: "vasos-papel", mat: ["papel"], img: "foto-pendiente", uso: "Bebida fría o caliente", personalizable: true,
+      desc: "Vaso de papel de 44 oz en rojo, azul o gris, con recubrimiento interior de polietileno.",
+      v: ["Rojo · 44 oz · boca 115 mm", "Azul · 44 oz · boca 115 mm", "Gris · 44 oz · boca 115 mm"],
+      venta: { linea: "papel", tam: [
+        { paq: 50, caja: 500, pPaq: 156.28, pCaja: 1492.83, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-COLOR-44-01", img: null },
+        { paq: 50, caja: 500, pPaq: 156.28, pCaja: 1492.83, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-COLOR-44-02", img: null },
+        { paq: 50, caja: 500, pPaq: 156.28, pCaja: 1492.83, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-COLOR-44-03", img: null }
+      ] } },
 
-    /* ---------------- vasos pet y pla ---------------- */
-    { id: "vaso-pet", nombre: "Vaso PET para bebida fría", cat: "vasos-frios", mat: ["pet"], img: "vaso-pet-vpa", destacado: true, fotoPropia: true, precio: null,
-      desc: "Transparencia que vende. El formato clásico para frappé, agua fresca y smoothie.",
-      v: ["7 oz · boca 78 mm", "10 oz · boca 78 mm", "12 oz · boca 92 mm", "12 oz · boca 95 mm", "14 oz · boca 98 mm", "16 oz · boca 95 mm", "16 oz · boca 98 mm", "20 oz · boca 95 mm", "20 oz · boca 98 mm", "24 oz · boca 98 mm", "32 oz · boca 107 mm"],
-      venta: { linea: "pet", tam: [ { precio: 1.9, min: 10000, sku: "VASO-PET-7OZBOCA78MM" }, { precio: 2.2, min: 10000, sku: "VASO-PET-10OZBOCA78MM" }, { precio: 2.4, min: 10000, sku: "VASO-PET-12OZBOCA92MM" }, { precio: 2.4, min: 10000, sku: "VASO-PET-12OZBOCA95MM" }, { precio: 2.6, min: 10000, sku: "VASO-PET-14OZBOCA98MM" }, { precio: 2.8, min: 10000, sku: "VASO-PET-16OZBOCA95MM" }, { precio: 2.8, min: 10000, sku: "VASO-PET-16OZBOCA98MM" }, { precio: 3.2, min: 10000, sku: "VASO-PET-20OZBOCA95MM" }, { precio: 3.2, min: 10000, sku: "VASO-PET-20OZBOCA98MM" }, { precio: 3.6, min: 10000, sku: "VASO-PET-24OZBOCA98MM" }, { precio: 4.4, min: 10000, sku: "VASO-PET-32OZBOCA107MM" } ] } },
-    { id: "vaso-pla", nombre: "Vaso PLA compostable para bebida fría", cat: "vasos-frios", mat: ["pla"], img: "vaso-pet-vpc", destacado: true, fotoPropia: true, precio: null,
-      desc: "Mismo aspecto que el PET, hecho de ácido poliláctico. La opción compostable de la línea fría.",
-      v: ["12 oz · boca 95 mm", "16 oz · boca 95 mm", "20 oz · boca 95 mm"],
-      venta: { linea: "pla", tam: [ { precio: 2.6, min: 10000, sku: "VASO-PLA-12OZBOCA95MM" }, { precio: 3.0, min: 10000, sku: "VASO-PLA-16OZBOCA95MM" }, { precio: 3.5, min: 10000, sku: "VASO-PLA-20OZBOCA95MM" } ] } },
-    { id: "vaso-pet-u", nombre: "Vaso PET-U de una sola pieza", cat: "vasos-frios", mat: ["pet"], img: "vaso-pet-vpu", fotoPropia: true, precio: null,
-      desc: "Cuerpo de una sola pieza, pared recta. Aguanta mejor el apilado.",
-      v: ["12 oz · boca 90 mm", "16 oz · boca 90 mm", "24 oz · boca 90 mm"],
-      venta: { linea: "pet", tam: [ { precio: 2.4, min: 10000, sku: "VASO-PET-U-12OZBOCA90MM" }, { precio: 2.8, min: 10000, sku: "VASO-PET-U-16OZBOCA90MM" }, { precio: 3.6, min: 10000, sku: "VASO-PET-U-24OZBOCA90MM" } ] } },
-    { id: "vaso-pet-alto", nombre: "Vaso PET alto", cat: "vasos-frios", mat: ["pet"], img: "vaso-pet-vpb", fotoPropia: true, precio: null,
-      desc: "Perfil alto y esbelto para bebidas de especialidad.",
-      v: ["16 oz · boca 95 mm", "20 oz · boca 95 mm", "24 oz · boca 98 mm", "32 oz · boca 107 mm"],
-      venta: { linea: "pet", tam: [ { precio: 2.8, min: 10000, sku: "VASO-PET-ALTO-16OZBOCA95MM" }, { precio: 3.2, min: 10000, sku: "VASO-PET-ALTO-20OZBOCA95MM" }, { precio: 3.6, min: 10000, sku: "VASO-PET-ALTO-24OZBOCA98MM" }, { precio: 4.4, min: 10000, sku: "VASO-PET-ALTO-32OZBOCA107MM" } ] } },
+    /* ---------------- tapas para vaso de papel ---------------- */
+    { id: "tapa-cafetera-62", nombre: "Tapa para vaso de papel de 4 oz", cat: "tapas-papel", mat: ["ps"], img: "tienda-01", uso: "Tapa para vaso de papel de 4 oz",
+      desc: "Tapa cafetera de poliestireno para vaso de papel de 4 oz (boca 62 mm).",
+      v: ["Blanca", "Negra"],
+      venta: { linea: "ps", tam: [
+        { paq: 50, caja: 1000, pPaq: 42.65, pCaja: 713.02, boca: 62, esp: "Boca 62 mm", sku: "GN-TAPA-CAFETERA-62-01", img: "tienda-01" },
+        { paq: 50, caja: 1000, pPaq: 42.65, pCaja: 713.02, boca: 62, esp: "Boca 62 mm", sku: "GN-TAPA-CAFETERA-62-02", img: "tienda-02" }
+      ] } },
+    { id: "tapa-cafetera-80", nombre: "Tapa para vaso de papel de 8 oz", cat: "tapas-papel", mat: ["ps", "pp"], img: "tapa-blanca-solo", uso: "Tapa para vaso de papel de 8 oz", fotoPropia: true,
+      desc: "Tapas cafeteras para vaso de papel de 8 oz (boca 80 mm), en poliestireno y polipropileno.",
+      v: ["Blanca · poliestireno", "Negra · poliestireno", "Negra plana con solapa · poliestireno", "Negra · polipropileno"],
+      venta: { linea: "ps", tam: [
+        { paq: 100, caja: 1000, pPaq: 159.56, pCaja: 1455.59, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-01", img: "tapa-blanca-solo" },
+        { paq: 50, caja: 100, pPaq: null, pCaja: null, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-02", img: "tienda-05" },
+        { paq: 50, caja: 1000, pPaq: 39.24, pCaja: 644.77, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-03", img: "tienda-03" },
+        { paq: 50, caja: 1000, pPaq: 58.11, pCaja: 1022.21, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-04", img: "tapa-kraft-cafe" }
+      ] } },
+    { id: "tapa-cafetera-90", nombre: "Tapa para vaso de papel de 10 a 20 oz", cat: "tapas-papel", mat: ["ps", "pp"], img: "tapa-blanca-plana", uso: "Tapa para vaso de papel de 10 a 20 oz", fotoPropia: true,
+      desc: "Tapas cafeteras para vaso de papel de 10 a 20 oz (boca 90 mm): planas, de 3 óvalos y con tapón, en poliestireno y polipropileno.",
+      v: ["Blanca 3 óvalos · poliestireno", "Negra 3 óvalos · poliestireno", "Negra · poliestireno", "Negra plana con solapa · poliestireno", "Negra con tapón · poliestireno", "Blanca · polipropileno", "Negra · polipropileno", "Blanca con tapón · polipropileno", "Negra con tapón · polipropileno"],
+      venta: { linea: "ps", tam: [
+        { paq: 50, caja: 1000, pPaq: 49.83, pCaja: 856.54, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-01", img: "tapa-blanca-plana" },
+        { paq: 50, caja: 1000, pPaq: 49.83, pCaja: 856.54, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-02", img: "tienda-10" },
+        { paq: 50, caja: 1000, pPaq: 56.75, pCaja: 994.9, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-03", img: "tienda-13" },
+        { paq: 50, caja: 1000, pPaq: 48.72, pCaja: 834.31, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-04", img: "tienda-08" },
+        { paq: 50, caja: 1000, pPaq: 50.79, pCaja: 875.79, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-05", img: "tapa-viajera-negra" },
+        { paq: 50, caja: 1000, pPaq: 52.25, pCaja: 904.9, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-06", img: "tapa-domo-blanca" },
+        { paq: 50, caja: 1000, pPaq: 52.25, pCaja: 904.9, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-07", img: "tienda-12" },
+        { paq: 100, caja: 1200, pPaq: 134.32, pCaja: 1443.87, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-08", img: "tienda-15" },
+        { paq: 100, caja: 1200, pPaq: 126.5, pCaja: 1350.04, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-09", img: "tienda-16" }
+      ] } },
+    { id: "tapa-papel-90", nombre: "Tapa de papel para vaso de 10 a 20 oz", cat: "tapas-papel", mat: ["papel"], img: "tapa-papel-blanca", uso: "Tapa para vaso de papel de 10 a 20 oz", fotoPropia: true, personalizable: true,
+      desc: "Tapa de papel para vaso de papel de 10 a 20 oz (boca 90 mm). Se vende por caja.",
+      v: ["Blanca · boca 90 mm"],
+      venta: { linea: "papel", tam: [
+        { paq: null, caja: 1000, pPaq: null, pCaja: 1503.0, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-PAPEL-90-01", img: null }
+      ] } },
 
-    /* ---------------- tapas ---------------- */
-    { id: "tapa-4oz", nombre: "Tapa para vaso de 4 oz", cat: "tapas", mat: ["plastico"], img: "tapa-blanca-plana", fotoPropia: true, precio: null,
-      desc: "Modelo 4A. Bebida caliente.",
-      v: ["Modelo 4A"],
-      venta: { linea: "plastico", tam: [ { precio: 0.9, min: 10000, sku: "TAPA-4OZ-MODELO4A" } ] } },
-    { id: "tapa-8oz-papel", nombre: "Tapa de papel para vaso de 8 oz", cat: "tapas", mat: ["papel"], img: "tapa-kraft-cafe", fotoPropia: true, precio: null,
-      desc: "Bebida caliente. Cinco modelos según el estilo de bebedero.",
-      v: ["Modelo 8A", "Modelo 8B", "Modelo 8C", "Modelo 8D", "Modelo 8G · papel"],
-      venta: { linea: "papel", tam: [ { precio: 1.6, min: 10000, sku: "TAPA-8OZ-PAPEL-MODELO8A" }, { precio: 1.6, min: 10000, sku: "TAPA-8OZ-PAPEL-MODELO8B" }, { precio: 1.6, min: 10000, sku: "TAPA-8OZ-PAPEL-MODELO8C" }, { precio: 1.6, min: 10000, sku: "TAPA-8OZ-PAPEL-MODELO8D" }, { precio: 1.6, min: 10000, sku: "TAPA-8OZ-PAPEL-MODELO8GPAPEL" } ] } },
-    { id: "tapa-8oz-pla", nombre: "Tapa compostable PLA para vaso de 8 oz", cat: "tapas", mat: ["pla"], img: "tapa-blanca-solo", fotoPropia: true, precio: null,
-      desc: "Bebida caliente. Modelos compostables en ácido poliláctico.",
-      v: ["Modelo 8E · PLA", "Modelo 8F · PLA"],
-      venta: { linea: "pla", tam: [ { precio: 1.9, min: 10000, sku: "TAPA-8OZ-PLA-MODELO8EPLA" }, { precio: 1.9, min: 10000, sku: "TAPA-8OZ-PLA-MODELO8FPLA" } ] } },
-    { id: "tapa-1020-papel", nombre: "Tapa de papel para vaso de 10 a 20 oz", cat: "tapas", mat: ["papel"], img: "tapa-viajera-blanca", destacado: true, fotoPropia: true, precio: null,
-      desc: "La tapa de mayor rotación: cubre 10, 12, 16 y 20 oz con la misma pieza.",
-      v: ["Modelo TA", "Modelo TB", "Modelo TC", "Modelo TD", "Modelo TE", "Modelo TF", "Modelo TG", "Modelo TI · papel"],
-      venta: { linea: "papel", tam: [ { precio: 1.6, min: 10000, sku: "TAPA-1020-PAPEL-MODELOTA" }, { precio: 1.6, min: 10000, sku: "TAPA-1020-PAPEL-MODELOTB" }, { precio: 1.6, min: 10000, sku: "TAPA-1020-PAPEL-MODELOTC" }, { precio: 1.6, min: 10000, sku: "TAPA-1020-PAPEL-MODELOTD" }, { precio: 1.6, min: 10000, sku: "TAPA-1020-PAPEL-MODELOTE" }, { precio: 1.6, min: 10000, sku: "TAPA-1020-PAPEL-MODELOTF" }, { precio: 1.6, min: 10000, sku: "TAPA-1020-PAPEL-MODELOTG" }, { precio: 1.6, min: 10000, sku: "TAPA-1020-PAPEL-MODELOTIPAPEL" } ] } },
-    { id: "tapa-1020-pla", nombre: "Tapa compostable PLA para vaso de 10 a 20 oz", cat: "tapas", mat: ["pla"], img: "tapa-domo-blanca", fotoPropia: true, precio: null,
-      desc: "Versión compostable de la tapa de mayor rotación.",
-      v: ["Modelo TH · PLA", "Modelo TI · PLA"],
-      venta: { linea: "pla", tam: [ { precio: 1.9, min: 10000, sku: "TAPA-1020-PLA-MODELOTHPLA" }, { precio: 1.9, min: 10000, sku: "TAPA-1020-PLA-MODELOTIPLA" } ] } },
-    { id: "tapa-viajera", nombre: "Tapa viajera con seguro", cat: "tapas", mat: ["plastico"], img: "tapa-viajera-negra", fotoPropia: true, precio: null,
-      desc: "Bebedero con tapón abatible. Para pedido para llevar y reparto.",
-      v: ["10 a 20 oz · negra", "10 a 20 oz · blanca"],
-      venta: { linea: "plastico", tam: [ { precio: 1.8, min: 10000, sku: "TAPA-VIAJERA-10A20OZNEGRA" }, { precio: 1.8, min: 10000, sku: "TAPA-VIAJERA-10A20OZBLANCA" } ] } },
-    { id: "tapa-domo-alto", nombre: "Tapa domo alto para bebida caliente", cat: "tapas", mat: ["plastico"], img: "tapa-blanca-domo-alto", fotoPropia: true, precio: null,
-      desc: "Domo alto para crema batida y coberturas.",
-      v: ["10 a 20 oz · blanca", "10 a 20 oz · negra"],
-      venta: { linea: "plastico", tam: [ { precio: 1.9, min: 10000, sku: "TAPA-DOMO-ALTO-10A20OZBLANCA" }, { precio: 1.9, min: 10000, sku: "TAPA-DOMO-ALTO-10A20OZNEGRA" } ] } },
-    { id: "tapa-fria-78", nombre: "Tapa para vaso frío de 78 mm", cat: "tapas", mat: ["pet"], img: "tapa-fria-plana", fotoPropia: true, precio: null,
-      desc: "Diámetro 78 mm. Plana y domo.",
-      v: ["Modelo PA", "Modelo PB"],
-      venta: { linea: "pet", tam: [ { precio: 1.6, min: 10000, sku: "TAPA-FRIA-78-MODELOPA" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-78-MODELOPB" } ] } },
-    { id: "tapa-fria-90", nombre: "Tapa para vaso frío de 90 mm", cat: "tapas", mat: ["pet"], img: "tapa-fria-plana-par", fotoPropia: true, precio: null,
-      desc: "Diámetro 90 mm, para la línea PET-U.",
-      v: ["Modelo PA", "Modelo PB", "Modelo PC"],
-      venta: { linea: "pet", tam: [ { precio: 1.6, min: 10000, sku: "TAPA-FRIA-90-MODELOPA" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-90-MODELOPB" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-90-MODELOPC" } ] } },
-    { id: "tapa-fria-92", nombre: "Tapa para vaso frío de 92 mm", cat: "tapas", mat: ["pet"], img: "tapa-fria-plana-lisa", fotoPropia: true, precio: null,
-      desc: "Diámetro 92 mm.",
-      v: ["Modelo PA", "Modelo PB"],
-      venta: { linea: "pet", tam: [ { precio: 1.6, min: 10000, sku: "TAPA-FRIA-92-MODELOPA" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-92-MODELOPB" } ] } },
-    { id: "tapa-fria-95", nombre: "Tapa para vaso frío de 95 mm", cat: "tapas", mat: ["pet", "pla"], img: "tapa-fria-domo", destacado: true, fotoPropia: true, precio: null,
-      desc: "Diámetro 95 mm. Incluye dos modelos compostables en PLA.",
-      v: ["Modelo PA", "Modelo PB", "Modelo PC", "Modelo PA · compostable", "Modelo PB · compostable"],
-      venta: { linea: "pet", tam: [ { precio: 1.6, min: 10000, sku: "TAPA-FRIA-95-MODELOPA" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-95-MODELOPB" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-95-MODELOPC" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-95-MODELOPACOMPOSTABLE" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-95-MODELOPBCOMPOSTABLE" } ] } },
-    { id: "tapa-fria-98", nombre: "Tapa para vaso frío de 98 mm", cat: "tapas", mat: ["pet"], img: "tapa-fria-plana-hoyo", fotoPropia: true, precio: null,
-      desc: "Diámetro 98 mm. Siete modelos: plana, con hoyo, domo y domo alto.",
-      v: ["Modelo PA", "Modelo PB", "Modelo PC", "Modelo PD", "Modelo PE", "Modelo PF", "Modelo PG"],
-      venta: { linea: "pet", tam: [ { precio: 1.6, min: 10000, sku: "TAPA-FRIA-98-MODELOPA" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-98-MODELOPB" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-98-MODELOPC" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-98-MODELOPD" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-98-MODELOPE" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-98-MODELOPF" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-98-MODELOPG" } ] } },
-    { id: "tapa-fria-107", nombre: "Tapa para vaso frío de 107 mm", cat: "tapas", mat: ["pet"], img: "tapa-fria-domo-alto", fotoPropia: true, precio: null,
-      desc: "Diámetro 107 mm, para el vaso de 32 oz.",
-      v: ["Modelo PA", "Modelo PB"],
-      venta: { linea: "pet", tam: [ { precio: 1.6, min: 10000, sku: "TAPA-FRIA-107-MODELOPA" }, { precio: 1.6, min: 10000, sku: "TAPA-FRIA-107-MODELOPB" } ] } },
-    { id: "tapa-fria-domo-par", nombre: "Tapa domo para bebida fría", cat: "tapas", mat: ["pet"], img: "tapa-fria-domo-par", fotoPropia: true, precio: null,
-      desc: "Domo sin hoyo, para bebidas con cobertura o topping.",
-      v: ["95 mm", "98 mm", "107 mm"],
-      venta: { linea: "pet", tam: [ { precio: 0.78, min: 10000, sku: "TAPA-FRIA-DOMO-PAR-95MM" }, { precio: 0.79, min: 10000, sku: "TAPA-FRIA-DOMO-PAR-98MM" }, { precio: 0.83, min: 10000, sku: "TAPA-FRIA-DOMO-PAR-107MM" } ] } },
+    /* ---------------- fajillas ---------------- */
+    { id: "fajilla-kraft", nombre: "Fajilla kraft para vaso de 10 a 16 oz", cat: "fajillas", mat: ["kraft"], img: "fajilla-kraft", uso: "Fajilla para vaso de papel", fotoPropia: true, personalizable: true,
+      desc: "Fajilla de papel kraft para vaso de papel de 10 a 16 oz, pegada o ajustable.",
+      v: ["Pegada", "Ajustable"],
+      venta: { linea: "kraft", tam: [
+        { paq: 25, caja: 1000, pPaq: 26.35, pCaja: 913.87, boca: null, esp: "Kraft", sku: "GN-FAJILLA-KRAFT-01", img: "fajilla-kraft" },
+        { paq: 50, caja: 1000, pPaq: 27.09, pCaja: 401.87, boca: null, esp: "Kraft", sku: "GN-FAJILLA-KRAFT-02", img: "fajilla-kraft" }
+      ] } },
 
-    /* ---------------- contenedores ---------------- */
-    { id: "contenedor-kraft-rect", nombre: "Contenedor rectangular kraft", cat: "contenedores", mat: ["kraft"], img: "contenedor-kraft-rect", p: 300, destacado: true, fotoPropia: true, precio: null,
-      desc: "Resiste alimento caliente y grasa sin perder la forma. El caballo de batalla del para llevar.",
-      v: ["500 ml", "650 ml", "750 ml"],
-      venta: { linea: "kraft", tam: [ { precio: 2.5, min: 10000, sku: "CONTENEDOR-KRAFT-RECT-500ML" }, { precio: 2.8, min: 10000, sku: "CONTENEDOR-KRAFT-RECT-650ML" }, { precio: 3.0, min: 10000, sku: "CONTENEDOR-KRAFT-RECT-750ML" } ] } },
-    { id: "tapa-contenedor-kraft", nombre: "Tapa kraft para contenedor", cat: "contenedores", mat: ["kraft"], img: "tapa-perfil-kraft", p: 300, fotoPropia: true, precio: null,
-      desc: "Genérica para los tres volúmenes de contenedor rectangular.",
-      v: ["Genérica"],
-      venta: { linea: "kraft", tam: [ { precio: 2.6, min: 10000, sku: "TAPA-CONTENEDOR-KRAFT-GENERICA" } ] } },
-    { id: "tapa-contenedor-plastico", nombre: "Tapa de plástico para contenedor", cat: "contenedores", mat: ["plastico"], img: "tapa-fria-plana-lisa", p: 300, fotoPropia: true, precio: null,
-      desc: "Tapa transparente. Deja ver el contenido en mostrador y reparto.",
-      v: ["Genérica"],
-      venta: { linea: "plastico", tam: [ { precio: 2.3, min: 10000, sku: "TAPA-CONTENEDOR-PLASTICO-GENERICA" } ] } },
-    { id: "contenedor-circular-kraft", nombre: "Contenedor circular kraft", cat: "contenedores", mat: ["kraft"], img: "contenedor-circular-kraft", fotoPropia: true, precio: null,
-      desc: "Para sopas, ensaladas y bowls calientes. Con tapa a juego.",
-      v: ["Chico", "Mediano", "Grande"],
-      venta: { linea: "kraft", tam: [ { precio: 2.1, min: 10000, sku: "CONTENEDOR-CIRCULAR-KRAFT-CHICO" }, { precio: 2.6, min: 10000, sku: "CONTENEDOR-CIRCULAR-KRAFT-MEDIANO" }, { precio: 3.1, min: 10000, sku: "CONTENEDOR-CIRCULAR-KRAFT-GRANDE" } ] } },
-    { id: "contenedor-kraft-redondo", nombre: "Contenedor kraft redondo con tapa", cat: "contenedores", mat: ["kraft"], img: "contenedor-kraft-redondo", fotoPropia: true, precio: null,
-      desc: "Cuerpo y tapa en kraft. Apilable para exhibición.",
-      v: ["Chico", "Mediano", "Grande"],
-      venta: { linea: "kraft", tam: [ { precio: 2.1, min: 10000, sku: "CONTENEDOR-KRAFT-REDONDO-CHICO" }, { precio: 2.6, min: 10000, sku: "CONTENEDOR-KRAFT-REDONDO-MEDIANO" }, { precio: 3.1, min: 10000, sku: "CONTENEDOR-KRAFT-REDONDO-GRANDE" } ] } },
-    { id: "contenedor-papel-chino", nombre: "Contenedor de papel chino", cat: "contenedores", mat: ["kraft"], img: "contenedor-papel-chino", fotoPropia: true, precio: null,
-      desc: "Cierre de solapas, sin tapa extra. Para arroz, pasta y salteados.",
-      v: ["Chico", "Mediano", "Grande"],
-      venta: { linea: "kraft", tam: [ { precio: 2.1, min: 10000, sku: "CONTENEDOR-PAPEL-CHINO-CHICO" }, { precio: 2.6, min: 10000, sku: "CONTENEDOR-PAPEL-CHINO-MEDIANO" }, { precio: 3.1, min: 10000, sku: "CONTENEDOR-PAPEL-CHINO-GRANDE" } ] } },
-    { id: "contenedor-helado", nombre: "Contenedor de papel para helado", cat: "contenedores", mat: ["papel"], img: "contenedor-helado", fotoPropia: true, precio: null,
-      desc: "Pared lisa, apto para congelación.",
-      v: ["Chico", "Mediano", "Grande"],
-      venta: { linea: "papel", tam: [ { precio: 1.9, min: 10000, sku: "CONTENEDOR-HELADO-CHICO" }, { precio: 2.4, min: 10000, sku: "CONTENEDOR-HELADO-MEDIANO" }, { precio: 3.0, min: 10000, sku: "CONTENEDOR-HELADO-GRANDE" } ] } },
-    { id: "caja-pizza", nombre: "Caja de pizza", cat: "contenedores", mat: ["carton"], img: "caja-pizza", fotoPropia: true, precio: null,
-      desc: "Cartón corrugado. Con o sin impresión de tu logo.",
-      v: ["Personal", "Mediana", "Grande", "Familiar"],
-      venta: { linea: "carton", tam: [ { precio: 3.2, min: 10000, sku: "CAJA-PIZZA-PERSONAL" }, { precio: 4.5, min: 10000, sku: "CAJA-PIZZA-MEDIANA" }, { precio: 5.8, min: 10000, sku: "CAJA-PIZZA-GRANDE" }, { precio: 7.2, min: 10000, sku: "CAJA-PIZZA-FAMILIAR" } ] } },
-    { id: "caja-rebanada-pizza", nombre: "Contenedor para rebanada de pizza", cat: "contenedores", mat: ["kraft"], img: "caja-rebanada-pizza", fotoPropia: true, precio: null,
-      desc: "Kraft natural, para venta por rebanada.",
-      v: ["Estándar"],
-      venta: { linea: "kraft", tam: [ { precio: 2.6, min: 10000, sku: "CAJA-REBANADA-PIZZA-ESTANDAR" } ] } },
-    { id: "charola-kraft", nombre: "Charola kraft para papas", cat: "contenedores", mat: ["kraft"], img: "charola-kraft", fotoPropia: true, precio: null,
-      desc: "Charola abierta para papas, boneless y frituras.",
-      v: ["Chica", "Mediana", "Grande"],
-      venta: { linea: "kraft", tam: [ { precio: 2.1, min: 10000, sku: "CHAROLA-KRAFT-CHICA" }, { precio: 2.6, min: 10000, sku: "CHAROLA-KRAFT-MEDIANA" }, { precio: 3.1, min: 10000, sku: "CHAROLA-KRAFT-GRANDE" } ] } },
-    { id: "bowl-domo", nombre: "Bowl transparente con tapa domo", cat: "contenedores", mat: ["pet"], img: "bowl-domo", fotoPropia: true, precio: null,
-      desc: "Para ensaladas, fruta y postres en barra fría.",
-      v: ["Chico", "Mediano", "Grande"],
-      venta: { linea: "pet", tam: [ { precio: 2.3, min: 10000, sku: "BOWL-DOMO-CHICO" }, { precio: 2.9, min: 10000, sku: "BOWL-DOMO-MEDIANO" }, { precio: 3.6, min: 10000, sku: "BOWL-DOMO-GRANDE" } ] } },
-    { id: "almeja-transparente", nombre: "Contenedor almeja transparente", cat: "contenedores", mat: ["pet"], img: "almeja-transparente", fotoPropia: true, precio: null,
-      desc: "Bisagra y cierre a presión. Exhibe el producto sin abrirlo.",
-      v: ["Chica", "Mediana", "Grande"],
-      venta: { linea: "pet", tam: [ { precio: 1.8, min: 10000, sku: "ALMEJA-TRANSPARENTE-CHICA" }, { precio: 2.3, min: 10000, sku: "ALMEJA-TRANSPARENTE-MEDIANA" }, { precio: 2.9, min: 10000, sku: "ALMEJA-TRANSPARENTE-GRANDE" } ] } },
-    { id: "ensaladera-transparente", nombre: "Ensaladera transparente", cat: "contenedores", mat: ["pet"], img: "ensaladera-transparente", fotoPropia: true, precio: null,
-      desc: "Base honda con tapa. Para ensaladas y bowls fríos.",
-      v: ["Chica", "Grande"],
-      venta: { linea: "pet", tam: [ { precio: 2.4, min: 10000, sku: "ENSALADERA-TRANSPARENTE-CHICA" }, { precio: 3.4, min: 10000, sku: "ENSALADERA-TRANSPARENTE-GRANDE" } ] } },
-    { id: "contenedor-bisagra", nombre: "Contenedor cuadrado con bisagra", cat: "contenedores", mat: ["pet"], img: "contenedor-bisagra", fotoPropia: true, precio: null,
-      desc: "Cuerpo y tapa en una sola pieza.",
-      v: ["Chico", "Mediano", "Grande"],
-      venta: { linea: "pet", tam: [ { precio: 1.9, min: 10000, sku: "CONTENEDOR-BISAGRA-CHICO" }, { precio: 2.4, min: 10000, sku: "CONTENEDOR-BISAGRA-MEDIANO" }, { precio: 3.0, min: 10000, sku: "CONTENEDOR-BISAGRA-GRANDE" } ] } },
-    { id: "charola-pastel-redonda", nombre: "Charola para pastel redonda", cat: "contenedores", mat: ["pet"], img: "charola-pastel-redonda", fotoPropia: true, precio: null,
-      desc: "Base negra y domo transparente. Para pastelería y repostería.",
-      v: ["Chica", "Mediana", "Grande"],
-      venta: { linea: "pet", tam: [ { precio: 3.2, min: 10000, sku: "CHAROLA-PASTEL-REDONDA-CHICA" }, { precio: 4.1, min: 10000, sku: "CHAROLA-PASTEL-REDONDA-MEDIANA" }, { precio: 5.3, min: 10000, sku: "CHAROLA-PASTEL-REDONDA-GRANDE" } ] } },
-    { id: "charola-pastel-larga", nombre: "Charola para pastel larga", cat: "contenedores", mat: ["pet"], img: "charola-pastel-larga", fotoPropia: true, precio: null,
-      desc: "Formato alargado para roscas, brazos y panqués.",
-      v: ["Estándar"],
-      venta: { linea: "pet", tam: [ { precio: 4.6, min: 10000, sku: "CHAROLA-PASTEL-LARGA-ESTANDAR" } ] } },
-    { id: "contenedor-rebanada-pastel", nombre: "Contenedor para rebanada de pastel", cat: "contenedores", mat: ["pet"], img: "contenedor-rebanada-pastel", fotoPropia: true, precio: null,
-      desc: "Triangular con bisagra. Venta por porción.",
-      v: ["Estándar"],
-      venta: { linea: "pet", tam: [ { precio: 1.6, min: 10000, sku: "CONTENEDOR-REBANADA-PASTEL-ESTANDAR" } ] } },
-    { id: "contenedor-medida", nombre: "Contenedor a medida", cat: "contenedores", mat: ["kraft", "carton"], img: "srv-contenedores-medida", servicio: true, fotoPropia: true, precio: null,
-      desc: "Diseñamos y producimos el contenedor con la medida y la forma que tu negocio necesita. Tú eliges si va con o sin impresión.",
-      v: ["Con impresión", "Sin impresión"] },
-
-    /* ---------------- bagazo y paja ---------------- */
-    { id: "almeja-bagazo", nombre: "Contenedor almeja de bagazo", cat: "bagazo", mat: ["bagazo"], img: "almeja-bagazo", destacado: true, fotoPropia: true, precio: null,
-      desc: "Fibra de caña de azúcar. Compostable, resiste calor y grasa.",
-      v: ["Chica", "Mediana", "Grande"],
-      venta: { linea: "bagazo", tam: [ { precio: 2.4, min: 10000, sku: "ALMEJA-BAGAZO-CHICA" }, { precio: 3.1, min: 10000, sku: "ALMEJA-BAGAZO-MEDIANA" }, { precio: 3.9, min: 10000, sku: "ALMEJA-BAGAZO-GRANDE" } ] } },
-    { id: "charola-paja-trigo", nombre: "Charola oval de paja de trigo", cat: "bagazo", mat: ["paja-trigo"], img: "charola-paja-trigo", fotoPropia: true, precio: null,
-      desc: "Fibra de paja de trigo. Para platos fuertes y comida preparada.",
-      v: ["Chica", "Mediana", "Grande"],
-      venta: { linea: "paja-trigo", tam: [ { precio: 2.6, min: 10000, sku: "CHAROLA-PAJA-TRIGO-CHICA" }, { precio: 3.3, min: 10000, sku: "CHAROLA-PAJA-TRIGO-MEDIANA" }, { precio: 4.1, min: 10000, sku: "CHAROLA-PAJA-TRIGO-GRANDE" } ] } },
-    { id: "souffle-fecula", nombre: "Soufflé de fécula de maíz", cat: "bagazo", mat: ["fecula"], img: "souffle-fecula", fotoPropia: true, precio: null,
-      desc: "Vasito para salsa y aderezo. Biodegradable.",
-      v: ["1 oz", "2 oz", "4 oz"],
-      venta: { linea: "fecula", tam: [ { precio: 0.35, min: 10000, sku: "SOUFFLE-FECULA-1OZ" }, { precio: 0.45, min: 10000, sku: "SOUFFLE-FECULA-2OZ" }, { precio: 0.6, min: 10000, sku: "SOUFFLE-FECULA-4OZ" } ] } },
-
-    /* ---------------- accesorios ---------------- */
-    { id: "fajilla-ajustable", nombre: "Fajilla ajustable para vaso", cat: "accesorios", mat: ["kraft"], img: "fajilla-kraft", p: 1000, destacado: true, fotoPropia: true, precio: null,
-      desc: "Aísla el calor y da superficie para tu marca.",
-      v: ["Ajustable", "Pegada", "Impresión completa"],
-      venta: { linea: "kraft", tam: [ { precio: 0.4, min: 10000, sku: "FAJILLA-AJUSTABLE-AJUSTABLE" }, { precio: 0.91, min: 10000, sku: "FAJILLA-AJUSTABLE-PEGADA" }, { precio: null, min: 10000, sku: "FAJILLA-AJUSTABLE-IMPRESIONCOMPLETA" } ] } },
-    { id: "agitador-madera", nombre: "Agitador de madera", cat: "accesorios", mat: ["madera"], img: "agitador-madera", p: 10000, fotoPropia: true, precio: null,
-      desc: "Madera natural, sin recubrimiento.",
+    /* ---------------- removedores ---------------- */
+    { id: "removedor-madera", nombre: "Removedor de madera", cat: "removedores", mat: ["madera"], img: "agitador-madera", uso: "Removedor para bebida", fotoPropia: true,
+      desc: "Removedor de madera para bebida, de 14 o 18 cm de largo.",
       v: ["14 cm", "18 cm"],
-      venta: { linea: "madera", tam: [ { precio: 0.08, min: 10000, sku: "AGITADOR-MADERA-14CM" }, { precio: 0.16, min: 10000, sku: "AGITADOR-MADERA-18CM" } ] } },
-    { id: "portavaso-charola", nombre: "Portavasos charola", cat: "accesorios", mat: ["bagazo"], img: "portavaso-charola-4", fotoPropia: true, precio: null,
-      desc: "Fibra moldeada. Para reparto y pedidos de varias bebidas.",
-      v: ["4 vasos · caja de 300", "2 vasos · caja de 600"],
-      venta: { linea: "bagazo", tam: [ { precio: 3.8, min: 10000, sku: "PORTAVASO-CHAROLA-4VASOSCAJADE300" }, { precio: 3.0, min: 10000, sku: "PORTAVASO-CHAROLA-2VASOSCAJADE600" } ] } },
-    { id: "portavaso-asa", nombre: "Portavasos con asa", cat: "accesorios", mat: ["kraft"], img: "portavaso-caja-kraft", fotoPropia: true, precio: null,
-      desc: "Kraft con asa troquelada. Se carga con una mano.",
-      v: ["4 vasos · caja de 200", "2 vasos · caja de 250"],
-      venta: { linea: "kraft", tam: [ { precio: 3.5, min: 10000, sku: "PORTAVASO-ASA-4VASOSCAJADE200" }, { precio: 2.8, min: 10000, sku: "PORTAVASO-ASA-2VASOSCAJADE250" } ] } },
-    { id: "popote-tapioca", nombre: "Popote de tapioca biodegradable", cat: "accesorios", mat: ["tapioca"], img: "vaso-popotes", destacado: true, fotoPropia: true, precio: null,
-      desc: "Almidón de tapioca. No se reblandece como el de papel.",
-      v: ["21 cm · a granel, 5 kg", "21 cm · estuchado, 2,000 pzs"],
-      venta: { linea: "tapioca", tam: [ { precio: null, min: 10000, sku: "POPOTE-TAPIOCA-21CMAGRANEL5KG" }, { precio: 0.55, min: 10000, sku: "POPOTE-TAPIOCA-21CMESTUCHADO2000PZS" } ] } },
-    { id: "popote-cuchara", nombre: "Popote cuchara biodegradable", cat: "accesorios", mat: ["tapioca"], img: "vaso-popotes", fotoPropia: true, precio: null,
-      desc: "Punta de cuchara para frappé y bebidas con topping.",
-      v: ["26 cm · a granel, 5 kg"] },
-    { id: "cono-crepa", nombre: "Cono porta crepa", cat: "accesorios", mat: ["papel"], img: "cono-crepa", p: 1000, fotoPropia: true, precio: null,
-      desc: "Para crepa, papas y snacks de mano.",
-      v: ["Grande"],
-      venta: { linea: "papel", tam: [ { precio: 1.65, min: 10000, sku: "CONO-CREPA-GRANDE" } ] } },
-    { id: "papel-encerado", nombre: "Papel encerado grado alimenticio", cat: "accesorios", mat: ["papel"], img: "papel-encerado", p: 1000, fotoPropia: true, precio: null,
-      desc: "Barrera contra grasa. Para envolver, forrar charola y canasta.",
-      v: ["Tamaño variado"] },
+      venta: { linea: "madera", tam: [
+        { paq: 1000, caja: 10000, pPaq: 213.98, pCaja: 739.81, boca: null, esp: "Removedor de madera 14 cm de largo", sku: "GN-REMOVEDOR-MADERA-01", img: null },
+        { paq: 1000, caja: 10000, pPaq: 295.93, pCaja: 1559.29, boca: null, esp: "Removedor de madera 18 cm de largo", sku: "GN-REMOVEDOR-MADERA-02", img: null }
+      ] } },
 
-    /* ---------------- papel y bolsas ---------------- */
-    { id: "servilleta-larga", nombre: "Servilleta larga", cat: "papel", mat: ["papel"], img: "papel-encerado", p: 1200, fotoPropia: true, precio: null,
-      desc: "Formato largo de 39.0 x 37.5 cm.",
-      v: ["39.0 x 37.5 cm"],
-      venta: { linea: "papel", tam: [ { precio: 0.35, min: 10000, sku: "SERVILLETA-LARGA-390X375CM" } ] } },
-    { id: "papel-rh", nombre: "Papel RH grado alimenticio", cat: "papel", mat: ["papel"], img: "papel-encerado", p: 1000, fotoPropia: true, precio: null,
-      desc: "Papel de uso general en cocina y mostrador.",
-      v: ["Tamaño variado"] },
-    { id: "bolsa-kraft-asa", nombre: "Bolsa de papel kraft", cat: "papel", mat: ["kraft"], img: "srv-bolsa-kraft", destacado: true, servicio: true, fotoPropia: true, precio: null,
-      desc: "Bolsa personalizada para entrega y mostrador. Con o sin asa, con o sin impresión de tu logo.",
-      v: ["Sin asa", "Con asa"] },
-    { id: "bolsa-bond", nombre: "Bolsa de papel bond", cat: "papel", mat: ["papel"], img: "srv-bolsas-bond", servicio: true, fotoPropia: true, precio: null,
-      desc: "Bolsa lisa para panadería y mostrador. Con o sin asa, con o sin impresión de tu logo.",
-      v: ["Sin asa", "Con asa"] },
-    { id: "bolsa-ventana", nombre: "Bolsa con ventana", cat: "papel", mat: ["papel"], img: "bolsa-ventana", fotoPropia: true, precio: null,
-      desc: "Ventana transparente para producto de panadería y galletería.",
-      v: ["Chica", "Mediana", "Grande"],
-      venta: { linea: "papel", tam: [ { precio: 1.2, min: 10000, sku: "BOLSA-VENTANA-CHICA" }, { precio: 1.6, min: 10000, sku: "BOLSA-VENTANA-MEDIANA" }, { precio: 2.1, min: 10000, sku: "BOLSA-VENTANA-GRANDE" } ] } },
+    /* ---------------- vasos pet y pp ---------------- */
+    { id: "vaso-pet-78", nombre: "Vaso PET boca 78 mm", cat: "vasos-pet", mat: ["pet"], img: "vaso-pet-vpc", uso: "Bebida fría", fotoPropia: true, personalizable: true,
+      desc: "Vaso de PET transparente para bebida fría, boca 78 mm.",
+      v: ["7 oz · boca 78 mm", "9 oz · boca 78 mm", "10 oz · boca 78 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 50, caja: 1000, pPaq: 69.8, pCaja: 1255.9, boca: 78, esp: "Boca 78 mm", sku: "GN-VASO-PET-78-01", img: "vaso-pet-vpc" },
+        { paq: 50, caja: 1000, pPaq: 85.12, pCaja: 1562.44, boca: 78, esp: "Boca 78 mm", sku: "GN-VASO-PET-78-02", img: "vaso-pet-vpc" },
+        { paq: 50, caja: 1000, pPaq: 67.75, pCaja: 1214.95, boca: 78, esp: "Boca 78 mm", sku: "GN-VASO-PET-78-03", img: "vaso-pet-vpc" }
+      ] } },
+    { id: "vaso-pet-92", nombre: "Vaso PET boca 92 mm", cat: "vasos-pet", mat: ["pet"], img: "vaso-pet-vpa", uso: "Bebida fría", fotoPropia: true, personalizable: true,
+      desc: "Vaso de PET transparente para bebida fría, boca 92 mm.",
+      v: ["12 oz · boca 92 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 50, caja: 1000, pPaq: 88.59, pCaja: 1631.86, boca: 92, esp: "Boca 92 mm", sku: "GN-VASO-PET-92-01", img: "vaso-pet-vpa" }
+      ] } },
+    { id: "vaso-pet-95", nombre: "Vaso PET boca 95 mm", cat: "vasos-pet", mat: ["pet"], img: "vaso-pet-vpa", uso: "Bebida fría", fotoPropia: true, personalizable: true,
+      desc: "Vaso de PET transparente para bebida fría, boca 95 mm.",
+      v: ["9 oz · boca 95 mm", "12 oz · boca 95 mm", "16 oz · boca 95 mm", "20 oz · boca 95 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 50, caja: 1000, pPaq: 71.39, pCaja: 1287.87, boca: 95, esp: "Boca 95 mm", sku: "GN-VASO-PET-95-01", img: "vaso-pet-vpa" },
+        { paq: 50, caja: 1000, pPaq: 104.29, pCaja: 1945.81, boca: 95, esp: "Boca 95 mm", sku: "GN-VASO-PET-95-02", img: "vaso-pet-vpa" },
+        { paq: 50, caja: 1000, pPaq: 130.48, pCaja: 2469.57, boca: 95, esp: "Boca 95 mm", sku: "GN-VASO-PET-95-03", img: "vaso-pet-vpa" },
+        { paq: 50, caja: 1000, pPaq: 134.89, pCaja: 2557.72, boca: 95, esp: "Boca 95 mm", sku: "GN-VASO-PET-95-04", img: "vaso-pet-vpa" }
+      ] } },
+    { id: "vaso-pet-98", nombre: "Vaso PET boca 98 mm", cat: "vasos-pet", mat: ["pet"], img: "vaso-pet-vpb", uso: "Bebida fría", fotoPropia: true, personalizable: true,
+      desc: "Vaso de PET transparente para bebida fría, boca 98 mm.",
+      v: ["14 oz · boca 98 mm", "16 oz · boca 98 mm · caja de 1,000", "16 oz · boca 98 mm · caja de 500", "20 oz · boca 98 mm", "24 oz · boca 98 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 50, caja: 1000, pPaq: 90.09, pCaja: 1661.89, boca: 98, esp: "Boca 98 mm", sku: "GN-VASO-PET-98-01", img: "vaso-pet-vpb" },
+        { paq: 50, caja: 1000, pPaq: 105.25, pCaja: 1964.92, boca: 98, esp: "Boca 98 mm", sku: "GN-VASO-PET-98-02", img: "vaso-pet-vpb" },
+        { paq: 50, caja: 500, pPaq: 91.54, pCaja: 845.37, boca: 98, esp: "Boca 98 mm", sku: "GN-VASO-PET-98-03", img: "vaso-pet-vpb" },
+        { paq: 50, caja: 600, pPaq: 122.97, pCaja: 1391.62, boca: 98, esp: "Boca 98 mm", sku: "GN-VASO-PET-98-04", img: "vaso-pet-vpb" },
+        { paq: 50, caja: 600, pPaq: 133.63, pCaja: 1519.54, boca: 98, esp: "Boca 98 mm", sku: "GN-VASO-PET-98-05", img: "vaso-pet-vpb" }
+      ] } },
+    { id: "vaso-pet-107", nombre: "Vaso PET boca 107 mm", cat: "vasos-pet", mat: ["pet"], img: "vaso-pet-vpb", uso: "Bebida fría", fotoPropia: true, personalizable: true,
+      desc: "Vaso de PET transparente para bebida fría, boca 107 mm.",
+      v: ["32 oz · boca 107 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 25, caja: 300, pPaq: 102.93, pCaja: 1193.18, boca: 107, esp: "Boca 107 mm", sku: "GN-VASO-PET-107-01", img: "vaso-pet-vpb" }
+      ] } },
+    { id: "vaso-pet-u", nombre: "Vaso PET en U", cat: "vasos-pet", mat: ["pet"], img: "vaso-pet-vpu", uso: "Bebida fría", fotoPropia: true, personalizable: true,
+      desc: "Vaso de PET en forma de U para bebida fría, boca 90 mm.",
+      v: ["12 oz · boca 90 mm", "16 oz · boca 90 mm", "24 oz · boca 90 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 50, caja: 1000, pPaq: 85.82, pCaja: 1576.47, boca: 90, esp: "Boca 90 mm", sku: "GN-VASO-PET-U-01", img: "vaso-pet-vpu" },
+        { paq: 50, caja: 1000, pPaq: 111.43, pCaja: 2088.55, boca: 90, esp: "Boca 90 mm", sku: "GN-VASO-PET-U-02", img: "vaso-pet-vpu" },
+        { paq: 50, caja: 1000, pPaq: 130.99, pCaja: 2479.72, boca: 90, esp: "Boca 90 mm", sku: "GN-VASO-PET-U-03", img: "vaso-pet-vpu" }
+      ] } },
+    { id: "vaso-pp", nombre: "Vaso PP para bebida caliente", cat: "vasos-pet", mat: ["pp"], img: "tienda-42", uso: "Bebida caliente", personalizable: true,
+      desc: "Vaso de polipropileno de 16 oz para bebida caliente.",
+      v: ["En U · 16 oz · boca 89 mm", "16 oz · boca 92 mm", "16 oz · boca 95 mm"],
+      venta: { linea: "pp", tam: [
+        { paq: 50, caja: 1000, pPaq: 105.6, pCaja: 1971.94, boca: 89, esp: "Boca 89 mm", sku: "GN-VASO-PP-01", img: "tienda-40" },
+        { paq: 25, caja: 1000, pPaq: 40.02, pCaja: 1460.71, boca: 92, esp: "Boca 92 mm", sku: "GN-VASO-PP-02", img: "tienda-41" },
+        { paq: 25, caja: 1000, pPaq: 44.94, pCaja: 1657.5, boca: 95, esp: "Boca 95 mm", sku: "GN-VASO-PP-03", img: "tienda-42" }
+      ] } },
+
+    /* ---------------- tapas para vaso pet ---------------- */
+    { id: "tapa-pet-plana-ranura", nombre: "Tapa PET plana con ranura", cat: "tapas-pet", mat: ["pet"], img: "tapa-fria-plana", uso: "Tapa para vaso PET", fotoPropia: true,
+      desc: "Tapa plana de PET con ranura para popote.",
+      v: ["Boca 78 mm", "Boca 90 mm", "Boca 92 mm", "Boca 95 mm", "Boca 98 mm", "Boca 107 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 100, caja: 1000, pPaq: 61.32, pCaja: 473.17, boca: 78, esp: "Boca 78 mm", sku: "GN-TAPA-PET-PLANA-RANURA-01", img: "tapa-fria-plana" },
+        { paq: 50, caja: 1000, pPaq: 34.97, pCaja: 559.36, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-PET-PLANA-RANURA-02", img: "tapa-fria-plana" },
+        { paq: 100, caja: 1000, pPaq: 79.37, pCaja: 653.74, boca: 92, esp: "Boca 92 mm", sku: "GN-TAPA-PET-PLANA-RANURA-03", img: "tapa-fria-plana" },
+        { paq: 50, caja: 1000, pPaq: 47.18, pCaja: 803.5, boca: 95, esp: "Boca 95 mm", sku: "GN-TAPA-PET-PLANA-RANURA-04", img: "tapa-fria-plana" },
+        { paq: 100, caja: 1000, pPaq: 76.57, pCaja: 625.66, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-PLANA-RANURA-05", img: "tapa-fria-plana" },
+        { paq: 50, caja: 500, pPaq: 50.26, pCaja: 432.61, boca: 107, esp: "Boca 107 mm", sku: "GN-TAPA-PET-PLANA-RANURA-06", img: "tapa-fria-plana" }
+      ] } },
+    { id: "tapa-pet-plana-sin-ranura", nombre: "Tapa PET plana sin ranura", cat: "tapas-pet", mat: ["pet"], img: "tienda-44", uso: "Tapa para vaso PET",
+      desc: "Tapa plana de PET, sin ranura.",
+      v: ["Boca 78 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 100, caja: 1000, pPaq: 61.32, pCaja: 473.17, boca: 78, esp: "Boca 78 mm", sku: "GN-TAPA-PET-PLANA-SIN-RANURA-01", img: "tienda-44" }
+      ] } },
+    { id: "tapa-pet-domo", nombre: "Tapa PET domo con orificio", cat: "tapas-pet", mat: ["pet"], img: "tapa-fria-domo", uso: "Tapa para vaso PET", fotoPropia: true,
+      desc: "Tapa domo de PET con orificio, para bebidas con crema o frappé.",
+      v: ["Boca 78 mm", "Boca 90 mm", "Boca 92 mm", "Boca 95 mm", "Boca 98 mm", "Boca 98 mm · orificio ancho", "Boca 107 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 100, caja: 1000, pPaq: 70.25, pCaja: 562.47, boca: 78, esp: "Boca 78 mm", sku: "GN-TAPA-PET-DOMO-01", img: "tapa-fria-domo" },
+        { paq: 50, caja: 1000, pPaq: 44.43, pCaja: 748.51, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-PET-DOMO-02", img: "tapa-fria-domo" },
+        { paq: 100, caja: 1000, pPaq: 90.53, pCaja: 765.27, boca: 92, esp: "Boca 92 mm", sku: "GN-TAPA-PET-DOMO-03", img: "tapa-fria-domo" },
+        { paq: 50, caja: 1000, pPaq: 62.5, pCaja: 1110.04, boca: 95, esp: "Boca 95 mm", sku: "GN-TAPA-PET-DOMO-04", img: "tapa-fria-domo" },
+        { paq: 100, caja: 1000, pPaq: 96.73, pCaja: 827.29, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-DOMO-05", img: "tapa-fria-domo" },
+        { paq: 100, caja: 1000, pPaq: 103.32, pCaja: 893.2, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-DOMO-06", img: "tapa-fria-domo" },
+        { paq: 50, caja: 500, pPaq: 69.61, pCaja: 626.05, boca: 107, esp: "Boca 107 mm", sku: "GN-TAPA-PET-DOMO-07", img: "tapa-fria-domo" }
+      ] } },
+    { id: "tapa-pet-domo-oso", nombre: "Tapa PET domo oso con orificio", cat: "tapas-pet", mat: ["pet"], img: "tienda-46", uso: "Tapa para vaso PET",
+      desc: "Tapa domo de PET con orejas de oso y orificio.",
+      v: ["Boca 90 mm", "Boca 95 mm", "Boca 98 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 50, caja: 1000, pPaq: 60.22, pCaja: 1064.41, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-PET-DOMO-OSO-01", img: "tienda-46" },
+        { paq: 50, caja: 1000, pPaq: 63.56, pCaja: 1131.1, boca: 95, esp: "Boca 95 mm", sku: "GN-TAPA-PET-DOMO-OSO-02", img: "tienda-46" },
+        { paq: 50, caja: 1000, pPaq: 67.67, pCaja: 1213.39, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-DOMO-OSO-03", img: "tienda-46" }
+      ] } },
+    { id: "tapa-pet-sorbe", nombre: "Tapa PET sorbe", cat: "tapas-pet", mat: ["pet"], img: "tapa-fria-plana-lisa", uso: "Tapa para vaso PET", fotoPropia: true,
+      desc: "Tapa de PET para beber sin popote.",
+      v: ["Boca 90 mm", "Boca 98 mm · caja de 1,000", "Boca 98 mm · caja de 1,080"],
+      venta: { linea: "pet", tam: [
+        { paq: 50, caja: 1000, pPaq: 46.14, pCaja: 782.82, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-PET-SORBE-01", img: "tapa-fria-plana-lisa" },
+        { paq: 50, caja: 1000, pPaq: 65.1, pCaja: 1161.91, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-SORBE-02", img: "tapa-fria-plana-lisa" },
+        { paq: 90, caja: 1080, pPaq: 90.71, pCaja: 937.33, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-SORBE-03", img: "tapa-fria-plana-lisa" }
+      ] } },
+    { id: "tapa-pet-sorbe-tapon", nombre: "Tapa PET sorbe con tapón", cat: "tapas-pet", mat: ["pet"], img: "tienda-49", uso: "Tapa para vaso PET",
+      desc: "Tapa de PET para beber sin popote, con tapón.",
+      v: ["Boca 90 mm", "Boca 95 mm", "Boca 98 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 50, caja: 1000, pPaq: 46.51, pCaja: 790.24, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-PET-SORBE-TAPON-01", img: "tienda-49" },
+        { paq: 50, caja: 1000, pPaq: 55.83, pCaja: 976.51, boca: 95, esp: "Boca 95 mm", sku: "GN-TAPA-PET-SORBE-TAPON-02", img: "tienda-49" },
+        { paq: 50, caja: 1000, pPaq: 62.77, pCaja: 1115.48, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-SORBE-TAPON-03", img: "tienda-50" }
+      ] } },
 
   ];
 
@@ -277,63 +263,67 @@ window.GREENOVA = (function () {
   /* Tapas que le quedan a cada vaso (por boca/onzas). */
   var TAPAS_POR_VASO = {
     "vaso-papel-blanco": [
-      "tapa-4oz",
-      "tapa-8oz-papel",
-      "tapa-8oz-pla",
-      "tapa-1020-papel",
-      "tapa-1020-pla",
-      "tapa-viajera",
-      "tapa-domo-alto"
+      "tapa-cafetera-62",
+      "tapa-cafetera-80",
+      "tapa-cafetera-90",
+      "tapa-papel-90"
     ],
-    "vaso-papel-sedema": [
-      "tapa-4oz",
-      "tapa-8oz-papel",
-      "tapa-8oz-pla",
-      "tapa-1020-papel",
-      "tapa-1020-pla",
-      "tapa-viajera",
-      "tapa-domo-alto"
+    "vaso-papel-negro": [
+      "tapa-cafetera-62",
+      "tapa-cafetera-80",
+      "tapa-cafetera-90",
+      "tapa-papel-90"
     ],
-    "vaso-papel-compostable": [
-      "tapa-8oz-papel",
-      "tapa-8oz-pla",
-      "tapa-1020-papel",
-      "tapa-1020-pla",
-      "tapa-viajera",
-      "tapa-domo-alto"
+    "vaso-papel-kraft": [
+      "tapa-cafetera-80",
+      "tapa-cafetera-90",
+      "tapa-papel-90"
     ],
-    "vaso-papel-impreso": [
-      "tapa-8oz-papel",
-      "tapa-8oz-pla",
-      "tapa-1020-papel",
-      "tapa-1020-pla",
-      "tapa-viajera",
-      "tapa-domo-alto"
+    "vaso-papel-doble-pared": [
+      "tapa-cafetera-80",
+      "tapa-cafetera-90",
+      "tapa-papel-90"
     ],
-    "vaso-pet": [
-      "tapa-fria-78",
-      "tapa-fria-92",
-      "tapa-fria-95",
-      "tapa-fria-98",
-      "tapa-fria-107",
-      "tapa-fria-domo-par"
+    "vaso-pet-78": [
+      "tapa-pet-plana-ranura",
+      "tapa-pet-plana-sin-ranura",
+      "tapa-pet-domo"
     ],
-    "vaso-pla": [
-      "tapa-fria-95",
-      "tapa-fria-domo-par"
+    "vaso-pet-92": [
+      "tapa-pet-plana-ranura",
+      "tapa-pet-domo"
+    ],
+    "vaso-pet-95": [
+      "tapa-pet-plana-ranura",
+      "tapa-pet-domo",
+      "tapa-pet-domo-oso",
+      "tapa-pet-sorbe-tapon"
+    ],
+    "vaso-pet-98": [
+      "tapa-pet-plana-ranura",
+      "tapa-pet-domo",
+      "tapa-pet-domo-oso",
+      "tapa-pet-sorbe",
+      "tapa-pet-sorbe-tapon"
+    ],
+    "vaso-pet-107": [
+      "tapa-pet-plana-ranura",
+      "tapa-pet-domo"
     ],
     "vaso-pet-u": [
-      "tapa-fria-90"
+      "tapa-pet-plana-ranura",
+      "tapa-pet-domo",
+      "tapa-pet-domo-oso",
+      "tapa-pet-sorbe",
+      "tapa-pet-sorbe-tapon"
     ],
-    "vaso-pet-alto": [
-      "tapa-fria-95",
-      "tapa-fria-98",
-      "tapa-fria-107",
-      "tapa-fria-domo-par"
+    "vaso-pp": [
+      "tapa-pet-plana-ranura",
+      "tapa-pet-domo",
+      "tapa-pet-domo-oso",
+      "tapa-pet-sorbe-tapon"
     ]
   };
-
-  PRODUCTOS.forEach(function (p) { if (!("precio" in p)) p.precio = null; });
 
   return {
     CATEGORIAS: CATEGORIAS, MATERIALES: MATERIALES, PRODUCTOS: PRODUCTOS, PROMOS: PROMOS,

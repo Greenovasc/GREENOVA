@@ -102,7 +102,7 @@
       else if (/^mailto:/i.test(h)) window.GNmetrica("correo");
       else if (/^tel:/i.test(h)) window.GNmetrica("telefono");
     }
-    var card = e.target.closest(".pcard[data-id]");
+    var card = e.target.closest(".pcard[data-id], .ficha__compra[data-id]");
     if (card) producto(card.dataset.id, e.target.closest(".pcard__add") ? "carrito" : "click");
   });
 

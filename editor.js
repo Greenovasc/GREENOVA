@@ -226,20 +226,16 @@
         '<input type="text" data-c="nombre" value="' + esc(p.nombre) + '"></label></div>' +
       '<div class="ed__campo"><label><span>Descripción</span>' +
         '<textarea data-c="desc">' + esc(p.desc || "") + "</textarea></label></div>" +
-      '<div class="ed__campo"><label><span>Precio por caja (MXN)</span>' +
-        '<input type="number" min="0" step="0.01" data-c="precio" placeholder="Cotizar" value="' +
-        (p.precio == null ? "" : p.precio) + '"></label></div>' +
-      '<div class="ed__campo"><label><span>Medidas (una por línea)</span>' +
-        '<textarea data-c="v">' + esc((p.v || []).join("\n")) + "</textarea></label></div>" +
-      '<div class="ed__campo"><label><span>Piezas por caja</span>' +
-        '<input type="number" min="0" step="1" data-c="p" value="' + (p.p || "") + '"></label></div>' +
+      /* Medidas y precios por paquete y caja van juntos: se editan en la
+         vista de lista, donde cada medida tiene sus propios campos. */
+      '<p class="ed__sub" style="margin:.2rem 0 .8rem">Medidas y precios por paquete y por caja: en la vista de lista.</p>' +
       '<div class="ed__campo"><span>Materiales</span><div class="ed__mats">' +
         Object.keys(datos.materiales).map(function (m) {
           return '<label class="marca"><input type="checkbox" data-m="' + m + '"' +
                  ((p.mat || []).indexOf(m) > -1 ? " checked" : "") + "> " + datos.materiales[m] + "</label>";
         }).join("") + "</div></div>" +
-      '<label class="marca"><input type="checkbox" data-c="destacado"' +
-        (p.destacado ? " checked" : "") + "> Destacado</label>" +
+      '<label class="marca"><input type="checkbox" data-c="personalizable"' +
+        (p.personalizable ? " checked" : "") + "> Se puede personalizar (serigrafía)</label>" +
 
       '<hr style="border:0;border-top:1px dashed var(--line);margin:1rem 0">' +
       '<label class="marca"><input type="checkbox" data-p="agotado"' +
@@ -262,17 +258,8 @@
 
     var campo = e.target.dataset.c;
     if (campo) {
-      if (campo === "precio") {
-        var n = parseFloat(e.target.value);
-        p.precio = isNaN(n) || n <= 0 ? null : n;
-      } else if (campo === "p") {
-        var caja = parseInt(e.target.value, 10);
-        p.p = isNaN(caja) || caja <= 0 ? null : caja;
-      } else if (campo === "v") {
-        p.v = e.target.value.split("\n").map(function (l) { return l.trim(); })
-                .filter(function (l) { return l; });
-      } else if (campo === "destacado") {
-        p.destacado = e.target.checked;
+      if (campo === "personalizable") {
+        p.personalizable = e.target.checked;
       } else {
         p[campo] = e.target.value;
       }

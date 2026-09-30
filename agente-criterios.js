@@ -4,7 +4,7 @@
 
    El agente contesta en dos niveles:
 
-   1. RAG  — busca en el catálogo (los 56 productos de productos.js) y en los
+   1. RAG  — busca en el catálogo (los productos de productos.js) y en los
              HECHOS de abajo. Si encuentra la respuesta, la da al instante,
              sin llamar a la IA y sin costo.
    2. IA   — si el RAG no alcanza, manda la pregunta a Claude junto con lo que
@@ -22,21 +22,21 @@ window.GREENOVA_AGENTE = (function () {
      Escríbelas en lenguaje normal. Agrega, quita o cambia lo que quieras.
      --------------------------------------------------------------------- */
   var CRITERIOS = [
-    "Eres el asistente de GreeNova SC, empresa mexicana de empaque biodegradable y compostable para el sector alimenticio, con sede en la Ciudad de México.",
+    "Eres el asistente de GreeNova SC, empresa mexicana de empaque desechable para el sector alimenticio, con sede en la Ciudad de México.",
     "Hablas español de México, de tú, directo y breve. Dos o tres frases cuando alcance. Nada de relleno ni de lenguaje publicitario.",
     "Solo puedes afirmar datos que aparezcan en el CATÁLOGO o en los HECHOS que se te pasan. Si te preguntan algo que no está ahí, dilo con claridad y ofrece el contacto de ventas. Nunca inventes medidas, materiales, certificaciones ni tiempos.",
-    "NUNCA des precios. GreeNova no publica lista de precios. Si preguntan cuánto cuesta, explica que el precio depende de la medida y del volumen, y que ventas cotiza sin compromiso.",
-    "El pedido mínimo es el que dice el CATÁLOGO para cada producto (hoy 10,000 piezas por medida); dilo tal cual si te preguntan. NUNCA prometas tiempos de entrega ni descuentos concretos: esos datos no están confirmados. Di que ventas los define en la cotización.",
-    "Cuando alguien busque un producto, di la medida exacta y las piezas por caja tal como vienen en el catálogo, y sugiere el enlace de la tienda.",
+    "En la tienda se compra por paquete o por caja, y los precios ya incluyen IVA. Si preguntan cuánto cuesta, da el precio tal como viene en el CATÁLOGO para esa medida y presentación. Si la medida no está en el contexto, di que el precio está en la tienda. NUNCA inventes descuentos ni precios por pieza.",
+    "El pedido mínimo es un paquete (o una caja, cuando ese producto solo se vende por caja). NUNCA prometas tiempos de entrega: ventas los confirma con el pedido.",
+    "Cuando alguien busque un producto, di la medida exacta y cuántas piezas trae el paquete y la caja, tal como vienen en el catálogo.",
     "Para elegir tapa, lo que importa es el diámetro de boca del vaso, no las onzas. Si te dan onzas, pide la boca o menciona las bocas que existen para esa medida.",
-    "Si la persona quiere su logo impreso, explica que hay serigrafía sobre vaso, contenedor y bolsa, y que también se diseñan contenedores y bolsas a medida.",
-    "Si la persona quiere comprar o pedir cotización, dile que arme su lista en la tienda y la envíe, o que escriba a ventas@greenovasc.com.mx / 55 2260 1113.",
-    "La gente no pide las cosas como se llaman en el catálogo. Traduce siempre: \"vaso para café\" o \"vaso para bebida caliente\" es el VASO DE PAPEL; \"vaso para bebida fría\", \"vaso para frappé\" o \"vaso transparente\" es el VASO PET o PLA. Usa la lista de EQUIVALENCIAS que se te pasa en el contexto y responde con el nombre del catálogo, no con el que usó la persona.",
-    "Si alguien pide algo que GreeNova no maneja (cubiertos, tenedores, cucharas, platos), dilo directo: no está en catálogo, y pásalo a ventas por si lo pueden conseguir. No lo sustituyas por otro producto como si fuera lo mismo.",
-    "SÍ ENVIAMOS A TODO MÉXICO. Si preguntan por cualquier estado, ciudad o pueblo del país (Tlaxcala, Puebla, Monterrey, Mérida, Tijuana, el que sea), la respuesta es sí: GreeNova envía a nivel nacional desde la Ciudad de México. Nunca contestes que no lo tienes confirmado. Lo único que no sabes es el costo y el tiempo del envío: eso lo confirma ventas en la cotización.",
-    "Eres un vendedor, no un buscador. Si alguien describe su negocio o su necesidad en vez de pedir un producto por nombre (\"tengo una cafetería\", \"necesito para llevar\", \"vendo postres\"), recomiéndale de una vez los productos del catálogo que se usan en ese giro, con su medida. No contestes que no lo tienes confirmado: eso es solo para datos que de verdad no existen, como precios o tiempos de entrega.",
-    "NUNCA escribas nombres de archivo ni rutas (tienda.html, producto.html, .php). Habla como persona: \"en la tienda\", \"en el catálogo\". El enlace se lo pone el sitio solo.",
-    "Cuando alguien diga que quiere cotizar, comprar o hacer un pedido, no lo mandes a leer instrucciones. Pregúntale qué productos quiere y en qué medida, y cuántas cajas de cada uno. Si en el bloque CARRITO ya trae productos, retómalos por nombre y cantidad en vez de preguntar de cero.",
+    "Si la persona quiere su logo impreso, explica que hay serigrafía sobre vasos de papel, vasos PET, fajillas y tapas de papel, y que también se hacen contenedores y bolsas a medida. Las tapas de plástico no se pueden imprimir.",
+    "Si la persona quiere comprar, dile que agregue sus productos al carrito de la tienda y envíe su pedido, o que escriba a ventas@greenovasc.com.mx / 55 2260 1113.",
+    "La gente no pide las cosas como se llaman en el catálogo. Traduce siempre: \"vaso para café\" o \"vaso para bebida caliente\" es el VASO DE PAPEL; \"vaso para bebida fría\", \"vaso para frappé\" o \"vaso transparente\" es el VASO PET. Usa la lista de EQUIVALENCIAS que se te pasa en el contexto y responde con el nombre del catálogo, no con el que usó la persona.",
+    "Contenedores para alimentos, bowls y ensaladeras, bolsas y complementos (platos, cubiertos, servilletas, popotes) no se venden en la tienda en línea: se cotizan. Pídele que mande su lista en \"Envía tu lista\" o que escriba a ventas.",
+    "SÍ ENVIAMOS A TODO MÉXICO. Si preguntan por cualquier estado, ciudad o pueblo del país, la respuesta es sí: GreeNova envía a nivel nacional desde la Ciudad de México. Lo único que no sabes es el costo y el tiempo del envío: eso lo confirma ventas.",
+    "Eres un vendedor, no un buscador. Si alguien describe su negocio o su necesidad en vez de pedir un producto por nombre (\"tengo una cafetería\", \"vendo frappés\"), recomiéndale de una vez los productos del catálogo que se usan en ese giro, con su medida.",
+    "NUNCA escribas nombres de archivo ni rutas (tienda.html, producto.html, .php). Habla como persona: \"en la tienda\". El enlace se lo pone el sitio solo.",
+    "Cuando alguien diga que quiere comprar o hacer un pedido, no lo mandes a leer instrucciones. Pregúntale qué productos quiere, en qué medida y cuántos paquetes o cajas de cada uno. Si en el bloque CARRITO ya trae productos, retómalos por nombre y cantidad.",
     "Cierra siempre las conversaciones de compra con el contacto directo: 55 2260 1113 o ventas@greenovasc.com.mx.",
     "No hables de la competencia ni compares con otras marcas.",
     "Si la pregunta no tiene nada que ver con empaque, GreeNova o el pedido, dilo amablemente y reencauza."
@@ -50,45 +50,26 @@ window.GREENOVA_AGENTE = (function () {
     { t: "Contacto y horario de ventas",
       c: "Correo: ventas@greenovasc.com.mx. Teléfonos: 55 2260 1113 y 55 7051 1149. Sitio: www.greenovasc.com.mx. GreeNova SC está en la Ciudad de México." },
 
-    { t: "Registro SEDEMA",
-      c: "El vaso de papel de GreeNova está registrado ante la Secretaría del Medio Ambiente de la Ciudad de México (SEDEMA). Es la versión que pide la normativa local y existe en las mismas seis medidas que el vaso estándar: 4, 8, 10, 12, 16 y 20 oz." },
-
-    { t: "Certificación FSC",
-      c: "El papel que usa GreeNova cuenta con certificación FSC, que acredita manejo forestal responsable." },
+    { t: "Cómo se compra: paquete o caja",
+      c: "En la tienda cada producto se compra por paquete o por caja. Cada medida dice cuántas piezas trae el paquete y cuántas la caja, y su precio con IVA incluido. El pedido mínimo es un paquete." },
 
     { t: "Materiales que se manejan",
-      c: "Papel, papel con recubrimiento compostable de PLA, PET y PLA para línea fría, cartón kraft, bagazo de caña de azúcar, paja de trigo, fécula de maíz, tapioca y madera. Cada producto del catálogo indica de qué está hecho." },
-
-    { t: "Diferencia entre PET y PLA",
-      c: "El PET es plástico transparente reciclable para bebida fría. El PLA (ácido poliláctico) se ve igual de transparente pero es compostable: es la opción compostable de la línea fría. GreeNova maneja las dos." },
+      c: "Vasos de papel (blanco, negro, kraft, doble pared y de color), vasos de PET y de polipropileno (PP), tapas de poliestireno (PS), polipropileno (PP), PET y papel, fajillas de kraft y removedores de madera." },
 
     { t: "Envíos a todo México",
-      c: "Sí, GreeNova envía a todo el país. La salida es desde la Ciudad de México hacia cualquier estado de la República. El costo y el tiempo dependen del destino y del volumen; ventas los confirma en la cotización." },
+      c: "Sí, GreeNova envía a todo el país. La salida es desde la Ciudad de México hacia cualquier estado de la República. El costo y el tiempo dependen del destino y del volumen; ventas los confirma con el pedido." },
 
     { t: "Imprimir tu logo: serigrafía y personalización",
-      c: "GreeNova imprime tu logo en serigrafía directamente sobre vasos, contenedores y bolsas. También diseña y produce contenedores para alimentos a medida, con o sin impresión, y fabrica bolsas de papel bond y kraft personalizadas, con o sin asa." },
+      c: "GreeNova imprime tu logo en serigrafía sobre vasos de papel, vasos PET, fajillas y tapas de papel. También diseña y produce contenedores para alimentos a medida, con o sin impresión, y bolsas de papel bond y kraft personalizadas, con o sin asa. Las tapas de plástico no se imprimen." },
 
     { t: "Cómo elegir la tapa correcta",
-      c: "La tapa se elige por el diámetro de boca del vaso, no por las onzas. En línea caliente las bocas van de 63 a 90 mm; en línea fría, de 78 a 107 mm. Si conoces la boca de tu vaso, la tapa ya existe en inventario." },
+      c: "La tapa se elige por el diámetro de boca del vaso, no por las onzas. Vasos de papel: boca 62 mm (4 oz), 80 mm (8 oz) y 90 mm (10 a 20 oz). Vasos PET: bocas de 78, 90, 92, 95, 98 y 107 mm. En la tienda, al ver un vaso, salen las tapas de su misma boca." },
 
-    { t: "Piezas por caja",
-      c: "Depende del producto. El vaso de papel y las fajillas vienen en caja de 1,000 piezas; los contenedores rectangulares kraft en caja de 300; las servilletas largas en 1,200; los agitadores de madera en 10,000. Cada ficha del catálogo lo indica." },
+    { t: "Productos que se cotizan",
+      c: "Además de la tienda en línea, GreeNova cotiza contenedores para alimentos (papel, bagazo de caña de azúcar, fécula de maíz, paja de trigo y PET), bowls y ensaladeras (kraft, PET y PLA), bolsas (papel y bond) y complementos (platos, cucharas, tenedores, cuchillos, servilletas y popotes). Se piden con \"Envía tu lista\" o escribiendo a ventas." },
 
-    { t: "Cómo pedir una cotización",
-      c: "Dinos qué productos quieres, en qué medida y cuántas cajas de cada uno. Puedes ir marcándolos en la tienda para mandar la lista completa de una sola vez, o escribir directo a ventas@greenovasc.com.mx o al 55 2260 1113. Ventas contesta con precio y tiempo de entrega." },
-
-    { t: "Productos fuera de catálogo",
-      c: "El catálogo es el punto de partida. Si hay un requerimiento especial de medida, material, volumen o impresión, el equipo de ventas lo cotiza. GreeNova produce contenedores a medida." },
-
-    { t: "Compostable y biodegradable",
-      c: "Los materiales compostables de GreeNova (PLA, bagazo de caña, paja de trigo, fécula de maíz, tapioca) se degradan con la fracción orgánica. El vaso de papel con recubrimiento de PLA es compostable." }
-
-    /* Agrega aquí lo que falte. Ejemplos que hoy NO están confirmados y que
-       convendría añadir en cuanto los tengas:
-       { t: "Mínimo de compra",     c: "..." },
-       { t: "Tiempo de producción", c: "..." },
-       { t: "Formas de pago",       c: "..." },
-       { t: "Muestras",             c: "..." }                              */
+    { t: "Cómo hacer un pedido",
+      c: "Agrega a tu carrito lo que necesitas, por paquete o por caja, y envía tu pedido desde la tienda. Si prefieres, escribe directo a ventas@greenovasc.com.mx o al 55 2260 1113." }
   ];
 
   /* ---------------------------------------------------------------------
@@ -102,73 +83,31 @@ window.GREENOVA_AGENTE = (function () {
     { dice: ["cafe", "café", "capuchino", "capuccino", "americano", "latte", "te", "té",
              "bebida caliente", "bebidas calientes", "linea caliente", "chocolate caliente",
              "atole", "coffee", "to go", "cafeteria", "cafetería", "barra"],
-      es: "vaso de papel bebida caliente linea caliente",
-      busca: ["vaso de papel", "vasos de papel"] },
+      es: "vaso de papel bebida caliente",
+      busca: ["vaso de papel"] },
 
     { dice: ["bebida fria", "bebidas frias", "bebida fría", "bebidas frías", "linea fria",
              "frappe", "frappé", "licuado", "smoothie", "jugo", "agua fresca", "refresco",
              "michelada", "cerveza", "vaso transparente", "vaso de plastico", "vaso de plástico",
              "cristal", "hielo"],
-      es: "vaso PET PLA bebida fria transparente linea fria",
-      busca: ["vasos pet y pla"] },
+      es: "vaso PET bebida fria transparente",
+      busca: ["vaso pet"] },
 
-    { dice: ["bowl", "bowls", "tazon", "tazón", "ensaladera", "ensalada", "lunch box",
-             "lunchbox", "poke", "sopa", "caldo"],
-      es: "ensaladera transparente bowl tapa domo contenedor circular kraft redondo",
-      busca: ["ensaladera", "bowl", "contenedor circular kraft", "contenedor kraft redondo"] },
+    { dice: ["tapa", "tapas", "tapita", "lid"],
+      es: "tapa para vaso",
+      busca: ["tapa"] },
 
-    { dice: ["salsero", "salsa", "dippero", "dip", "portasalsas", "aderezo"],
-      es: "souffle fecula de maiz",
-      busca: ["souffle"] },
-
-    { dice: ["clamshell", "concha", "almeja", "hamburguesa", "burger", "comida para llevar",
-             "delivery", "domicilio"],
-      es: "contenedor almeja transparente bagazo contenedor rectangular kraft",
-      busca: ["almeja", "contenedor rectangular kraft"] },
-
-    { dice: ["charola", "bandeja", "papas", "boneless", "snack"],
-      es: "charola kraft paja de trigo",
-      busca: ["charola"] },
-
-    { dice: ["popote", "popotes", "sorbete", "straw", "pajilla"],
-      es: "popote de tapioca popote cuchara",
-      busca: ["popote"] },
-
-    { dice: ["removedor", "stirrer", "palito", "agitar"],
-      es: "agitador de madera",
-      busca: ["agitador"] },
+    { dice: ["removedor", "stirrer", "palito", "agitador", "agitar"],
+      es: "removedor de madera",
+      busca: ["removedor"] },
 
     { dice: ["manga", "funda", "cinturon", "cinturón", "sleeve", "quema", "caliente la mano"],
-      es: "fajilla ajustable para vaso",
+      es: "fajilla kraft para vaso",
       busca: ["fajilla"] },
 
-    { dice: ["portavaso", "portavasos", "cup holder", "cargar varios vasos"],
-      es: "portavasos charola portavasos con asa",
-      busca: ["portavaso"] },
-
-    { dice: ["bolsa", "bolsas", "bag", "empaque para llevar", "asa"],
-      es: "bolsa de papel kraft bond con ventana",
-      busca: ["bolsa"] },
-
-    { dice: ["servilleta", "servilletas", "napkin"],
-      es: "servilleta larga papel",
-      busca: ["servilleta"] },
-
     { dice: ["domo", "tapa transparente", "tapa alta", "crema batida"],
-      es: "tapa domo bebida fria caliente",
+      es: "tapa PET domo",
       busca: ["domo"] },
-
-    { dice: ["pastel", "postre", "reposteria", "repostería", "tarta"],
-      es: "charola para pastel contenedor rebanada de pastel",
-      busca: ["pastel"] },
-
-    { dice: ["pizza", "rebanada"],
-      es: "caja de pizza contenedor rebanada",
-      busca: ["pizza"] },
-
-    { dice: ["helado", "nieve", "yogurt"],
-      es: "contenedor de papel para helado",
-      busca: ["helado"] },
 
     { dice: ["envio", "envío", "envian", "envían", "envias", "envías", "mandan", "mandas",
              "llega", "llegan", "paqueteria", "paquetería", "flete", "foraneo", "foráneo",
@@ -181,14 +120,11 @@ window.GREENOVA_AGENTE = (function () {
       es: "envios a todo Mexico nacional desde la Ciudad de Mexico",
       busca: [] },
 
-    { dice: ["sedema", "norma", "normativa", "ley", "cdmx", "prohibicion", "prohibición"],
-      es: "vaso de papel con registro SEDEMA",
-      busca: ["sedema"] },
-
-    { dice: ["compostable", "composta", "biodegradable", "ecologico", "ecológico", "verde",
-             "sustentable", "no contamina"],
-      es: "PLA bagazo paja de trigo fecula tapioca compostable",
-      busca: ["compostable", "bagazo", "paja de trigo", "fecula", "tapioca"] }
+    { dice: ["contenedor", "contenedores", "bowl", "bowls", "ensaladera", "bolsa", "bolsas",
+             "plato", "platos", "cubiertos", "cuchara", "tenedor", "cuchillo", "servilleta",
+             "servilletas", "popote", "popotes", "para llevar", "comida"],
+      es: "productos que se cotizan contenedores bowls bolsas complementos",
+      busca: [] }
   ];
 
   /* ---------------------------------------------------------------------
@@ -206,79 +142,34 @@ window.GREENOVA_AGENTE = (function () {
      Para agregar un giro nuevo basta con una entrada más aquí.
      --------------------------------------------------------------------- */
   var GIROS = [
-    { dice: ["para llevar", "se lo lleven", "se los lleven", "llevar la comida",
-             "llevarse la comida", "take out", "takeout", "to go", "delivery",
-             "a domicilio", "reparto", "paquete", "paquetes", "empacar",
-             "empaquetar", "servicio a domicilio", "pedidos en linea"],
-      intro: "Para servicio para llevar, esto es lo que más se mueve:",
-      ids: ["contenedor-kraft-rect", "almeja-bagazo", "bolsa-kraft-asa",
-            "vaso-papel-blanco", "servilleta-larga"] },
-
     { dice: ["cafeteria", "cafetería", "coffee shop", "barista", "barra de cafe",
              "negocio de cafe", "vendo cafe", "cafeteria nueva", "torrefactora"],
       intro: "Para cafetería, el arranque típico es:",
-      ids: ["vaso-papel-blanco", "tapa-viajera", "fajilla-ajustable",
-            "agitador-madera", "portavaso-charola"] },
-
-    { dice: ["restaurante", "fonda", "cocina economica", "comida corrida",
-             "marisqueria", "marisquería", "cenaduria", "cenaduría"],
-      intro: "Para restaurante con servicio para llevar, lo básico es:",
-      ids: ["contenedor-kraft-rect", "contenedor-circular-kraft", "souffle-fecula",
-            "bolsa-kraft-asa", "servilleta-larga"] },
-
-    { dice: ["taqueria", "taquería", "tacos", "hamburgueseria", "hamburguesería",
-             "hamburguesas", "burger", "alitas", "boneless", "papas fritas",
-             "comida rapida", "comida rápida", "food truck", "puesto", "feria"],
-      intro: "Para taquería o comida rápida, esto es lo que se pide:",
-      ids: ["almeja-bagazo", "charola-kraft", "souffle-fecula",
-            "contenedor-kraft-rect", "servilleta-larga"] },
-
-    { dice: ["heladeria", "heladería", "nieve", "helados", "yogurt", "paleteria",
-             "paletería", "postres frios", "postres fríos"],
-      intro: "Para heladería o postres fríos:",
-      ids: ["contenedor-helado", "bowl-domo", "vaso-pet", "popote-cuchara",
-            "servilleta-larga"] },
-
-    { dice: ["pasteleria", "pastelería", "reposteria", "repostería", "panaderia",
-             "panadería", "pasteles", "postres", "brownies", "galletas"],
-      intro: "Para pastelería y repostería:",
-      ids: ["charola-pastel-redonda", "contenedor-rebanada-pastel",
-            "contenedor-bisagra", "bolsa-ventana", "papel-encerado"] },
+      ids: ["vaso-papel-blanco", "tapa-cafetera-90", "fajilla-kraft", "removedor-madera",
+            "vaso-papel-doble-pared"] },
 
     { dice: ["jugueria", "juguería", "smoothies", "licuados", "jugos", "aguas frescas",
              "bubble tea", "boba", "frappes", "frappés"],
       intro: "Para jugos, licuados y bebidas frías:",
-      ids: ["vaso-pet", "vaso-pla", "tapa-fria-domo-par", "popote-tapioca",
-            "fajilla-ajustable"] },
-
-    { dice: ["ensaladas", "saludable", "poke", "bowls saludables", "fitness",
-             "comida saludable", "vegano", "veganos"],
-      intro: "Para ensaladas y bowls:",
-      ids: ["ensaladera-transparente", "bowl-domo", "contenedor-kraft-redondo",
-            "souffle-fecula", "contenedor-bisagra"] },
-
-    { dice: ["pizzeria", "pizzería", "pizzas", "pizza"],
-      intro: "Para pizzería:",
-      ids: ["caja-pizza", "caja-rebanada-pizza", "charola-kraft", "servilleta-larga"] },
+      ids: ["vaso-pet-98", "tapa-pet-domo", "tapa-pet-plana-ranura", "vaso-pet-u"] },
 
     { dice: ["evento", "eventos", "fiesta", "fiestas", "catering", "banquete",
              "coffee break", "boda", "posada", "graduacion", "graduación"],
       intro: "Para eventos y catering:",
-      ids: ["charola-paja-trigo", "vaso-papel-blanco", "vaso-pet",
-            "portavaso-charola", "servilleta-larga"] },
+      ids: ["vaso-papel-blanco", "tapa-cafetera-90", "vaso-pet-95", "tapa-pet-plana-ranura",
+            "removedor-madera"] },
 
     { dice: ["abrir un negocio", "voy a abrir", "empezando", "emprender",
              "negocio nuevo", "que me recomiendas", "qué me recomiendas",
              "no se que necesito", "no sé qué necesito", "asesorame", "asesórame"],
-      intro: "Depende del giro, pero lo que casi nadie deja fuera es:",
-      ids: ["vaso-papel-blanco", "tapa-viajera", "contenedor-kraft-rect",
-            "bolsa-kraft-asa", "servilleta-larga"] }
+      intro: "Depende del giro, pero para bebidas lo que casi nadie deja fuera es:",
+      ids: ["vaso-papel-blanco", "tapa-cafetera-90", "vaso-pet-98", "tapa-pet-domo"] }
   ];
 
   /* Preguntas sugeridas que aparecen al abrir el chat. */
   var SUGERENCIAS = [
     "¿Qué tapa va con un vaso de 12 oz?",
-    "¿Tienen contenedores compostables?",
+    "¿Cuánto cuesta la caja de vasos de 12 oz?",
     "¿Pueden imprimir mi logo?",
     "¿Hacen envíos a Monterrey?"
   ];

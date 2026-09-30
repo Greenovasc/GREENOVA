@@ -3,7 +3,7 @@
 
        node build-sitemap.mjs
 
-   Las 56 fichas viven en producto.html?id=<id>. Son URLs con query string,
+   Las fichas viven en producto.html?id=<id>. Son URLs con query string,
    que Google indexa sin problema siempre que estén declaradas aquí y la
    ficha emita su propio <link rel="canonical"> (lo hace producto.js). */
 
@@ -27,7 +27,10 @@ const hoy = new Date().toISOString().slice(0, 10);
 const paginas = [
   { loc: "/",             prio: "1.0", freq: "monthly" },
   { loc: "/tienda.html",  prio: "0.9", freq: "weekly"  },
-  { loc: "/ofertas.html", prio: "0.6", freq: "weekly"  }
+  { loc: "/ofertas.html", prio: "0.6", freq: "weekly"  },
+  { loc: "/contacto.html", prio: "0.6", freq: "monthly" },
+  { loc: "/aviso-de-privacidad.html", prio: "0.3", freq: "yearly" },
+  { loc: "/facturacion.html", prio: "0.4", freq: "yearly" }
 ];
 
 /* Los destacados del catálogo llevan prioridad un escalón arriba. */

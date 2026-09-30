@@ -65,7 +65,7 @@
   .ficha__venta > label { max-width: 360px; margin-bottom: .7rem; }
   .ficha__tam { display: flex; flex-direction: column; gap: .5rem; }
   .ficha__tamfila {
-    display: grid; grid-template-columns: minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) auto;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: .5rem; align-items: end; padding: .5rem; border-radius: 8px; background: var(--bg);
   }
   .ficha__tametq { font-size: .875rem; font-weight: 600; color: var(--ink); align-self: center; }
@@ -156,6 +156,22 @@
   .met__tabla--reg a { color: var(--green); font-weight: 600; overflow-wrap: anywhere; }
   .met__borrar { font: inherit; font-size: .8rem; color: var(--ink-3); background: none; border: 0; cursor: pointer; text-decoration: underline; }
   .met__borrar:hover { color: #8a2222; }
+  /* clientes y pedidos */
+  .cli__detalle { margin-top: 18px; padding: 18px 20px; border: 1px solid var(--line); border-radius: var(--r-card); background: var(--surface); }
+  .cli__detalle h3 { margin: 0 0 10px; font-size: 1.05rem; }
+  .cli__datos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 18px; margin: 0 0 16px; }
+  .cli__datos div { font-size: .88rem; }
+  .cli__datos b { display: block; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+  .ped { border: 1px solid var(--line); border-radius: var(--r-tile); background: var(--surface); margin-bottom: 10px; }
+  .ped summary { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; padding: 12px 16px; cursor: pointer; list-style: none; }
+  .ped summary::-webkit-details-marker { display: none; }
+  .ped summary b { color: var(--heading); }
+  .ped__total { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .ped__cuerpo { padding: 0 16px 14px; }
+  .ped__cuerpo table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  .ped__cuerpo td, .ped__cuerpo th { padding: .35rem .4rem; border-bottom: 1px solid var(--line); text-align: left; }
+  .ped__cuerpo td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ped__notas { margin-top: 8px; font-size: .85rem; color: var(--ink-2); white-space: pre-wrap; }
 </style>
 </head>
 <body>
@@ -221,6 +237,8 @@
     <button type="button" role="tab" id="tab-catalogo" aria-selected="true" aria-controls="vista-catalogo">Catálogo</button>
     <button type="button" role="tab" id="tab-metricas" aria-selected="false" aria-controls="vista-metricas">Métricas</button>
     <button type="button" role="tab" id="tab-registros" aria-selected="false" aria-controls="vista-registros">Registros <span class="adm__tabn" id="tab-registros-n"></span></button>
+    <button type="button" role="tab" id="tab-clientes" aria-selected="false" aria-controls="vista-clientes">Clientes</button>
+    <button type="button" role="tab" id="tab-pedidos" aria-selected="false" aria-controls="vista-pedidos">Pedidos</button>
     <a class="adm__tablink" id="link-editor" href="editor.html">Editor visual ↗</a>
   </nav>
 
@@ -327,16 +345,47 @@
     <p class="adm__aviso" id="reg-aviso" hidden></p>
     <p class="adm__sub" id="reg-resumen"></p>
     <div class="met__tabla-scroll"><table class="met__tabla met__tabla--reg">
-      <thead><tr><th>Fecha</th><th>Nombre</th><th>Correo</th><th>WhatsApp / teléfono</th><th>Qué necesita</th><th>Llegó de</th><th></th></tr></thead>
+      <thead><tr><th>Fecha</th><th>Nombre</th><th>Negocio</th><th>Correo</th><th>WhatsApp / teléfono</th><th>Llegó de</th><th></th></tr></thead>
       <tbody id="reg-filas"></tbody>
     </table></div>
     <p class="adm__vacio" id="reg-vacio" hidden>Todavía no hay registros.</p>
+  </section>
+
+  <!-- ---------------- clientes (Registro de cliente) ---------------- -->
+  <section id="vista-clientes" role="tabpanel" aria-labelledby="tab-clientes" hidden>
+    <div class="met__barra">
+      <div class="adm__buscar"><input type="text" id="cli-buscar" placeholder="Buscar por titular, negocio, correo, teléfono o RFC…"></div>
+      <button class="btn btn--ghost btn--sm" type="button" id="cli-actualizar"><span class="btn__label">Actualizar</span></button>
+      <button class="btn btn--primary btn--sm" type="button" id="cli-csv"><span class="btn__label">Descargar Excel (CSV)</span></button>
+    </div>
+    <p class="adm__aviso" id="cli-aviso" hidden></p>
+    <p class="adm__sub" id="cli-resumen"></p>
+    <div class="met__tabla-scroll"><table class="met__tabla met__tabla--reg">
+      <thead><tr><th>Fecha</th><th>Titular</th><th>Negocio</th><th>Teléfono</th><th>Correo</th><th>Factura</th><th>Compras</th><th></th></tr></thead>
+      <tbody id="cli-filas"></tbody>
+    </table></div>
+    <p class="adm__vacio" id="cli-vacio" hidden>Todavía no hay clientes registrados.</p>
+    <div class="cli__detalle" id="cli-detalle" hidden></div>
+  </section>
+
+  <!-- ---------------- pedidos (historial de compras) ---------------- -->
+  <section id="vista-pedidos" role="tabpanel" aria-labelledby="tab-pedidos" hidden>
+    <div class="met__barra">
+      <div class="adm__buscar"><input type="text" id="ped-buscar" placeholder="Buscar por folio, nombre, negocio o producto…"></div>
+      <button class="btn btn--ghost btn--sm" type="button" id="ped-actualizar"><span class="btn__label">Actualizar</span></button>
+      <button class="btn btn--primary btn--sm" type="button" id="ped-csv"><span class="btn__label">Descargar Excel (CSV)</span></button>
+    </div>
+    <p class="adm__aviso" id="ped-aviso" hidden></p>
+    <p class="adm__sub" id="ped-resumen"></p>
+    <div id="ped-lista"></div>
+    <p class="adm__vacio" id="ped-vacio" hidden>Todavía no hay pedidos.</p>
   </section>
 </main>
 
 <script src="productos.js"></script>
 <!-- ?v= obliga al navegador a bajar la versión nueva aunque tenga la vieja guardada -->
-<script src="admin.js?v=2026-09-26a"></script>
-<script src="admin-metricas.js?v=2026-09-26c"></script>
+<script src="admin.js?v=2026-09-27a"></script>
+<script src="admin-clientes.js?v=2026-09-27a"></script>
+<script src="admin-metricas.js?v=2026-09-27b"></script>
 </body>
 </html>

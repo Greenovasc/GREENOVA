@@ -49,7 +49,7 @@
   if (enlace && !/\.html$/.test(location.pathname)) enlace.href = location.pathname.replace(/\/$/, "") + "-editor";
 
   /* ---------------- pestañas ---------------- */
-  var VISTAS = ["catalogo", "metricas", "registros"];
+  var VISTAS = ["catalogo", "metricas", "registros", "clientes", "pedidos"];
   function muestra(vista) {
     VISTAS.forEach(function (v) {
       $("tab-" + v).setAttribute("aria-selected", String(v === vista));
@@ -59,6 +59,8 @@
     try { sessionStorage.setItem("greenova.panel.vista", vista); } catch (e) {}
     if (vista === "metricas" && !cargado.metricas) cargaMetricas();
     if (vista === "registros" && !cargado.registros) cargaRegistros();
+    /* Clientes y Pedidos viven en admin-clientes.js. */
+    if ((vista === "clientes" || vista === "pedidos") && window.GNPanelClientes) window.GNPanelClientes.abre(vista);
   }
   VISTAS.forEach(function (v) {
     $("tab-" + v).addEventListener("click", function () { muestra(v); });
@@ -263,7 +265,7 @@
     var q = $("reg-buscar").value.trim().toLowerCase();
     if (!q) return registros;
     return registros.filter(function (r) {
-      return [r.nombre, r.correo, r.telefono, r.necesidad, r.fuente].join(" ").toLowerCase().indexOf(q) >= 0;
+      return [r.nombre, r.negocio, r.correo, r.telefono, r.necesidad, r.fuente].join(" ").toLowerCase().indexOf(q) >= 0;
     });
   }
 
@@ -275,8 +277,8 @@
     $("reg-filas").innerHTML = lista.map(function (r) {
       var tel = r.telefono ? '<a href="https://wa.me/' + esc(whatsapp(r.telefono)) + '" target="_blank" rel="noopener noreferrer">' + esc(telefonoBonito(r.telefono)) + "</a>" : "—";
       var correo = r.correo ? '<a href="mailto:' + esc(r.correo) + '">' + esc(r.correo) + "</a>" : "—";
-      return "<tr><td>" + esc(fechaLocal(r.fecha)) + "</td><td>" + esc(r.nombre) + "</td><td>" + correo +
-        "</td><td>" + tel + "</td><td>" + esc(r.necesidad || "—") + "</td><td>" +
+      return "<tr><td>" + esc(fechaLocal(r.fecha)) + "</td><td>" + esc(r.nombre) + "</td><td>" + esc(r.negocio || "—") +
+        "</td><td>" + correo + "</td><td>" + tel + "</td><td>" +
         esc([r.fuente, NOMBRES_PAGINA[r.pagina] || r.pagina].filter(Boolean).join(" · ")) + "</td>" +
         '<td><button class="met__borrar" type="button" data-borrar="' + esc(r.id) + '">Borrar</button></td></tr>';
     }).join("");
@@ -305,9 +307,9 @@
       if (/^[=+\-@]/.test(v)) v = "'" + v;
       return '"' + v.replace(/"/g, '""') + '"';
     };
-    var filas = [["Fecha", "Nombre", "Correo", "Teléfono", "Qué necesita", "Página", "Llegó de"]].concat(
+    var filas = [["Fecha", "Nombre", "Negocio", "Correo", "Teléfono", "Qué necesita", "Página", "Llegó de"]].concat(
       filtrados().map(function (r) {
-        return [fechaLocal(r.fecha), r.nombre, r.correo, r.telefono, r.necesidad, NOMBRES_PAGINA[r.pagina] || r.pagina, r.fuente];
+        return [fechaLocal(r.fecha), r.nombre, r.negocio, r.correo, r.telefono, r.necesidad, NOMBRES_PAGINA[r.pagina] || r.pagina, r.fuente];
       }));
     var csv = "﻿" + filas.map(function (f) { return f.map(celda).join(","); }).join("\r\n");
     var url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));

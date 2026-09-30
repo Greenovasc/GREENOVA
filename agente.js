@@ -88,13 +88,25 @@
     return pregunta + extra;
   }
 
-  /* Pedido mínimo en piezas: el de cada medida (venta.tam[i].min) o 10,000,
-     que es el mínimo general que fijó Gabriel el 2026-09-24. */
+  /* Pedido mínimo: un paquete; si el producto solo se vende por caja, una caja. */
   function minimoTexto(p) {
-    var mins = p.venta ? p.venta.tam.map(function (t) { return t.min || 10000; }) : [10000];
-    var menor = Math.min.apply(null, mins);
-    var fmt = menor.toLocaleString("es-MX") + " piezas";
-    return mins.every(function (m) { return m === menor; }) ? fmt : "desde " + fmt + " según la medida";
+    var tam = (p.venta && p.venta.tam) || [];
+    return tam.some(function (t) { return t.paq && t.pPaq != null; }) ? "1 paquete" : "1 caja";
+  }
+
+  function pesos(n) {
+    return "$" + n.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  /* Cada medida con sus piezas y precios, tal como están en la tienda. */
+  function medidasTexto(p) {
+    var tam = (p.venta && p.venta.tam) || [];
+    return p.v.map(function (v, k) {
+      var t = tam[k] || {}, partes = [];
+      if (t.paq && t.pPaq != null) partes.push("paquete de " + t.paq.toLocaleString("es-MX") + " pzs " + pesos(t.pPaq));
+      if (t.caja && t.pCaja != null) partes.push("caja de " + t.caja.toLocaleString("es-MX") + " pzs " + pesos(t.pCaja));
+      return v + (t.esp ? " (" + t.esp + ")" : "") + (partes.length ? ": " + partes.join(", ") : ": precio por confirmar");
+    }).join("; ");
   }
 
   /* Cada documento: título, cuerpo, y un enlace opcional. */
@@ -108,8 +120,7 @@
       id: p.id,
       titulo: p.nombre,
       cuerpo: p.desc + " Categoría: " + cat + ". Material: " + mats + "." +
-              (p.p ? " Caja de " + p.p.toLocaleString("es-MX") + " piezas." : "") +
-              " Medidas disponibles: " + p.v.join("; ") + "." +
+              " Medidas y precios con IVA incluido: " + medidasTexto(p) + "." +
               " Pedido mínimo: " + minimoTexto(p) + ".",
       enlace: "tienda.html?cat=" + p.cat,
       prod: p
@@ -164,7 +175,7 @@
      Lo que ya marcó en la tienda vive en localStorage. El asistente lo lee para
      no preguntar de cero lo que la persona ya eligió. */
 
-  var CARRITO_KEY = "greenova.cotizacion.v1";
+  var CARRITO_KEY = "greenova.carrito.v2";
   var TEL = "55 2260 1113";
   var CORREO = "ventas@greenovasc.com.mx";
 
@@ -176,8 +187,7 @@
       guardado.forEach(function (l) {
         if (!l || !l.id || !l.qty) return;
         var p = PRODS.filter(function (x) { return x.id === l.id; })[0];
-        /* pz: los productos con `venta` se piden en piezas, no en cajas */
-        if (p) lineas.push({ nombre: p.nombre, v: l.v || "", qty: l.qty, pz: !!p.venta });
+        if (p) lineas.push({ nombre: p.nombre, v: l.v || "", qty: l.qty, u: l.u });
       });
     } catch (e) { /* modo privado, o dato viejo que ya no parsea */ }
     return lineas;
@@ -185,9 +195,8 @@
 
   function carritoTexto(lineas) {
     return lineas.map(function (l) {
-      var cant = l.pz
-        ? l.qty.toLocaleString("es-MX") + (l.qty === 1 ? " pieza de " : " piezas de ")
-        : l.qty + (l.qty === 1 ? " caja de " : " cajas de ");
+      var cant = l.qty + (l.u === "paq" ? (l.qty === 1 ? " paquete de " : " paquetes de ")
+                                        : (l.qty === 1 ? " caja de " : " cajas de "));
       return cant + l.nombre.toLowerCase() + (l.v ? " (" + l.v + ")" : "");
     }).join("; ");
   }
@@ -202,8 +211,8 @@
 
     if (lineas.length) {
       return {
-        texto: "En tu carrito llevas " + carritoTexto(lineas) + ". Envíalo y ventas " +
-               "te regresa el precio y el tiempo de entrega. Si quieres adelantarlo o " +
+        texto: "En tu carrito llevas " + carritoTexto(lineas) + ". Envía tu pedido desde " +
+               "la tienda y ventas te confirma la entrega. Si quieres adelantarlo o " +
                "sumar algo más, marca al " + TEL + " o escribe a " + CORREO + ".",
         fuente: "Tu carrito",
         enlace: "tienda.html",
@@ -277,8 +286,8 @@
 
     return {
       texto: giro.intro + " " + lista.slice(0, -1).join(", ") + " y " +
-             lista[lista.length - 1] + ". ¿Te armo la lista para cotizar? " +
-             "Dime cuántas cajas de cada uno, o marca al " + TEL + ".",
+             lista[lista.length - 1] + ". Los encuentras en la tienda por paquete o por caja. " +
+             "¿Cuántos necesitas de cada uno? También puedes marcar al " + TEL + ".",
       fuente: "Recomendación",
       enlace: "tienda.html?cat=" + prods[0].cat,
       enlaceTexto: "Ver estos productos"
@@ -298,7 +307,7 @@
     if (top.s < PISO) return null;
     if (hits[1] && top.s < hits[1].s * VENTAJA) return null;
 
-    /* pedir precio nunca se contesta con el RAG */
+    /* el precio depende de la medida: esa respuesta la arma la IA con el catálogo */
     if (/\b(precio|precios|cuesta|cuestan|costo|cotiza|barato|caro|\$)\b/.test(norm(pregunta))) return null;
 
     var d = top.d;
@@ -309,8 +318,7 @@
     var p = d.prod;
     var partes = [p.nombre + ". " + p.desc];
     partes.push("Medidas: " + p.v.join(" · ") + ".");
-    if (p.p) partes.push("Caja de " + p.p.toLocaleString("es-MX") + " piezas.");
-    partes.push("Pedido mínimo: " + minimoTexto(p) + ".");
+    partes.push("Se compra por paquete o por caja, IVA incluido. Pedido mínimo: " + minimoTexto(p) + ".");
     return {
       texto: partes.join(" "),
       fuente: "Catálogo",
@@ -479,7 +487,7 @@
     var lineas = carrito();
     if (lineas.length) {
       contexto += "\n\n## CARRITO DEL VISITANTE\n" + carritoTexto(lineas) +
-                  ".\nNo hay precios publicados: ventas los define en la cotización.";
+                  ".\nLos precios de la tienda ya incluyen IVA.";
     }
 
     fetch(CFG.ENDPOINT, {

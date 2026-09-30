@@ -35,7 +35,9 @@
       if (!abriendo && window.GNMega) window.GNMega(false);
     });
     links.addEventListener("click", function (e) {
-      if (e.target.closest("a")) setMenu(false);
+      /* "Productos" también es un enlace, pero en celular abre su lista. */
+      var a = e.target.closest("a");
+      if (a && a.id !== "mega-btn") setMenu(false);
     });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && nav.dataset.open === "true") { setMenu(false); toggle.focus(); }
@@ -127,16 +129,20 @@
     setMega(false);
     window.GNMega = setMega;
 
-    megaBtn.addEventListener("click", function () {
-      setMega(mega.dataset.open !== "true");
-    });
-    /* doble clic en "Productos" = atajo a la tienda completa (pedido de Gabriel) */
-    megaBtn.addEventListener("dblclick", function () {
-      window.location.href = "tienda.html";
-    });
-
     /* hover solo donde hay cursor de verdad y hay espacio para el panel */
     function hoverActivo() { return puntero.matches && !angosto.matches; }
+
+    /* "Productos" es un enlace a la tienda (Gabriel, 2026-09-28): con cursor,
+       pasar encima abre el catálogo y el clic entra. En celular o tableta el
+       primer toque abre la lista y el enlace sigue en "Ver toda la tienda". */
+    megaBtn.addEventListener("click", function (e) {
+      if (hoverActivo()) return;
+      e.preventDefault();
+      setMega(mega.dataset.open !== "true");
+    });
+    megaBtn.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown") { e.preventDefault(); setMega(true); var a = mega.querySelector("a"); if (a) a.focus(); }
+    });
     [megaHost, mega].forEach(function (zona) {
       if (!zona) return;
       zona.addEventListener("pointerenter", function () {
@@ -164,9 +170,10 @@
     });
   }
 
-  /* ---------- quote form ----------
-     Submitting composes a message in the visitor's mail client. Swap `send()` for a
-     POST to a real endpoint when the site gets a backend or a form service. */
+  /* ---------- formulario de la portada ----------
+     Solo datos de contacto (Feedback final): nombre, negocio, correo y
+     teléfono; se piden nombre y teléfono. Se guarda en la base (se ve en el panel,
+     pestaña Registros) y se abre el correo a ventas con los datos. */
   var form = document.getElementById("quote-form");
   if (form) {
     var status = document.getElementById("quote-status");
@@ -178,37 +185,17 @@
       var slot = form.querySelector('[data-err="' + id + '"]');
       input.closest(".field").dataset.invalid = message ? "true" : "false";
       input.setAttribute("aria-invalid", message ? "true" : "false");
-      slot.textContent = message || "";
+      if (slot) slot.textContent = message || "";
     }
 
     function validate() {
       var ok = true;
-      var nombre = document.getElementById("f-nombre");
-      var correo = document.getElementById("f-correo");
-      var mensaje = document.getElementById("f-mensaje");
-
-      setError("f-nombre", nombre.value.trim() ? "" : (ok = false, "Escribe tu nombre."));
-      setError("f-correo",
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo.value.trim()) ? "" : (ok = false, "Escribe un correo válido."));
-      setError("f-mensaje",
-        mensaje.value.trim().length > 4 ? "" : (ok = false, "Dinos qué medida y qué volumen necesitas."));
+      var correo = document.getElementById("f-correo").value.trim();
+      var tel = document.getElementById("f-tel").value.replace(/\D/g, "");
+      setError("f-nombre", document.getElementById("f-nombre").value.trim() ? "" : (ok = false, "Escribe tu nombre."));
+      setError("f-correo", !correo || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo) ? "" : (ok = false, "Escribe un correo válido (con @)."));
+      setError("f-tel", tel.length >= 10 ? "" : (ok = false, "Escribe tu teléfono a 10 dígitos."));
       return ok;
-    }
-
-    function send(data) {
-      var subject = "Cotización: " + data.producto;
-      var body = [
-        "Nombre: " + data.nombre,
-        "Negocio: " + (data.negocio || "No indicado"),
-        "Correo: " + data.correo,
-        "Teléfono: " + (data.telefono || "No indicado"),
-        "Producto: " + data.producto,
-        "",
-        "Medidas y volumen:",
-        data.mensaje
-      ].join("\n");
-      window.location.href = "mailto:ventas@greenovasc.com.mx?subject=" +
-        encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
     }
 
     form.addEventListener("submit", function (e) {
@@ -221,18 +208,39 @@
       }
 
       submit.dataset.loading = "true";
-      label.textContent = "Preparando";
+      label.textContent = "Enviando";
       status.textContent = "";
 
       var data = Object.fromEntries(new FormData(form).entries());
+      var fuente = window.GNfuente ? window.GNfuente() : {};
+      var body = [
+        "Nombre: " + data.nombre,
+        "Negocio: " + (data.negocio || "No indicado"),
+        "Correo: " + (data.correo || "No indicado"),
+        "Teléfono: " + (data.telefono || "No indicado"),
+        "",
+        "¿Qué necesita?: " + (data.necesidad || "No indicado")
+      ].join("\n");
 
-      window.setTimeout(function () {
-        send(data);
+      function listo() {
+        window.location.href = "mailto:ventas@greenovasc.com.mx?subject=" +
+          encodeURIComponent("Solicitud de información desde el sitio") + "&body=" + encodeURIComponent(body);
         submit.dataset.loading = "false";
-        label.textContent = "Solicitar cotización";
+        label.textContent = "Enviar";
         status.dataset.state = "ok";
-        status.textContent = "Listo. Abrimos tu correo con la solicitud. Si no se abrió, escribe a ventas@greenovasc.com.mx";
-      }, 420);
+        status.textContent = "Listo. Recibimos tus datos y te contactamos pronto.";
+      }
+
+      fetch("/api/suscribir", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre: data.nombre, negocio: data.negocio || "", correo: data.correo || "",
+          telefono: data.telefono || "", necesidad: data.necesidad || "", sitio_web: data.sitio_web || "",
+          ref: fuente.ref || "", utm: fuente.utm || "",
+          pagina: (location.pathname.split("/").pop() || "index").replace(/\.html$/, "") || "index"
+        })
+      }).catch(function () { /* sin base, el correo igual sale */ }).then(listo);
     });
 
     form.addEventListener("input", function (e) {
@@ -375,44 +383,56 @@
   /* ---------- cart badge outside the shop ----------
      index.html shows the same counter the shop writes, so the nav stays honest. */
   var badge = document.getElementById("cart-count");
-  if (badge && !window.GREENOVA) {
+  /* Donde está tienda.js (tienda, ofertas, ficha) el contador lo pinta él. */
+  if (badge && !document.getElementById("cart-list")) {
     try {
-      var saved = JSON.parse(localStorage.getItem("greenova.cotizacion.v1") || "[]");
-      var n = saved.reduce(function (s, l) { return s + (l.qty || 0); }, 0);
+      var saved = JSON.parse(localStorage.getItem("greenova.carrito.v2") || "[]");
+      var n = Array.isArray(saved) ? saved.length : 0;
       badge.textContent = n;
       badge.dataset.empty = String(n === 0);
     } catch (e) { /* modo privado */ }
   }
 
-  /* ---------- ventana de registro ----------
-     Como la de Life, con la marca GreeNova. Pide nombre y, al menos, correo o
-     WhatsApp: sin ninguno de los dos no deja pasar, y un correo sin @ tampoco.
-     Sale en dos momentos (Gabriel, 2026-09-26):
-     1. Al entrar al sitio: una vez por visita, en la primera página. Quien ya
-        se registró no la vuelve a ver.
-     2. Antes de mandar el pedido o comprar: todo lo marcado con
-        `data-requiere-registro` (el botón "Enviar mi pedido", el formulario
-        del pedido, "Comprar ahora"; y el paso de paquetería y pago cuando
-        exista) no deja seguir sin registro. Al registrarse, sigue solo.
-     `?bienvenida=1` la abre al momento para revisarla. Los datos van a
-     /api/suscribir (main.py) y se ven en el panel. */
+  /* ---------- ventana de entrada: regístrate o inicia sesión ----------
+     Grande, con la marca (foto + panel verde) y dos pestañas (Gabriel,
+     2026-09-28/29), sin contraseña:
+     - "Registrarme": nombre y apellido, WhatsApp (obligatorio), correo
+       (opcional) y, si quiere, una duda.
+     - "Iniciar sesión": el nombre y el WhatsApp con que se registró.
+     Las cuentas viven en cuenta.js y /api/cuenta* (main.py).
+     - Sale sola al entrar mientras no haya sesión abierta. Si la cierran o le
+       dan "Ignorar por ahora", ya no sale el resto de la visita.
+       Si en este navegador ya hubo cuenta, abre en "Iniciar sesión" con sus
+       datos ya escritos.
+     - Antes de mandar un pedido (`data-requiere-registro`) pide la sesión y,
+       al entrar, el pedido sigue solo.
+     - El icono de persona y el letrero "Inicia sesión / Regístrate" sin
+       sesión abren esta misma ventana.
+     `?bienvenida=1` la abre al momento para revisarla. */
   (function () {
-    var KEY = "greenova.bienvenida.v1";
     var CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     var forzar = /[?&]bienvenida=1\b/.test(location.search);
-    function lee() { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } }
-    function guarda(estado) { try { localStorage.setItem(KEY, JSON.stringify({ estado: estado, t: Date.now() })); } catch (e) { /* modo privado */ } }
+    var VISTO = "greenova.bienvenida.sesion";
     function metrica(evento) { if (window.GNmetrica) window.GNmetrica(evento); }
-    var previo = lee();
-    var registrado = !!(previo && previo.estado === "suscrito");
-    var host, caja, form, estado, barra, anterior, pendiente = null, modo = "entrada";
+    function conSesion() { return !!(window.GNCuenta && window.GNCuenta.token()); }
+    function conocido() { return window.GNCuenta ? window.GNCuenta.conocido() : null; }
+    function digitos(t) {
+      var d = String(t || "").replace(/\D/g, "");
+      if (d.length === 13 && d.indexOf("521") === 0) d = d.slice(3);
+      else if (d.length === 12 && d.indexOf("52") === 0) d = d.slice(2);
+      return d;
+    }
+    var host, caja, anterior, pendiente = null, modo = "entrada", tab = "registro";
     var TEXTOS = {
-      entrada: ["Estás a un paso de <em>cambiar tu empaque</em>",
-                "Recibe precios de mayoreo y una muestra física gratis de tus 3 productos favoritos.",
-                "Quiero mi muestra y precios"],
-      pedido:  ["Regístrate para <em>continuar tu pedido</em>",
-                "Antes de enviar tu pedido déjanos tus datos: así te mandamos la cotización y el seguimiento.",
-                "Registrarme y continuar"]
+      entrada: {
+        registro: ["Regístrate o <em>inicia sesión</em>", "Solo tu nombre y tu WhatsApp."],
+        entrar: ["Inicia <em>sesión</em>", "Qué gusto verte de nuevo. Entra con tu nombre y tu WhatsApp."]
+      },
+      /* Ya eligió su paquetería en pagar.html y le dio "Continuar con la compra". */
+      pedido: {
+        registro: ["Regístrate para <em>continuar tu pedido</em>", "Estás a un paso de realizar tu pedido."],
+        entrar: ["Inicia sesión para <em>continuar tu pedido</em>", "Estás a un paso de realizar tu pedido."]
+      }
     };
 
     /* Lo que dejó al registrarse llena solo el formulario del pedido. */
@@ -420,12 +440,29 @@
       var d;
       try { d = JSON.parse(localStorage.getItem("greenova.registro") || "null"); } catch (e) { d = null; }
       if (!d) return;
-      [["s-nombre", d.nombre], ["s-correo", d.correo], ["s-tel", d.telefono]].forEach(function (c) {
+      [["s-nombre", d.nombre], ["s-negocio", d.negocio], ["s-correo", d.correo], ["s-tel", d.telefono],
+       ["f-nombre", d.nombre], ["f-negocio", d.negocio], ["f-correo", d.correo], ["f-tel", d.telefono]].forEach(function (c) {
         var el = document.getElementById(c[0]);
         if (el && !el.value && c[1]) el.value = c[1];
       });
     }
+    function recuerda(d) {
+      try {
+        localStorage.setItem("greenova.registro", JSON.stringify({
+          nombre: d.nombre || "", negocio: d.negocio || "", correo: d.correo || "", telefono: d.telefono || "" }));
+      } catch (e) { /* modo privado */ }
+      rellena();
+    }
     rellena();
+
+    /* Campo con su icono a la izquierda; la etiqueta queda para lectores de pantalla. */
+    function campo(id, nombre, tipo, ph, ico, extra) {
+      return '<div class="bienv__campo">' +
+        '<svg class="ico" aria-hidden="true"><use href="#' + ico + '"></use></svg>' +
+        '<label class="sr-only" for="' + id + '">' + ph + "</label>" +
+        '<input id="' + id + '" name="' + nombre + '" type="' + tipo + '" placeholder="' + ph + '" ' + (extra || "") + ">" +
+        "</div>";
+    }
 
     function arma() {
       host = document.createElement("div");
@@ -434,110 +471,131 @@
       host.innerHTML =
         '<div class="bienv__fondo" data-cerrar></div>' +
         '<div class="bienv__caja" role="dialog" aria-modal="true" aria-labelledby="bienv-t">' +
-          '<div class="bienv__foto"><img src="assets/prod/fajilla-kraft.webp?v=20260926c" alt="Vaso de papel con fajilla kraft GreeNova SC" width="900" height="900" decoding="async"></div>' +
+          '<div class="bienv__foto">' +
+            '<img src="assets/prod/fajilla-kraft.webp?v=20260926c" alt="Vaso de papel con fajilla kraft GreeNova SC" width="900" height="900" decoding="async">' +
+            '<div class="bienv__firma">' +
+              '<img src="assets/logo-greenova-claro.svg" alt="GreeNova SC" width="1664" height="377">' +
+              "<p>Empaques responsables, negocios con propósito.</p>" +
+            "</div>" +
+          "</div>" +
           '<div class="bienv__cuerpo">' +
             '<div class="bienv__top">' +
-              '<div class="bienv__barra" role="progressbar" aria-label="Avance del registro" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30"><span></span></div>' +
+              '<div class="bienv__tabs" role="tablist" aria-label="Registro o inicio de sesión">' +
+                '<button type="button" role="tab" data-tab="registro">Registrarme</button>' +
+                '<button type="button" role="tab" data-tab="entrar">Iniciar sesión</button>' +
+              "</div>" +
               '<button class="bienv__x" type="button" aria-label="Cerrar" data-cerrar>' +
                 '<svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg></button>' +
             "</div>" +
             '<div class="bienv__contenido">' +
-              '<h2 id="bienv-t">Estás a un paso de <em>cambiar tu empaque</em></h2>' +
-              '<p class="bienv__txt">Recibe precios de mayoreo y una muestra física gratis de tus 3 productos favoritos.</p>' +
-              '<form class="bienv__form" novalidate>' +
-                '<label class="sr-only" for="bienv-nombre">Nombre</label>' +
-                '<input id="bienv-nombre" name="nombre" autocomplete="name" placeholder="Nombre" maxlength="80">' +
-                '<label class="sr-only" for="bienv-correo">Correo</label>' +
-                '<input id="bienv-correo" name="correo" type="email" autocomplete="email" inputmode="email" placeholder="Correo" maxlength="120">' +
-                '<label class="sr-only" for="bienv-tel">WhatsApp o teléfono</label>' +
-                '<input id="bienv-tel" name="telefono" type="tel" autocomplete="tel" inputmode="tel" placeholder="WhatsApp o teléfono" maxlength="20">' +
-                '<label class="sr-only" for="bienv-nec">¿Qué necesita tu negocio?</label>' +
-                '<textarea id="bienv-nec" name="necesidad" rows="2" maxlength="500" placeholder="¿Qué necesita tu negocio? (opcional)"></textarea>' +
+              '<h2 id="bienv-t"></h2>' +
+              '<p class="bienv__txt"></p>' +
+              '<form class="bienv__form" data-form="registro" novalidate>' +
+                campo("bienv-nombre", "nombre", "text", "Nombre y apellido", "i-user-circle", 'autocomplete="name" maxlength="80"') +
+                campo("bienv-tel", "telefono", "tel", "WhatsApp (10 dígitos)", "i-whatsapp-logo", 'autocomplete="tel-national" inputmode="tel" maxlength="20"') +
+                campo("bienv-correo", "correo", "email", "Correo (opcional)", "i-envelope-simple", 'autocomplete="email" inputmode="email" maxlength="120"') +
+                '<label class="sr-only" for="bienv-duda">¿Tienes alguna duda?</label>' +
+                '<textarea id="bienv-duda" name="necesidad" rows="2" maxlength="500" placeholder="¿Tienes alguna duda? (opcional)"></textarea>' +
                 '<input class="bienv__trampa" name="sitio_web" tabindex="-1" autocomplete="off" aria-hidden="true">' +
                 '<p class="bienv__estado" role="status" aria-live="polite"></p>' +
-                '<button class="bienv__btn" type="submit"><span class="btn__label">Quiero mi muestra y precios</span></button>' +
+                '<button class="bienv__btn" type="submit"><span class="btn__label">Registrarme</span>' +
+                  '<svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg></button>' +
+                '<p class="bienv__legal">Al registrarte aceptas el <a href="aviso-de-privacidad.html" target="_blank">Aviso de privacidad</a>.</p>' +
               "</form>" +
-              '<p class="bienv__nota">Déjanos tu correo o tu WhatsApp. Te contactamos pronto, sin spam.</p>' +
+              '<form class="bienv__form" data-form="entrar" novalidate hidden>' +
+                campo("bienv-nombre2", "nombre", "text", "Nombre y apellido", "i-user-circle", 'autocomplete="name" maxlength="80"') +
+                campo("bienv-tel2", "telefono", "tel", "WhatsApp (10 dígitos)", "i-whatsapp-logo", 'autocomplete="tel-national" inputmode="tel" maxlength="20"') +
+                '<p class="bienv__estado" role="status" aria-live="polite"></p>' +
+                '<button class="bienv__btn" type="submit"><span class="btn__label">Iniciar sesión</span>' +
+                  '<svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg></button>' +
+                '<p class="bienv__nota">¿Aún no tienes cuenta? <button type="button" class="bienv__link" data-tab="registro">Regístrate</button></p>' +
+              "</form>" +
+              '<button class="bienv__ignorar" type="button" data-ignorar>Ignorar por ahora</button>' +
             "</div>" +
           "</div>" +
         "</div>";
       document.body.appendChild(host);
       caja = host.querySelector(".bienv__caja");
-      form = host.querySelector("form");
-      estado = host.querySelector(".bienv__estado");
-      barra = host.querySelector(".bienv__barra");
 
       host.addEventListener("click", function (e) {
+        var t = e.target.closest("[data-tab]");
+        if (t) { pestana(t.dataset.tab, true); return; }
+        if (e.target.closest("[data-ignorar]")) {
+          pendiente = null;
+          metrica("registro_ignorado");
+          cierra();
+          return;
+        }
         if (e.target.closest("[data-cerrar]")) cierra();
       });
       host.addEventListener("keydown", function (e) {
         if (e.key === "Escape") { e.stopPropagation(); cierra(); return; }
         if (e.key !== "Tab") return;
-        var f = caja.querySelectorAll("button, input:not([tabindex='-1']), textarea");
+        var f = Array.prototype.filter.call(caja.querySelectorAll("button, input:not([tabindex='-1']), textarea, a"),
+          function (el) { return el.offsetParent !== null; });
         var primero = f[0], ultimo = f[f.length - 1];
         if (e.shiftKey && document.activeElement === primero) { e.preventDefault(); ultimo.focus(); }
         else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus(); }
       });
-      form.addEventListener("input", function (e) {
+      host.addEventListener("input", function (e) {
         if (e.target.getAttribute("aria-invalid") === "true") e.target.removeAttribute("aria-invalid");
-        avance();
       });
-      form.addEventListener("submit", envia);
+      host.addEventListener("submit", envia);
     }
 
-    function digitos(t) { return t.replace(/\D/g, ""); }
+    function forma(cual) { return host.querySelector('form[data-form="' + cual + '"]'); }
 
-    /* La barra premia cada paso: nombre, un medio de contacto y la nota. */
-    function avance(valor) {
-      var n = form.nombre.value.trim().length >= 2;
-      var c = CORREO.test(form.correo.value.trim()) || digitos(form.telefono.value).length >= 10;
-      var p = valor || 30 + (n ? 30 : 0) + (c ? 30 : 0) + (form.necesidad.value.trim() ? 10 : 0);
-      barra.style.setProperty("--avance", p + "%");
-      barra.setAttribute("aria-valuenow", String(p));
-    }
-
-    /* Nombre obligatorio; correo O teléfono. Un correo sin @ no pasa aunque
-       haya teléfono: casi siempre es un dato falso. */
-    function revisa() {
-      var c = form.correo.value.trim(), t = digitos(form.telefono.value);
-      if (form.nombre.value.trim().length < 2) return ["nombre", "Escribe tu nombre."];
-      if (c && !CORREO.test(c)) {
-        return ["correo", c.indexOf("@") < 0 ? "A tu correo le falta la @ (ejemplo: nombre@negocio.com)." :
-                                              "Revisa tu correo, parece incompleto."];
+    function pestana(cual, foco) {
+      tab = cual;
+      host.querySelectorAll("[data-tab]").forEach(function (b) {
+        b.setAttribute("aria-selected", String(b.dataset.tab === cual));
+      });
+      forma("registro").hidden = cual !== "registro";
+      forma("entrar").hidden = cual !== "entrar";
+      var t = TEXTOS[modo === "pedido" ? "pedido" : "entrada"][cual];
+      host.querySelector("h2").innerHTML = t[0];
+      host.querySelector(".bienv__txt").textContent = t[1];
+      /* Si viene de comprar, el botón dice "Continuar con la compra" y no hay
+         "Ignorar por ahora" (para cerrar está la X). */
+      var compra = modo === "pedido";
+      forma("registro").querySelector(".btn__label").textContent = compra ? "Continuar con la compra" : "Registrarme";
+      forma("entrar").querySelector(".btn__label").textContent = compra ? "Continuar con la compra" : "Iniciar sesión";
+      host.querySelector("[data-ignorar]").hidden = compra;
+      host.querySelectorAll(".bienv__estado").forEach(function (x) { x.textContent = ""; });
+      var c = conocido(), fe = forma("entrar");
+      if (cual === "entrar" && c) {
+        if (!fe.nombre.value) fe.nombre.value = c.nombre || "";
+        if (!fe.telefono.value) fe.telefono.value = c.telefono || "";
       }
-      if (t && (t.length < 10 || t.length > 15)) return ["telefono", "Escribe tu número a 10 dígitos."];
-      if (!c && !t) return ["correo", "Déjanos tu correo o tu WhatsApp para contactarte."];
-      return null;
-    }
-
-    function error(campo, texto) {
-      estado.dataset.state = "error";
-      estado.textContent = texto;
-      if (campo) {
-        form[campo].setAttribute("aria-invalid", "true");
-        form[campo].focus();
+      if (foco) {
+        var f = forma(cual);
+        var primero = Array.prototype.filter.call(f.querySelectorAll("input:not([tabindex='-1'])"),
+          function (i) { return !i.value; })[0] || f.querySelector(".bienv__btn");
+        setTimeout(function () { primero.focus({ preventScroll: true }); }, 40);
       }
     }
 
-    function abre(como, luego) {
+    function abre(como, luego, cual) {
+      /* Después de entrar la caja muestra "¡Listo!": se arma de nuevo. */
+      if (host && !host.querySelector("form")) { host.remove(); host = null; }
       if (!host) arma();
       modo = como || "entrada";
       pendiente = luego || null;
-      host.querySelector("h2").innerHTML = TEXTOS[modo][0];
-      host.querySelector(".bienv__txt").textContent = TEXTOS[modo][1];
-      host.querySelector(".bienv__btn .btn__label").textContent = TEXTOS[modo][2];
-      estado.textContent = "";
+      pestana(cual || (conocido() ? "entrar" : "registro"), false);
       anterior = document.activeElement;
       host.hidden = false;
       document.documentElement.classList.add("bienv-abierta");
-      requestAnimationFrame(function () { host.dataset.open = "true"; avance(); });
-      setTimeout(function () { form.nombre.focus({ preventScroll: true }); }, 60);
+      requestAnimationFrame(function () { host.dataset.open = "true"; });
+      setTimeout(function () { pestana(tab, true); }, 60);
       metrica("popup_visto");
     }
 
     function cierra() {
       if (!host || host.hidden) return;
-      if (!registrado) metrica("popup_cerrado");
+      if (!conSesion()) {
+        metrica("popup_cerrado");
+        try { sessionStorage.setItem(VISTO, "1"); } catch (e) { /* modo privado */ }
+      }
       pendiente = null;
       host.dataset.open = "false";
       document.documentElement.classList.remove("bienv-abierta");
@@ -545,50 +603,83 @@
       if (anterior && anterior.focus) anterior.focus({ preventScroll: true });
     }
 
+    function error(form, nombre, texto) {
+      var estado = form.querySelector(".bienv__estado");
+      estado.dataset.state = "error";
+      estado.textContent = texto;
+      if (nombre && form[nombre]) {
+        form[nombre].setAttribute("aria-invalid", "true");
+        form[nombre].focus();
+      }
+    }
+
     function envia(e) {
+      var form = e.target.closest("form[data-form]");
+      if (!form || !window.GNCuenta) return;
       e.preventDefault();
-      var mal = revisa();
-      if (mal) return error(mal[0], mal[1]);
+      var cual = form.dataset.form;
+      var d = { nombre: form.nombre.value.trim().replace(/\s+/g, " "), telefono: form.telefono.value.trim() };
+      if (d.nombre.length < 2) return error(form, "nombre", "Escribe tu nombre y apellido.");
+      if (digitos(d.telefono).length !== 10) return error(form, "telefono", "Escribe tu WhatsApp a 10 dígitos.");
+      if (cual === "registro") {
+        d.correo = form.correo.value.trim();
+        d.necesidad = form.necesidad.value.trim();
+        d.sitio_web = form.sitio_web.value;
+        if (d.correo && !CORREO.test(d.correo)) return error(form, "correo", d.correo.indexOf("@") < 0 ?
+          "A tu correo le falta la @ (ejemplo: nombre@negocio.com). Si no quieres, déjalo vacío." :
+          "Revisa tu correo, parece incompleto. Si no quieres, déjalo vacío.");
+      }
       var btn = form.querySelector(".bienv__btn");
+      var label = btn.querySelector(".btn__label");
+      var antes = label.textContent;
       btn.disabled = true;
-      btn.querySelector(".btn__label").textContent = "Enviando…";
-      estado.dataset.state = "";
-      estado.textContent = "";
-      var fuente = window.GNfuente ? window.GNfuente() : {};
-      fetch("/api/suscribir", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre: form.nombre.value.trim(), correo: form.correo.value.trim(),
-          telefono: form.telefono.value.trim(), necesidad: form.necesidad.value.trim(),
-          sitio_web: form.sitio_web.value, ref: fuente.ref || "", utm: fuente.utm || "",
-          pagina: (location.pathname.split("/").pop() || "index").replace(/\.html$/, "") || "index"
-        })
-      }).then(function (r) {
-        if (r.ok) return listo(form.nombre.value.trim());
-        return r.json().catch(function () { return {}; }).then(function (j) { throw { s: r.status, e: j.error }; });
-      }).catch(function (x) {
+      label.textContent = cual === "registro" ? "Creando tu cuenta…" : "Entrando…";
+      form.querySelector(".bienv__estado").textContent = "";
+
+      (cual === "registro" ? window.GNCuenta.crear(d) : window.GNCuenta.entrar(d)).then(function (j) {
         btn.disabled = false;
-        btn.querySelector(".btn__label").textContent = TEXTOS[modo][2];
-        var err = (x && x.e) || "";
-        if (err === "correo_invalido") return error("correo", "Revisa tu correo, parece que tiene un error.");
-        if (err === "telefono_invalido") return error("telefono", "Escribe tu número a 10 dígitos.");
-        if (err === "sin_contacto") return error("correo", "Déjanos tu correo o tu WhatsApp para contactarte.");
-        if (err === "nombre") return error("nombre", "Escribe tu nombre.");
-        error(null, x && x.s === 429 ? "Recibimos varios registros desde aquí. Intenta más tarde." :
-                                       "No pudimos registrarte ahora. Intenta de nuevo en un momento.");
+        label.textContent = antes;
+        if (j.token) {
+          var perfil = j.perfil || {};
+          if (cual === "registro") {
+            /* También queda en "Registros" del panel, con su duda. */
+            var fuente = window.GNfuente ? window.GNfuente() : {};
+            fetch("/api/suscribir", {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                nombre: d.nombre, correo: d.correo, telefono: d.telefono, necesidad: d.necesidad,
+                ref: fuente.ref || "", utm: fuente.utm || "",
+                pagina: (location.pathname.split("/").pop() || "index").replace(/\.html$/, "") || "index"
+              })
+            }).catch(function () { /* la cuenta ya quedó */ });
+          }
+          return listo(perfil);
+        }
+        var err = j.error || "";
+        if (err === "cuenta_existe") {
+          /* Ese WhatsApp ya tiene cuenta con otro nombre: que entre con el suyo. */
+          var fe = forma("entrar");
+          fe.telefono.value = d.telefono;
+          fe.nombre.value = "";
+          pestana("entrar", false);
+          return error(fe, "nombre", "Ese WhatsApp ya tiene cuenta. Escribe el nombre con que te registraste.");
+        }
+        if (err === "datos_incorrectos") return error(form, "nombre",
+          "Ese nombre y ese WhatsApp no coinciden con ninguna cuenta. Revísalos o regístrate.");
+        if (err === "correo_invalido") return error(form, "correo", "Revisa tu correo, parece que tiene un error.");
+        if (err === "telefono_invalido") return error(form, "telefono", "Escribe tu WhatsApp a 10 dígitos.");
+        if (err === "nombre") return error(form, "nombre", "Escribe tu nombre y apellido.");
+        error(form, null, j._s === 429 ? "Demasiados intentos desde aquí. Espera unos minutos." :
+                                         "No pudimos entrar ahora. Intenta de nuevo en un momento.");
+      }).catch(function () {
+        btn.disabled = false;
+        label.textContent = antes;
+        error(form, null, "No pudimos conectarnos. Revisa tu internet e intenta de nuevo.");
       });
     }
 
-    function listo(nombre) {
-      registrado = true;
-      guarda("suscrito");
-      try {
-        localStorage.setItem("greenova.registro", JSON.stringify({
-          nombre: nombre, correo: form.correo.value.trim(), telefono: form.telefono.value.trim() }));
-      } catch (e) { /* modo privado */ }
-      rellena();
-      avance(100);
+    function listo(perfil) {
+      recuerda(perfil);
       /* Venía de "Enviar mi pedido" o "Comprar ahora": se cierra y sigue. */
       if (pendiente) {
         var sigue = pendiente;
@@ -597,11 +688,12 @@
         setTimeout(sigue, reduce ? 0 : 280);
         return;
       }
-      var primer = nombre.split(" ")[0];
+      var primer = (perfil.nombre || "").split(" ")[0];
       var cont = host.querySelector(".bienv__contenido");
+      host.querySelector(".bienv__tabs").hidden = true;
       cont.innerHTML =
         '<h2 id="bienv-t"></h2>' +
-        '<p class="bienv__txt">Recibimos tus datos. Te contactamos pronto con precios de mayoreo y tu muestra gratis.</p>' +
+        '<p class="bienv__txt">Ya iniciaste sesión. Tus pedidos se guardan en tu cuenta.</p>' +
         '<button class="bienv__btn" type="button" data-cerrar><span class="btn__label">Seguir viendo</span></button>';
       cont.querySelector("h2").innerHTML = "¡Listo<em></em>!";
       cont.querySelector("em").textContent = primer ? ", " + primer : "";
@@ -611,6 +703,7 @@
     /* No interrumpir: si están escribiendo (buscador, chat) o tienen abierto
        el carrito, se espera y se vuelve a intentar. */
     function cuandoSePueda() {
+      if (conSesion()) return;
       var ocupado = document.activeElement && /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
       var drawer = document.getElementById("drawer");
       if (document.hidden || ocupado || (drawer && drawer.dataset.open === "true")) {
@@ -619,26 +712,29 @@
       }
       abre();
     }
-    /* 1. Al entrar: una vez por visita (la primera página que se abre). */
+    /* 1. Al entrar, sola, mientras no haya sesión y no la hayan cerrado en
+       esta visita (recargar sin cerrarla la vuelve a mostrar). */
     var yaSalio = false;
-    try { yaSalio = !!sessionStorage.getItem("greenova.bienvenida.sesion"); } catch (e) { /* modo privado */ }
-    if (forzar || (!registrado && !yaSalio)) {
-      try { sessionStorage.setItem("greenova.bienvenida.sesion", "1"); } catch (e) { /* modo privado */ }
-      setTimeout(cuandoSePueda, forzar ? 300 : 1200);
+    try { yaSalio = !!sessionStorage.getItem(VISTO); } catch (e) { /* modo privado */ }
+    if (location.hash === "#registro") {
+      setTimeout(function () { abre("entrada", null, "registro"); }, 300);
+    } else if (forzar || (!conSesion() && !yaSalio && document.body.dataset.modo !== "pagar")) {
+      /* En pagar.html no sale sola: ahí se pide después de elegir paquetería. */
+      setTimeout(cuandoSePueda, forzar ? 300 : 450);
     }
 
-    /* 2. Antes de mandar el pedido o pagar: sin registro no se sigue. Se
+    /* 2. Antes de mandar el pedido o pagar: sin sesión no se sigue. Se
        escucha en captura para detener el clic antes que su propio código. */
     document.addEventListener("click", function (e) {
       var el = e.target.closest && e.target.closest("[data-requiere-registro]");
-      if (!el || el.tagName === "FORM" || registrado) return;
+      if (!el || el.tagName === "FORM" || conSesion()) return;
       e.preventDefault();
       e.stopImmediatePropagation();
       abre("pedido", function () { el.click(); });
     }, true);
     document.addEventListener("submit", function (e) {
       var f = e.target;
-      if (!f.hasAttribute || !f.hasAttribute("data-requiere-registro") || registrado) return;
+      if (!f.hasAttribute || !f.hasAttribute("data-requiere-registro") || conSesion()) return;
       e.preventDefault();
       e.stopImmediatePropagation();
       abre("pedido", function () {
@@ -647,12 +743,62 @@
       });
     }, true);
 
+    /* 3. "Registro de cliente" del pie: abre la ventana en "Registrarme". */
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("[data-abre-registro]");
+      if (!a) return;
+      e.preventDefault();
+      if (conSesion() && window.GNCuenta) window.GNCuenta.abrir();
+      else abre("entrada", null, "registro");
+    });
+
     window.GNRegistro = {
-      registrado: function () { return registrado; },
+      registrado: conSesion,
       /* Para el paso de paquetería y pago: GNRegistro.exigir(seguir). */
-      exigir: function (seguir) { if (registrado) seguir(); else abre("pedido", seguir); }
+      exigir: function (seguir) { if (conSesion()) seguir(); else abre("pedido", seguir); },
+      /* cuenta.js: quien entra desde el panel lateral llena los formularios. */
+      marcar: recuerda,
+      /* Icono de persona sin sesión: esta misma ventana. */
+      abrirCuenta: function (cual) { abre("entrada", null, cual); }
     };
   })();
+
+  /* ---------- "¿Qué empaque necesitas?" de la portada: al asistente ---------- */
+  document.addEventListener("submit", function (e) {
+    var f = e.target;
+    if (!f.hasAttribute || !f.hasAttribute("data-pregunta-agente") || !window.GNAgente) return;
+    e.preventDefault();
+    var q = (f.querySelector("input").value || "").trim();
+    window.GNAgente.abrir(q || "");
+    f.querySelector("input").value = "";
+  });
+
+  /* ---------- lupa del menú: abre el asistente ---------- */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-abre-agente]");
+    if (!b || !window.GNAgente) return;
+    e.preventDefault();
+    window.GNAgente.abrir();
+  });
+
+  (function () {
+    var m = location.search.match(/[?&]interes=([^&#]+)/);
+    var campo = document.getElementById("f-mensaje");
+    if (!m || !campo) return;
+    var que = decodeURIComponent(m[1].replace(/\+/g, " ")).slice(0, 80);
+    campo.value = "Me interesa: " + que + ". ";
+  })();
+
+  /* ---------- "Cotizar" desde Nuestros productos: baja al formulario con
+     el producto ya escrito en "¿Qué necesitas?" ---------- */
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("[data-interes]");
+    var campo = document.getElementById("f-mensaje");
+    if (!a || !campo) return;
+    var frase = "Me interesa: " + a.dataset.interes + ".";
+    if (campo.value.indexOf(frase) === -1) campo.value = (campo.value ? campo.value + "\n" : "") + frase + " ";
+    setTimeout(function () { campo.focus({ preventScroll: true }); }, 600);
+  });
 
   window.GN = { observe: observe, burst: burst };
 })();

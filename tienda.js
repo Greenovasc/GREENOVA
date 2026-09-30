@@ -1,8 +1,11 @@
 /* GreeNova SC - tienda.
-   Catálogo filtrable + carrito persistente en localStorage. El envío pide
-   cotización por correo. Los productos con `venta` muestran precio por pieza
-   y se piden desde su pedido mínimo; el resto va por caja.
-   Sin dependencias, sin listeners de scroll: los reveals los maneja app.js. */
+   Catálogo filtrable + carrito persistente en localStorage.
+
+   Feedback final (2026-09-27): se vende por PAQUETE o por CAJA, con los
+   precios de la lista de Excel (IVA incluido) y el mínimo es un paquete.
+   Cada medida trae en venta.tam[i] sus piezas por paquete y por caja, sus
+   precios, su boca en mm y, si la tiene, su propia foto.
+   Sin dependencias, sin listeners de scroll: los reveals los maneja greenova.js. */
 (function () {
   "use strict";
   if (!window.GREENOVA) return;
@@ -11,7 +14,6 @@
   var MATS = window.GREENOVA.MATERIALES;
   var PRODS = window.GREENOVA.PRODUCTOS;
   var PROMOS = window.GREENOVA.PROMOS || {};
-  var TAPAS_POR_VASO = window.GREENOVA.TAPAS_POR_VASO || {};
 
   /* "todo" = catálogo completo (tienda.html) | "ofertas" = outlet (ofertas.html) */
   var MODO = document.body.dataset.modo || "todo";
@@ -19,7 +21,11 @@
     ? PRODS.filter(function (p) { return PROMOS[p.id]; })
     : PRODS;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var KEY = "greenova.cotizacion.v1";
+  /* v2: el carrito de antes contaba piezas y cajas de otro catálogo. */
+  var KEY = "greenova.carrito.v2";
+
+  /* Qué tapas le quedan a qué vasos: misma boca, familia correspondiente. */
+  var FAMILIA_TAPAS = { "vasos-papel": "tapas-papel", "vasos-pet": "tapas-pet" };
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -28,72 +34,112 @@
   function src(name) {
     var path = "assets/prod/" + name + ".webp";
     /* ?v= obliga al navegador a bajar la foto nueva si se reemplazó */
-    return (window.GN_ASSETS && window.GN_ASSETS[path]) || path + "?v=20260926c";
+    return (window.GN_ASSETS && window.GN_ASSETS[path]) || path + "?v=20260927b";
   }
 
-  /* ============================ estado ============================ */
-  var state = { cat: "todo", mats: [], oz: [], q: "", sort: "destacado", stock: "todo", linea: "" };
-  /* Todo material puede traer venta en línea (ver LINEAS_VENTA en main.py):
-     se arma de MATERIALES en vez de una lista fija para no desalinearse. */
-  var LINEAS = Object.keys(MATS).map(function (k) { return [k, MATS[k]]; });
-  var cart = [];
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
 
-  /* ---------- unidades del carrito ----------
-     Pedido mínimo (Gabriel, 2026-09-24): los productos con `venta` se piden
-     por PIEZA, desde el `min` de cada medida (10,000 por omisión) y en pasos
-     de una caja (o de 1,000 si el producto no declara piezas por caja). Los de
-     cotización se siguen contando en CAJAS, de 1 a 999, como siempre. */
-  var MIN_PIEZAS = 10000;
+  function money(n) {
+    return "$" + n.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function fmt(n) { return n.toLocaleString("es-MX"); }
+
+  /* ============================ venta ============================ */
   function prodDe(id) { return PRODS.filter(function (x) { return x.id === id; })[0]; }
-  function porPieza(p) { return !!(p && p.venta); }
-  function minDe(p, v) {
-    if (!porPieza(p)) return 1;
-    var t = p.venta.tam[Math.max(0, p.v.indexOf(v))];
-    return (t && t.min) || MIN_PIEZAS;
+  function tamDe(p, v) {
+    var i = p ? p.v.indexOf(v) : -1;
+    return i > -1 && p.venta ? p.venta.tam[i] : null;
   }
-  function pasoDe(p) { return porPieza(p) ? (p.p || 1000) : 1; }
-  function maxDe(p) { return porPieza(p) ? 10000000 : 999; }
-  function cantidadTexto(p, n) {
-    return porPieza(p)
-      ? n.toLocaleString("es-MX") + (n === 1 ? " pieza" : " piezas")
-      : n + (n === 1 ? " caja" : " cajas");
+  /* Con oferta activa (panel), el precio baja ese porcentaje. */
+  function conPromo(p, precio) {
+    var promo = PROMOS[p.id];
+    return precio != null && promo && promo.desc ? precio * (1 - promo.desc / 100) : precio;
   }
-  /* El stepper lleva sus propios límites: así el mismo manejador de clics
-     sirve para cajas (1 en 1) y para piezas (de caja en caja). */
-  function stepperAttrs(p, v) {
-    return ' data-min="' + minDe(p, v) + '" data-paso="' + pasoDe(p) + '" data-max="' + maxDe(p) + '"';
+  /* Presentaciones que sí se pueden comprar: con piezas y con precio. */
+  function unidades(t) {
+    var out = [];
+    if (t && t.paq && t.pPaq != null) out.push("paq");
+    if (t && t.caja && t.pCaja != null) out.push("caja");
+    return out;
   }
-  function limites(el) {
-    var w = el.closest("[data-min]");
-    return {
-      min: w ? Number(w.dataset.min) : 1,
-      paso: w ? Number(w.dataset.paso) || 1 : 1,
-      max: w ? Number(w.dataset.max) : 999
-    };
+  function precioDe(p, t, u) { return conPromo(p, u === "paq" ? t.pPaq : t.pCaja); }
+  function piezasDe(t, u) { return u === "paq" ? t.paq : t.caja; }
+  function unidadTexto(u, n) {
+    return u === "paq" ? (n === 1 ? "paquete" : "paquetes") : (n === 1 ? "caja" : "cajas");
+  }
+  function cantidadTexto(l) {
+    var t = tamDe(prodDe(l.id), l.v);
+    var pz = t ? piezasDe(t, l.u) * l.qty : 0;
+    return l.qty + " " + unidadTexto(l.u, l.qty) + (pz ? " (" + fmt(pz) + " pzs)" : "");
+  }
+  function subtotal(l) {
+    var p = prodDe(l.id), t = tamDe(p, l.v);
+    var precio = t ? precioDe(p, t, l.u) : null;
+    return precio == null ? null : precio * l.qty;
+  }
+  function imgDe(p, v) {
+    var t = tamDe(p, v);
+    return (t && t.img) || p.img;
   }
 
+  /* Bloque de precios de una medida: paquete y caja, con la presentación
+     elegida resaltada. Sirve a la tarjeta y al carrito. */
+  function preciosHTML(p, t, uSel) {
+    var us = unidades(t);
+    if (!us.length) return '<p class="precios__nada">Precio por confirmar</p>';
+    var promo = PROMOS[p.id];
+    return us.map(function (u) {
+      var base = u === "paq" ? t.pPaq : t.pCaja;
+      var final = precioDe(p, t, u);
+      return '<p class="precios__fila" data-u="' + u + '"' + (u === uSel ? ' data-sel="true"' : "") + ">" +
+        "<span>" + (u === "paq" ? "Paquete" : "Caja") + " · " + fmt(piezasDe(t, u)) + " pzs</span>" +
+        "<b>" + (promo && promo.desc ? "<s>" + money(base) + "</s> " : "") + money(final) + "</b></p>";
+    }).join("") + '<p class="precios__iva">IVA incluido</p>';
+  }
+
+  function unidadesHTML(t, uSel) {
+    var us = unidades(t);
+    return us.map(function (u) {
+      return '<button type="button" data-u="' + u + '" aria-pressed="' + (u === uSel) + '">' +
+        (u === "paq" ? "Paquete" : "Caja") + "</button>";
+    }).join("");
+  }
+
+  /* ============================ carrito ============================ */
+  var cart = [];
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || "[]");
-    if (Array.isArray(saved)) cart = saved.filter(function (l) { return l && l.id && l.qty > 0; });
-    /* Carritos guardados antes del pedido mínimo traían cajas (1, 2, 3…) en
-       productos que ahora van por pieza: se suben al mínimo de su medida. */
-    cart.forEach(function (l) {
-      var p = prodDe(l.id);
-      if (porPieza(p) && l.qty < minDe(p, l.v)) l.qty = minDe(p, l.v);
-    });
+    if (Array.isArray(saved)) {
+      cart = saved.filter(function (l) {
+        var t = l && tamDe(prodDe(l.id), l.v);
+        return t && unidades(t).indexOf(l.u) > -1 && l.qty > 0;
+      });
+    }
   } catch (e) { cart = []; }
 
   function persist() {
     try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch (e) { /* modo privado */ }
   }
-
-  function fecha(iso) {
-    var d = new Date(iso + "T12:00:00");
-    return isNaN(d) ? iso : d.toLocaleDateString("es-MX", { day: "numeric", month: "long" });
+  function lineaDe(id, v, u) {
+    return cart.filter(function (l) { return l.id === id && l.v === v && l.u === u; })[0];
   }
 
-  function money(n) {
-    return "$" + n.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " MXN";
+  /* ============================ estado ============================ */
+  var state = { cat: "todo", oz: [], q: "", sort: "todos" };
+  /* "Más vendidos": ids ordenados por cuántos pedidos los llevan (/api/populares). */
+  var POPULARES = null;
+  /* "Nuestros mejores precios": el precio por pieza más bajo de sus medidas. */
+  function precioPieza(p) {
+    var min = null;
+    (p.venta ? p.venta.tam : []).forEach(function (t) {
+      [[t.pPaq, t.paq], [t.pCaja, t.caja]].forEach(function (x) {
+        if (x[0] != null && x[1]) { var v = x[0] / x[1]; if (min === null || v < min) min = v; }
+      });
+    });
+    return min;
   }
 
   /* ============================ filtros ============================ */
@@ -103,7 +149,8 @@
 
   function haystack(p) {
     if (!p._h) {
-      p._h = norm([p.nombre, p.desc, p.v.join(" "),
+      p._h = norm([p.nombre, p.desc, p.uso || "", p.v.join(" "),
+                   p.venta ? p.venta.tam.map(function (t) { return t.esp || ""; }).join(" ") : "",
                    p.mat.map(function (m) { return MATS[m]; }).join(" "),
                    (CATS.filter(function (c) { return c.id === p.cat; })[0] || {}).nombre || ""
                   ].join(" "));
@@ -113,31 +160,23 @@
 
   /* Equivalencias del asistente, reutilizadas aquí: quien busca "vasos para
      café" no encuentra nada, porque en el catálogo se llaman "vaso de papel".
-     La tabla se edita en un solo lugar, agente-criterios.js (SINONIMOS). */
-  /* Se arma en la primera búsqueda, no al cargar: agente-criterios.js está
-     después de este script en el HTML, así que al iniciar todavía no existe. */
+     La tabla se edita en un solo lugar, agente-criterios.js (SINONIMOS). Se
+     arma en la primera búsqueda: ese archivo carga después de este. */
   var SINON = null;
-
   function sinonimos() {
     if (SINON) return SINON;
     var tabla = (window.GREENOVA_AGENTE || {}).SINONIMOS;
-    /* Si todavía no carga, se devuelve vacío SIN memorizar: la primera
-       búsqueda puede ocurrir en el arranque, cuando el archivo de criterios
-       aún no existe, y memorizar ahí dejaría la tabla vacía para siempre. */
     if (!tabla) return [];
     SINON = tabla.map(function (g) {
       return {
         dice: g.dice.map(function (t) {
           return new RegExp("(^| )" + norm(t).replace(/[^a-z0-9 ]/g, " ").trim() + "(e?s)?( |$)");
         }),
-        /* Frases del catálogo que satisfacen esa intención. Se prueban como
-           substring, así que "vaso de papel" no arrastra a los PET. */
         frases: (g.busca || [g.es]).map(norm)
       };
     });
     return SINON;
   }
-
   function frasesSinonimo(q) {
     var n = norm(q).replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
     var out = [];
@@ -149,34 +188,124 @@
     return out;
   }
 
-  /* Capacidad: no es un campo aparte, son las "N oz" que cada variante ya
-     trae en `v` (p.ej. "12 oz · boca 90 mm"). Se lee de ahí en vez de
-     inventar un dato de capacidad que el catálogo no declara aparte. */
+  /* Capacidad: las "N oz" que cada medida ya trae en `v`. */
+  function ozDeV(v) { var m = v.match(/(\d+)\s*oz/i); return m ? m[1] : null; }
   function ozDe(p) {
     if (!p._oz) {
       var out = [];
-      p.v.forEach(function (v) {
-        var m = v.match(/(\d+)\s*oz/i);
-        if (m && out.indexOf(m[1]) === -1) out.push(m[1]);
-      });
+      p.v.forEach(function (v) { var o = ozDeV(v); if (o && out.indexOf(o) === -1) out.push(o); });
       p._oz = out;
     }
     return p._oz;
   }
 
   function pasaFiltros(p) {
-    if (state.linea && (!p.venta || p.venta.linea !== state.linea)) return false;
     if (state.cat !== "todo" && p.cat !== state.cat) return false;
-    if (state.stock === "disponible" && (PROMOS[p.id] || {}).agotado) return false;
-    if (state.stock === "agotado" && !(PROMOS[p.id] || {}).agotado) return false;
-    if (state.mats.length && !state.mats.some(function (m) { return p.mat.indexOf(m) > -1; })) return false;
     if (state.oz.length && !ozDe(p).some(function (o) { return state.oz.indexOf(o) > -1; })) return false;
     return true;
   }
 
+  /* ---------- búsqueda que entiende faltas de ortografía ----------
+     Gabriel (2026-09-29): "aunque el usuario escriba mal, la página lo tiene
+     que entender" ("vacho" -> vaso). Cada palabra buscada que no aparece tal
+     cual se cambia por la palabra del catálogo que más se le parece:
+     - se comparan "como suenan": b = v, s = z = c(e, i), y = ll, k = c = qu,
+       sin h muda; y sin plural (vasos = vaso);
+     - se permiten 1 cambio en palabras de 4 letras, 2 de 5 a 7 y 3 de 8 o más
+       (letra de más, de menos, cambiada o dos letras volteadas);
+     - primero se busca en nombres y categorías y luego en lo demás.
+     Los números no se corrigen (12 no es 16). */
+  var VACIAS = { de: 1, del: 1, la: 1, el: 1, los: 1, las: 1, para: 1, con: 1, un: 1, una: 1, y: 1, o: 1, en: 1, por: 1 };
+  /* Cómo lo dice la gente -> cómo se llama en el catálogo. */
+  var EQUIV = {
+    onza: "oz", onzas: "oz", ozs: "oz", tapadera: "tapa", tapaderas: "tapa", vasito: "vaso", vasitos: "vaso",
+    termico: "doble pared", termicos: "doble pared", agitador: "removedor", agitadores: "removedor",
+    mezclador: "removedor", mezcladores: "removedor", palito: "removedor", palitos: "removedor",
+    manga: "fajilla", mangas: "fajilla", funda: "fajilla", fundas: "fajilla", cinturon: "fajilla",
+    transparente: "pet", desechable: "", desechables: "", biodegradable: "", biodegradables: ""
+  };
+  function suena(w) {
+    w = w.replace(/ll/g, "y").replace(/qu/g, "k").replace(/c([ei])/g, "s$1").replace(/z/g, "s")
+         .replace(/c(?!h)/g, "k").replace(/v/g, "b").replace(/w/g, "u").replace(/(^|[^c])h/g, "$1");
+    if (w.length > 4 && /[^aeiou]es$/.test(w)) w = w.slice(0, -2);
+    else if (w.length > 3 && /s$/.test(w)) w = w.slice(0, -1);
+    return w;
+  }
+  function distancia(a, b, tope) {
+    if (Math.abs(a.length - b.length) > tope) return tope + 1;
+    var d = [], i, j;
+    for (i = 0; i <= a.length; i++) { d[i] = [i]; }
+    for (j = 1; j <= b.length; j++) d[0][j] = j;
+    for (i = 1; i <= a.length; i++) {
+      var minFila = tope + 1;
+      for (j = 1; j <= b.length; j++) {
+        var c = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + c);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        if (d[i][j] < minFila) minFila = d[i][j];
+      }
+      if (minFila > tope) return tope + 1;
+    }
+    return d[a.length][b.length];
+  }
+  function palabras(t) { return norm(t).replace(/(\d)([a-z])/g, "$1 $2").replace(/([a-z])(\d)/g, "$1 $2").split(/[^a-z0-9ñ]+/).filter(Boolean); }
+  /* Lo que se cotiza pero no está en la tienda: si lo buscan (aunque sea mal
+     escrito) no se confunde con otra palabra; sale "Sin resultados" con el
+     botón para pedirlo. */
+  var FUERA = ["bolsa", "popote", "contenedor", "charola", "caja", "ensaladera", "portavaso", "servilleta",
+               "bowl", "plato", "cuchara", "tenedor", "cuchillo", "cubierto", "almeja", "bisagra", "encerado",
+               "domo pastel", "cono", "crepa", "souffle", "bagazo", "helado", "pizza"]
+    .map(function (w) { return { w: w, s: suena(w) }; });
+  var VOCAB = null;
+  function vocab() {
+    if (VOCAB) return VOCAB;
+    var fuerte = {}, resto = {};
+    BASE.forEach(function (p) {
+      palabras(p.nombre + " " + ((CATS.filter(function (c) { return c.id === p.cat; })[0] || {}).nombre || "") + " " +
+               p.mat.map(function (m) { return MATS[m]; }).join(" ")).forEach(function (w) { fuerte[w] = 1; });
+      palabras(haystack(p)).forEach(function (w) { if (!fuerte[w]) resto[w] = 1; });
+    });
+    function lista(o) {
+      return Object.keys(o).filter(function (w) { return w.length > 2 && !/^\d+$/.test(w) && !VACIAS[w]; })
+        .map(function (w) { return { w: w, s: suena(w) }; });
+    }
+    VOCAB = [lista(fuerte), lista(resto)];
+    return VOCAB;
+  }
+  function tope(n) { return n <= 3 ? 0 : n === 4 ? 1 : 2; }
+  /* La palabra del catálogo que corresponde a lo que escribió, o la misma si ya está. */
+  function corrige(t) {
+    if (/^\d+$/.test(t) || t.length < 3) return t;
+    var grupos = vocab();
+    if (grupos[0].concat(grupos[1]).some(function (v) { return v.w.indexOf(t) > -1; })) return t;
+    var st = suena(t), max = tope(st.length);
+    function cercana(lista) {
+      var mejor = null, dm = max + 1;
+      lista.forEach(function (v) {
+        var d = v.s === st ? 0 : distancia(st, v.s, max);
+        if (d < dm || (d === dm && mejor && v.w.length < mejor.length)) { dm = d; mejor = v.w; }
+      });
+      return { w: mejor, d: dm };
+    }
+    var fuera = cercana(FUERA), c0 = cercana(grupos[0]), c1 = cercana(grupos[1]);
+    /* Si suena igual a una palabra del resto (plural, b/v…), gana esa. */
+    var c = c1.d === 0 && c0.d > 0 ? c1 : (c0.w && c0.d <= max ? c0 : c1);
+    if (fuera.w && fuera.d <= max && fuera.d <= c.d) return t;   // pide algo que no vendemos en línea
+    return c.w && c.d <= max ? c.w : t;
+  }
+  var ultimaCorreccion = "";
+
   function filtered() {
-    var q = norm(state.q.trim());
-    var terms = q ? q.split(/\s+/) : [];
+    var crudos = [];
+    palabras(state.q.trim()).forEach(function (t) {
+      var e = Object.prototype.hasOwnProperty.call(EQUIV, t) ? EQUIV[t] : t;
+      if (e) crudos = crudos.concat(e.split(" "));
+    });
+    var utiles = crudos.filter(function (t) { return !VACIAS[t]; });
+    var terms = (utiles.length ? utiles : crudos).map(corrige);
+    /* Se avisa la corrección solo si cambió algo más que el plural. */
+    var escrito = (utiles.length ? utiles : crudos).join(" ");
+    ultimaCorreccion = terms.join(" ").replace(/e?s\b/g, "") !== escrito.replace(/e?s\b/g, "") ? terms.join(" ") : "";
     var out = BASE.filter(function (p) {
       if (!pasaFiltros(p)) return false;
       if (terms.length) {
@@ -185,12 +314,8 @@
       }
       return true;
     });
-
-    /* Segunda pasada por equivalencias, que se suma a la literal en vez de
-       reemplazarla: "frappé" aparece escrito en la ficha del PET pero no en la
-       del PLA, y quien pregunta por frappé quiere ver los dos. */
     if (terms.length) {
-      var frases = frasesSinonimo(state.q);
+      var frases = frasesSinonimo(state.q).concat(ultimaCorreccion ? frasesSinonimo(ultimaCorreccion) : []);
       if (frases.length) {
         BASE.forEach(function (p) {
           if (out.indexOf(p) > -1 || !pasaFiltros(p)) return;
@@ -199,74 +324,65 @@
         });
       }
     }
-
     var order = CATS.map(function (c) { return c.id; });
+    function relevancia(a, b) {
+      return ((b.destacado ? 1 : 0) - (a.destacado ? 1 : 0)) ||
+             (order.indexOf(a.cat) - order.indexOf(b.cat)) || (PRODS.indexOf(a) - PRODS.indexOf(b));
+    }
+    function catalogo(a, b) {
+      return (order.indexOf(a.cat) - order.indexOf(b.cat)) || (PRODS.indexOf(a) - PRODS.indexOf(b));
+    }
     out.sort(function (a, b) {
+      if (state.sort === "todos") return catalogo(a, b);
       if (state.sort === "az") return a.nombre.localeCompare(b.nombre, "es");
       if (state.sort === "za") return b.nombre.localeCompare(a.nombre, "es");
-      if (state.sort === "cat") {
-        var d = order.indexOf(a.cat) - order.indexOf(b.cat);
-        return d || a.nombre.localeCompare(b.nombre, "es");
+      if (state.sort === "precio") {
+        var pa = precioPieza(a), pb = precioPieza(b);
+        if (pa === null || pb === null) return (pa === null) - (pb === null) || relevancia(a, b);
+        return (pa - pb) || relevancia(a, b);
       }
-      var da = a.destacado ? 0 : 1, db = b.destacado ? 0 : 1;
-      return (da - db) || (order.indexOf(a.cat) - order.indexOf(b.cat)) ||
-             a.nombre.localeCompare(b.nombre, "es");
+      if (state.sort === "vendidos" && POPULARES) {
+        var ia = POPULARES.indexOf(a.id), ib = POPULARES.indexOf(b.id);
+        ia = ia < 0 ? 1e6 : ia; ib = ib < 0 ? 1e6 : ib;
+        return (ia - ib) || relevancia(a, b);
+      }
+      return relevancia(a, b);
     });
     return out;
   }
 
-  /* ============================ chips ============================ */
-  function countFor(catId) {
-    return BASE.filter(function (p) { return catId === "todo" || p.cat === catId; }).length;
-  }
-
+  /* ============================ barra lateral ============================
+     Productos (las categorías del menú) y Capacidad. Sin conteos: Gabriel no
+     quiere que se diga cuántos productos hay. La capacidad se arma con lo que
+     hay en la categoría elegida, para no ofrecer onzas que no existen ahí. */
   function buildChips() {
-    var conVenta = BASE.filter(function (p) { return p.venta; });
-    var bloqueLineas = $("bloque-lineas");
-    if (bloqueLineas) {
-      bloqueLineas.hidden = conVenta.length === 0;
-      if (conVenta.length) {
-        $("lineas").innerHTML = LINEAS.map(function (l) {
-          var n = conVenta.filter(function (p) { return p.venta.linea === l[0]; }).length;
-          if (!n) return "";
-          return '<button class="chip chip--sm" data-linea="' + l[0] + '" aria-pressed="false">' +
-                 l[1] + '<span class="chip__n">' + n + "</span></button>";
-        }).join("");
-      }
-    }
-
     var cats = $("cats");
-    var html = ['<button class="chip" data-cat="todo" aria-pressed="true">Todo' +
-                '<span class="chip__n">' + BASE.length + "</span></button>"];
+    var html = ['<button class="chip" data-cat="todo" aria-pressed="true">Todos los productos</button>'];
     CATS.forEach(function (c) {
+      if (!BASE.some(function (p) { return p.cat === c.id; })) return;
       html.push('<button class="chip" data-cat="' + c.id + '" aria-pressed="false">' +
                 '<svg class="ico" aria-hidden="true"><use href="#' + c.icono + '"></use></svg>' +
-                c.nombre + '<span class="chip__n">' + countFor(c.id) + "</span></button>");
+                esc(c.nombre) + "</button>");
     });
     cats.innerHTML = html.join("");
+    buildCaps();
+  }
 
-    var mats = $("mats");
-    var used = {};
-    BASE.forEach(function (p) { p.mat.forEach(function (m) { used[m] = (used[m] || 0) + 1; }); });
-    mats.innerHTML = Object.keys(used).sort(function (a, b) { return used[b] - used[a]; })
-      .map(function (m) {
-        return '<button class="chip chip--sm" data-mat="' + m + '" aria-pressed="false">' +
-               MATS[m] + '<span class="chip__n">' + used[m] + "</span></button>";
-      }).join("");
-
-    var bloqueCap = $("bloque-cap");
-    if (bloqueCap) {
-      var usedOz = {};
-      BASE.forEach(function (p) { ozDe(p).forEach(function (o) { usedOz[o] = (usedOz[o] || 0) + 1; }); });
-      var ozKeys = Object.keys(usedOz).sort(function (a, b) { return Number(a) - Number(b); });
-      bloqueCap.hidden = ozKeys.length === 0;
-      if (ozKeys.length) {
-        $("caps").innerHTML = ozKeys.map(function (o) {
-          return '<button class="chip chip--sm" data-oz="' + o + '" aria-pressed="false">' +
-                 o + " oz" + '<span class="chip__n">' + usedOz[o] + "</span></button>";
-        }).join("");
-      }
-    }
+  function buildCaps() {
+    var bloque = $("bloque-cap");
+    if (!bloque) return;
+    var usados = {};
+    BASE.forEach(function (p) {
+      if (state.cat !== "todo" && p.cat !== state.cat) return;
+      ozDe(p).forEach(function (o) { usados[o] = true; });
+    });
+    var ozs = Object.keys(usados).sort(function (a, b) { return Number(a) - Number(b); });
+    state.oz = state.oz.filter(function (o) { return usados[o]; });
+    bloque.hidden = ozs.length === 0;
+    $("caps").innerHTML = ozs.map(function (o) {
+      return '<button class="chip chip--sm" data-oz="' + o + '" aria-pressed="' + (state.oz.indexOf(o) > -1) + '">' +
+             o + " oz</button>";
+    }).join("");
   }
 
   function syncChips() {
@@ -274,159 +390,146 @@
     Array.prototype.forEach.call($("cats").children, function (b) {
       b.setAttribute("aria-pressed", String(b.dataset.cat === state.cat));
     });
-    Array.prototype.forEach.call($("mats").children, function (b) {
-      b.setAttribute("aria-pressed", String(state.mats.indexOf(b.dataset.mat) > -1));
-    });
-    if ($("lineas")) {
-      Array.prototype.forEach.call($("lineas").children, function (b) {
-        b.setAttribute("aria-pressed", String(b.dataset.linea === state.linea));
-      });
-    }
     if ($("caps")) {
       Array.prototype.forEach.call($("caps").children, function (b) {
         b.setAttribute("aria-pressed", String(state.oz.indexOf(b.dataset.oz) > -1));
       });
     }
     var dot = $("filter-dot");
-    if (dot) dot.hidden = state.mats.length === 0 && state.oz.length === 0 && !state.linea;
+    if (dot) dot.hidden = state.cat === "todo" && state.oz.length === 0;
   }
 
-  /* ============================ tarjetas ============================ */
-  /* Precio: si no hay lista, "bajo cotización". Con `precio` y promo activa,
-     se tacha el de lista y se muestra el de oferta. */
-  function precioHTML(p, vi) {
-    var promo = PROMOS[p.id];
-    /* Papel/PET/Kraft se venden por pieza (ver `venta` en productos.js): el
-       precio de la tarjeta sigue la medida elegida en el <select>, igual que
-       en la ficha del producto. */
-    if (p.venta) {
-      var t = p.venta.tam[vi || 0];
-      if (!t || t.precio == null) return "Aún sin precio para esta medida";
-      var precioPza = promo && promo.desc ? t.precio * (1 - promo.desc / 100) : t.precio;
-      return (promo && promo.desc
-        ? "<s>" + money(t.precio) + "</s> <b>" + money(precioPza) + "</b>"
-        : money(precioPza)) + " por pieza";
-    }
-    if (!p.precio) {
-      return promo && promo.desc
-        ? '<b>-' + promo.desc + '%</b> sobre el precio de lista'
-        : "Precio bajo cotización";
-    }
-    if (promo && promo.desc) {
-      var off = p.precio * (1 - promo.desc / 100);
-      return '<s>' + money(p.precio) + "</s> <b>" + money(off) + "</b> por caja";
-    }
-    return money(p.precio) + " por caja";
+  /* ============================ tarjetas ============================
+     Gabriel (2026-09-27): afuera, la tarjeta solo dice qué es el producto
+     (vasos, tapas o accesorios, y de qué material: si es PET dice PET) y sus
+     especificaciones. Paquete, caja y precio van dentro, en la ficha. */
+  var TIPO = { "vasos-papel": "Vasos", "vasos-pet": "Vasos", "tapas-papel": "Tapas",
+               "tapas-pet": "Tapas", "fajillas": "Accesorios", "removedores": "Accesorios" };
+
+  function lista(xs) {
+    return xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + " y " + xs[xs.length - 1];
+  }
+
+  function specs(p) {
+    var out = [];
+    var ozs = ozDe(p).slice().sort(function (a, b) { return a - b; });
+    var bocas = [];
+    (p.venta ? p.venta.tam : []).forEach(function (t) { if (t.boca && bocas.indexOf(t.boca) === -1) bocas.push(t.boca); });
+    bocas.sort(function (a, b) { return a - b; });
+    if (ozs.length) out.push(["Capacidad", lista(ozs) + " oz"]);
+    if (bocas.length) out.push(["Boca", bocas.length > 3 ? bocas[0] + " a " + bocas[bocas.length - 1] + " mm" : lista(bocas.map(String)) + " mm"]);
+    if (!ozs.length && p.cat.indexOf("tapas") === 0 && p.uso) out.push(["Para", p.uso.replace(/^Tapa para /, "")]);
+    if (!ozs.length && !bocas.length && p.v.length > 1 && p.v.length <= 4) out.push(["Opciones", lista(p.v.map(function (v) { return v.toLowerCase(); }))]);
+    if (!ozs.length && !bocas.length && p.v.length === 1) out.push(["Medida", p.v[0]]);
+    return out;
   }
 
   function card(p, i) {
-    var line = cart.filter(function (l) { return l.id === p.id; })[0];
     var promo = PROMOS[p.id];
-    var badges = p.mat.map(function (m) {
-      return '<span class="tag tag--' + m + '">' + MATS[m] + "</span>";
-    }).join("");
-    if (p.sello) badges = '<span class="tag tag--sello"><svg class="ico" aria-hidden="true">' +
-      '<use href="#i-seal-check"></use></svg>' + p.sello + "</span>" + badges;
-
-    /* Medidas agotadas una por una (panel): salen en el selector pero no se
-       pueden elegir, y la tarjeta arranca en la primera que sí hay. */
     var agotadas = p.agotadas || [];
-    var libres = p.v.filter(function (v) { return agotadas.indexOf(v) === -1; });
-    var todasAgotadas = libres.length === 0;
-    var selIdx = line ? Math.max(0, p.v.indexOf(line.v)) : Math.max(0, p.v.indexOf(libres[0]));
-    var opts = p.v.map(function (v, k) {
-      var ag = agotadas.indexOf(v) > -1;
-      return '<option value="' + v + '"' + (k === selIdx ? " selected" : "") + (ag ? " disabled" : "") + ">" +
-             v + (ag ? " — agotado" : "") + "</option>";
-    }).join("");
-    var selV = p.v[selIdx];
-    var pz = porPieza(p);
-    var minimo = pz ? minDe(p, selV) : MIN_PIEZAS;
-
+    var tipo = TIPO[p.cat];
+    var tags = (tipo ? '<span class="tag tag--tipo">' + tipo + "</span>" : "") +
+      p.mat.map(function (m) { return '<span class="tag tag--' + m + '">' + esc(MATS[m]) + "</span>"; }).join("");
+    var url = "producto.html?id=" + p.id;
     return '' +
-      '<article class="pcard rv" data-d="' + (i % 4) + '" data-id="' + p.id + '"' +
-        (line ? ' data-in="true"' : "") + '>' +
-        '<a class="pcard__media' + (p.placa ? " pcard__media--placa" : "") +
-          '" href="producto.html?id=' + p.id + '" aria-label="Ver la ficha de ' + p.nombre + '">' +
-          '<img src="' + src(p.img) + '" alt="' + p.nombre + '" loading="lazy" decoding="async">' +
-          (promo && promo.desc ? '<span class="pcard__flag pcard__flag--off">-' + promo.desc + '%</span>' :
-            p.destacado ? '<span class="pcard__flag">Más pedido</span>' :
-            p.servicio ? '<span class="pcard__flag pcard__flag--srv">Pocas unidades</span>' : "") +
-          /* "medidas" solo si son medidas (llevan números); si no, "opciones"
-             (sin asa / con asa, con o sin impresión). */
-          '<span class="pcard__spec">' + p.v.length + (p.v.length === 1 ? " presentación" :
-            (/\d/.test(p.v.join(" ")) ? " medidas" : " opciones")) + "</span>" +
-          ((promo && promo.agotado) || todasAgotadas ? '<span class="pcard__out">Agotado</span>' : "") +
+      '<article class="pcard pcard--info rv" data-d="' + (i % 4) + '" data-id="' + p.id + '">' +
+        '<a class="pcard__media" href="' + url + '" aria-label="Ver ' + esc(p.nombre) + '">' +
+          '<img src="' + src(p.img) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async">' +
+          (promo && promo.desc ? '<span class="pcard__flag pcard__flag--off">-' + promo.desc + "%</span>" : "") +
+          (agotadas.length === p.v.length || (promo && promo.agotado) ? '<span class="pcard__out">Agotado</span>' : "") +
         "</a>" +
         '<div class="pcard__body">' +
-          '<div class="pcard__tags">' + badges + "</div>" +
-          '<h3><a href="producto.html?id=' + p.id + '">' + p.nombre + "</a></h3>" +
-          '<p class="pcard__price">' + precioHTML(p, selIdx) + "</p>" +
-          '<p class="pcard__desc">' + p.desc + "</p>" +
-          (promo && (promo.nota || promo.hasta)
-            ? '<p class="pcard__promo">' +
-              (promo.nota ? promo.nota : "Oferta vigente") +
-              (promo.hasta ? " · hasta el " + fecha(promo.hasta) : "") + "</p>"
-            : "") +
-          '<div class="pcard__meta">' +
-            (p.p ? '<span><svg class="ico" aria-hidden="true"><use href="#i-package"></use></svg>' +
-                   p.p.toLocaleString("es-MX") + " pzs por caja</span>" : "") +
-            '<span data-role="min">Mínimo ' + minimo.toLocaleString("es-MX") + " pzs</span>" +
-          "</div>" +
+          '<div class="pcard__tags">' + tags + "</div>" +
+          '<h3><a href="' + url + '">' + esc(p.nombre) + "</a></h3>" +
+          '<p class="pcard__desc">' + esc(p.desc) + "</p>" +
+          '<dl class="pcard__specs">' + specs(p).map(function (x) {
+            return "<div><dt>" + x[0] + "</dt><dd>" + esc(x[1]) + "</dd></div>";
+          }).join("") + "</dl>" +
         "</div>" +
         '<div class="pcard__buy">' +
-          /* Con una sola medida no hay nada que elegir: se muestra como texto
-             (el select se queda oculto porque el carrito lee su valor). */
-          '<label class="pcard__pick' + (p.v.length === 1 ? " pcard__pick--unica" : "") + '">' +
-            '<span class="sr-only">Medida de ' + p.nombre + "</span>" +
-            (p.v.length === 1 ? '<span class="pcard__unica">' + p.v[0] + "</span>" : "") +
-            "<select data-role=\"variant\"" + (p.v.length === 1 ? " hidden" : "") + ">" + opts + "</select>" +
-            (p.v.length === 1 ? "" : '<svg class="ico" aria-hidden="true"><use href="#i-caret-down"></use></svg>') +
-          "</label>" +
-          '<div class="pcard__row">' +
-            '<div class="stepper' + (pz ? " stepper--pz" : "") + '" data-role="stepper"' + stepperAttrs(p, selV) + '>' +
-              '<button type="button" data-step="-1" aria-label="' + (pz ? "Quitar piezas" : "Quitar una caja") + '">' +
-                '<svg class="ico" aria-hidden="true"><use href="#i-minus"></use></svg></button>' +
-              '<input type="number" min="' + minDe(p, selV) + '" max="' + maxDe(p) + '" value="' +
-                (line ? line.qty : minDe(p, selV)) +
-                '" data-role="qty" aria-label="' + (pz ? "Piezas de " : "Cajas de ") + p.nombre + '">' +
-              '<button type="button" data-step="1" aria-label="' + (pz ? "Agregar piezas" : "Agregar una caja") + '">' +
-                '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></button>' +
-            "</div>" +
-            '<button class="btn btn--primary btn--sm pcard__add" type="button" data-role="add">' +
-              '<span class="btn__label">' + (line ? "Actualizar" : "Añadir") + "</span>" +
-              '<svg class="ico" aria-hidden="true"><use href="#' + (line ? "i-check" : "i-plus") + '"></use></svg>' +
-            "</button>" +
-          "</div>" +
+          '<a class="btn btn--ghost btn--sm btn--block" href="' + url + '">' +
+            '<span class="btn__label">Ver producto</span>' +
+            '<svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg></a>' +
         "</div>" +
       "</article>";
   }
 
-  /* Tapas relacionadas: la unión de TAPAS_POR_VASO de todos los vasos de la
-     categoría activa (no de la lista ya filtrada por búsqueda/material, para
-     que la barra no aparezca y desaparezca mientras el cliente escribe). */
-  function tapasDeCategoria(catId) {
-    var ids = [];
-    BASE.filter(function (p) { return p.cat === catId && TAPAS_POR_VASO[p.id]; })
-      .forEach(function (v) {
-        TAPAS_POR_VASO[v.id].forEach(function (id) { if (ids.indexOf(id) === -1) ids.push(id); });
-      });
-    return ids.map(function (id) { return PRODS.filter(function (p) { return p.id === id; })[0]; }).filter(Boolean);
+  /* Al cambiar la medida o la presentación, la tarjeta (o la ficha) se pone
+     al día: foto, precios, botones de paquete/caja y "Añadir"/"Actualizar". */
+  function refrescaCompra(caja) {
+    var p = prodDe(caja.dataset.id);
+    if (!p) return;
+    var v = caja.querySelector("[data-role='variant']").value;
+    var t = tamDe(p, v);
+    var us = unidades(t);
+    var seg = caja.querySelector("[data-role='unidad']");
+    var actual = seg && seg.querySelector("[aria-pressed='true']");
+    var u = actual && us.indexOf(actual.dataset.u) > -1 ? actual.dataset.u : (us[0] || "paq");
+    if (seg) seg.innerHTML = unidadesHTML(t, u);
+    var precios = caja.querySelector("[data-role='precios']") ||
+                  (caja.closest(".pcard") || document).querySelector("[data-role='precios']");
+    if (precios) precios.innerHTML = preciosHTML(p, t, u);
+    var foto = (caja.closest(".pcard") || document).querySelector("[data-role='foto']");
+    if (foto) {
+      var nueva = src(imgDe(p, v));
+      if (foto.getAttribute("src") !== nueva) foto.setAttribute("src", nueva);
+    }
+    var line = lineaDe(p.id, v, u);
+    var qty = caja.querySelector("[data-role='qty']");
+    if (qty && line) qty.value = line.qty;
+    var add = caja.querySelector("[data-role='add']");
+    if (add) {
+      var agotada = (p.agotadas || []).indexOf(v) > -1;
+      add.disabled = !us.length || agotada;
+      add.querySelector(".btn__label").textContent = agotada ? "Agotado" : !us.length ? "Por confirmar" :
+        (line ? "Actualizar" : (add.dataset.texto || "Añadir"));
+      add.querySelector("use").setAttribute("href", line ? "#i-check" : "#i-plus");
+    }
+    if (line) caja.dataset.in = "true"; else caja.removeAttribute("data-in");
+    document.dispatchEvent(new CustomEvent("gn:compra", { detail: { id: p.id, v: v, u: u } }));
   }
 
-  function renderTapasRel() {
+  /* ============================ tapas relacionadas ============================
+     "Cada tipo de vaso se relaciona con sus tapas" (Gabriel, 2026-09-27): con
+     vasos en pantalla, arriba de la rejilla salen las tapas de su misma boca.
+     Respeta el filtro de onzas: 12 oz de papel solo trae tapas de boca 90. */
+  function tapasPara(vasos) {
+    var porFamilia = {};
+    vasos.forEach(function (p) {
+      var fam = FAMILIA_TAPAS[p.cat];
+      if (!fam || !p.venta) return;
+      p.v.forEach(function (v, k) {
+        if (state.oz.length && state.oz.indexOf(ozDeV(v)) === -1) return;
+        var b = p.venta.tam[k].boca;
+        if (b) (porFamilia[fam] = porFamilia[fam] || {})[b] = true;
+      });
+    });
+    var out = [];
+    PRODS.forEach(function (tp) {
+      var bocas = porFamilia[tp.cat];
+      if (!bocas || !tp.venta) return;
+      var coinciden = tp.venta.tam.map(function (t) { return t.boca; })
+        .filter(function (b, k, a) { return b && bocas[b] && a.indexOf(b) === k; });
+      if (coinciden.length) out.push({ p: tp, bocas: coinciden });
+    });
+    return out;
+  }
+
+  function renderTapasRel(list) {
     var box = $("tapas-rel");
     if (!box) return;
-    var tapas = tapasDeCategoria(state.cat);
+    var vasos = list.filter(function (p) { return FAMILIA_TAPAS[p.cat]; });
+    var soloVasos = vasos.length && vasos.length === list.length;
+    var tapas = soloVasos ? tapasPara(vasos) : [];
     box.hidden = tapas.length === 0;
-    if (!tapas.length) return;
+    if (!tapas.length) { box.innerHTML = ""; return; }
     box.innerHTML =
       '<p class="tapas-rel__label">Tapas para estos vasos</p>' +
       '<div class="tapas-rel__list">' +
-      tapas.map(function (t) {
-        return '<a class="tapas-rel__chip" href="producto.html?id=' + t.id + '">' +
-          '<img src="' + src(t.img) + '" alt="" loading="lazy" decoding="async">' +
-          "<span>" + t.nombre + "</span></a>";
+      tapas.map(function (x) {
+        return '<a class="tapas-rel__chip" href="producto.html?id=' + x.p.id + "&boca=" + x.bocas[0] + '">' +
+          '<img src="' + src(x.p.img) + '" alt="" loading="lazy" decoding="async">' +
+          "<span>" + esc(x.p.nombre) + "<small>Boca " + x.bocas.join(" / ") + " mm</small></span></a>";
       }).join("") +
       "</div>";
   }
@@ -437,13 +540,15 @@
     var list = filtered();
     grid.innerHTML = list.map(card).join("");
     $("empty").hidden = list.length > 0;
-    renderTapasRel();
+    renderTapasRel(list);
 
-    var n = list.length;
-    $("result-line").textContent = n === 0 ? "" :
-      n + (n === 1 ? " producto" : " productos") +
-      (state.cat === "todo" ? "" : " en " + (CATS.filter(function (c) { return c.id === state.cat; })[0] || {}).nombre) +
-      (state.q.trim() ? ' para "' + state.q.trim() + '"' : "");
+    /* Sin cuántos productos hay (Feedback final): solo qué se está viendo. */
+    $("result-line").textContent = list.length === 0 ? "" :
+      (state.cat === "todo" ? "" : (CATS.filter(function (c) { return c.id === state.cat; })[0] || {}).nombre) +
+      (state.oz.length ? (state.cat === "todo" ? "" : " · ") + state.oz.map(function (o) { return o + " oz"; }).join(", ") : "") +
+      (state.q.trim() ? ((state.cat === "todo" && !state.oz.length) ? "Resultados" : "") +
+        (ultimaCorreccion ? ' para "' + ultimaCorreccion + '" (escribiste "' + state.q.trim() + '")'
+                          : ' para "' + state.q.trim() + '"') : "");
 
     if (reduce) {
       grid.querySelectorAll(".rv").forEach(function (el) { el.classList.add("in"); });
@@ -451,18 +556,15 @@
       window.GN.observe(grid.querySelectorAll(".rv"));
     }
     syncChips();
+    var quitar = $("filtros-quitar");
+    if (quitar) quitar.hidden = !(state.cat !== "todo" || state.oz.length || state.q.trim());
   }
 
-  /* ============================ carrito ============================ */
-  /* Productos distintos en la lista. Antes sumaba cajas, pero ya hay líneas
-     que se cuentan en piezas (10,000+) y el globito del carrito explotaba. */
-  function total() {
-    return cart.length;
-  }
-
+  /* ============================ carrito (cajón) ============================ */
   function paintCount() {
-    var n = total();
+    var n = cart.length;
     var el = $("cart-count");
+    if (!el) return;
     el.textContent = n;
     el.dataset.empty = String(n === 0);
     if (n > 0 && !reduce) {
@@ -470,63 +572,76 @@
     }
   }
 
+  function total() {
+    return cart.reduce(function (s, l) { return s + (subtotal(l) || 0); }, 0);
+  }
+
+  function paintTotal() {
+    var el = $("cart-total");
+    if (el) el.innerHTML = cart.length ? "<span>Total</span><b>" + money(total()) + " MXN</b><small>IVA incluido</small>" : "";
+  }
+
   function paintCart() {
     var list = $("cart-list");
     $("cart-empty").hidden = cart.length > 0;
     $("drawer-foot").hidden = cart.length === 0;
 
-    list.innerHTML = cart.map(function (l) {
-      var p = PRODS.filter(function (x) { return x.id === l.id; })[0];
+    list.innerHTML = cart.map(function (l, k) {
+      var p = prodDe(l.id);
       if (!p) return "";
-      return '<li class="cart__item" data-id="' + l.id + '">' +
-        '<img src="' + src(p.img) + '" alt="" loading="lazy">' +
+      var st = subtotal(l);
+      return '<li class="cart__item" data-k="' + k + '">' +
+        '<img src="' + src(imgDe(p, l.v)) + '" alt="" loading="lazy">' +
         '<div class="cart__info">' +
-          "<h4>" + p.nombre + "</h4>" +
-          '<p class="cart__var">' + l.v + (porPieza(p) ? " · en piezas" : " · en cajas") + "</p>" +
-          '<div class="stepper stepper--sm' + (porPieza(p) ? " stepper--pz" : "") + '" data-role="stepper"' + stepperAttrs(p, l.v) + '>' +
-            '<button type="button" data-step="-1" aria-label="' + (porPieza(p) ? "Quitar piezas" : "Quitar una caja") + '">' +
-              '<svg class="ico" aria-hidden="true"><use href="#i-minus"></use></svg></button>' +
-            '<input type="number" min="' + minDe(p, l.v) + '" max="' + maxDe(p) + '" value="' + l.qty +
-              '" data-role="qty" aria-label="' + (porPieza(p) ? "Piezas" : "Cajas") + '">' +
-            '<button type="button" data-step="1" aria-label="' + (porPieza(p) ? "Agregar piezas" : "Agregar una caja") + '">' +
-              '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></button>' +
+          "<h4>" + esc(p.nombre) + "</h4>" +
+          '<p class="cart__var">' + esc(l.v) + " · " + (l.u === "paq" ? "por paquete" : "por caja") + "</p>" +
+          '<div class="cart__fila">' +
+            '<div class="stepper stepper--sm" data-role="stepper">' +
+              '<button type="button" data-step="-1" aria-label="Quitar uno">' +
+                '<svg class="ico" aria-hidden="true"><use href="#i-minus"></use></svg></button>' +
+              '<input type="number" min="1" max="999" value="' + l.qty + '" data-role="qty" aria-label="Cantidad">' +
+              '<button type="button" data-step="1" aria-label="Agregar uno">' +
+                '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></button>' +
+            "</div>" +
+            '<b class="cart__sub" data-role="sub">' + (st == null ? "" : money(st)) + "</b>" +
           "</div>" +
+          '<p class="cart__pzs" data-role="pzs">' + esc(cantidadTexto(l)) + "</p>" +
         "</div>" +
-        '<button class="cart__del" type="button" data-role="del" aria-label="Quitar ' + p.nombre + '">' +
+        '<button class="cart__del" type="button" data-role="del" aria-label="Quitar ' + esc(p.nombre) + '">' +
           '<svg class="ico" aria-hidden="true"><use href="#i-trash"></use></svg></button>' +
         "</li>";
     }).join("");
 
     paintCount();
-    paintSummary();
+    paintTotal();
     persist();
+    /* pagar.html repinta su resumen con esto. */
+    document.dispatchEvent(new CustomEvent("gn:carrito"));
   }
 
-  function paintSummary() {
-    var box = $("quote-summary");
-    if (!box) return;
-    box.hidden = cart.length === 0;
-    if (!cart.length) return;
-    box.innerHTML = "<h3>" + cart.length + (cart.length === 1 ? " producto en tu lista" : " productos en tu lista") + "</h3><ul>" +
-      cart.map(function (l) {
-        var p = PRODS.filter(function (x) { return x.id === l.id; })[0];
-        return p ? "<li><b>" + cantidadTexto(p, l.qty) + "</b> " + p.nombre + " <span>" + l.v + "</span></li>" : "";
-      }).join("") + "</ul>";
+  /* Cambió la cantidad de una línea en el cajón: solo se repinta esa línea. */
+  function lineaCambio(item, qty) {
+    var l = cart[Number(item.dataset.k)];
+    if (!l) return;
+    l.qty = qty;
+    var st = subtotal(l);
+    item.querySelector("[data-role='sub']").textContent = st == null ? "" : money(st);
+    item.querySelector("[data-role='pzs']").textContent = cantidadTexto(l);
+    paintTotal();
+    persist();
+    document.dispatchEvent(new CustomEvent("gn:carrito"));
   }
 
-  function add(id, v, qty) {
-    var line = cart.filter(function (l) { return l.id === id && l.v === v; })[0];
+  function add(id, v, u, qty) {
+    var line = lineaDe(id, v, u);
     if (line) line.qty = qty;
-    else {
-      /* misma referencia, otra medida -> reemplaza la línea anterior de ese producto */
-      cart = cart.filter(function (l) { return l.id !== id; });
-      cart.push({ id: id, v: v, qty: qty });
-    }
+    else cart.push({ id: id, v: v, u: u, qty: qty });
     paintCart();
   }
 
   function toast(msg) {
     var t = $("toast");
+    if (!t) return;
     t.textContent = msg;
     t.dataset.on = "true";
     clearTimeout(toast._t);
@@ -547,24 +662,23 @@
 
   /* ============================ eventos ============================ */
 
-  /* El carrito y su cajón viven en las tres páginas de catálogo Y en la ficha
-     de producto. El catálogo (chips, buscador, rejilla) solo existe donde hay
-     #grid, así que todo eso se monta nada más si la rejilla está presente.
-     Así producto.html reutiliza este mismo carrito sin duplicar su lógica. */
+  /* El carrito y su cajón viven en la tienda, en ofertas Y en la ficha de
+     producto. El catálogo (chips, buscador, rejilla) solo existe donde hay
+     #grid, así que todo eso se monta nada más si la rejilla está presente. */
   paintCart();
 
   var HAY_CATALOGO = !!$("grid");
 
   if (HAY_CATALOGO) {
 
-  /* El mega menú enlaza con ?cat= y ?q=; la tienda arranca ya filtrada. */
+  /* El menú Productos enlaza con ?cat= y ?q=; la tienda arranca ya filtrada. */
   (function () {
     var qs = new URLSearchParams(location.search);
     var cat = qs.get("cat");
     var q = qs.get("q");
-    var linea = qs.get("linea");
+    var oz = qs.get("oz");
     if (cat && CATS.some(function (c) { return c.id === cat; })) state.cat = cat;
-    if (linea && LINEAS.some(function (l) { return l[0] === linea; })) state.linea = linea;
+    if (oz && /^\d+$/.test(oz)) state.oz = [oz];
     if (q) {
       state.q = q; $("q").value = q; $("q-clear").hidden = false;
       /* La primera pintura ocurre antes de que cargue la tabla de
@@ -578,15 +692,10 @@
 
   $("cats").addEventListener("click", function (e) {
     var b = e.target.closest("[data-cat]"); if (!b) return;
-    state.cat = b.dataset.cat; render();
-    document.getElementById("catalogo").scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
-  });
-
-  $("mats").addEventListener("click", function (e) {
-    var b = e.target.closest("[data-mat]"); if (!b) return;
-    var m = b.dataset.mat, i = state.mats.indexOf(m);
-    if (i > -1) state.mats.splice(i, 1); else state.mats.push(m);
+    state.cat = b.dataset.cat;
+    buildCaps();
     render();
+    document.getElementById("catalogo").scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
   });
 
   if ($("caps")) {
@@ -598,23 +707,12 @@
     });
   }
 
-  if ($("lineas")) {
-    $("lineas").addEventListener("click", function (e) {
-      var b = e.target.closest("[data-linea]"); if (!b) return;
-      state.linea = state.linea === b.dataset.linea ? "" : b.dataset.linea;
-      render();
-    });
-  }
-
   var clearBtn = $("facets-clear");
   if (clearBtn) {
     clearBtn.addEventListener("click", function () {
-      state.mats = []; state.oz = []; state.cat = "todo"; state.q = ""; state.stock = "todo"; state.linea = "";
+      state.oz = []; state.cat = "todo"; state.q = "";
       $("q").value = ""; $("q-clear").hidden = true;
-      var sb = $("stock");
-      if (sb) Array.prototype.forEach.call(sb.children, function (x) {
-        x.setAttribute("aria-pressed", String(x.dataset.stock === "todo"));
-      });
+      buildCaps();
       render();
     });
   }
@@ -623,19 +721,14 @@
   if (filterBtn) {
     var panel = $("facets") || $("side");
     var angosto = window.matchMedia("(max-width: 900px)");
-
-    /* En móvil el panel arranca plegado y el botón lo abre; en escritorio la
-       barra lateral está siempre a la vista y el botón no se muestra.
-       El CSS ya trae `.side[hidden] { display: none }`, pero el marcado nunca
-       ponía el atributo: la barra salía desplegada en el teléfono y empujaba la
-       rejilla ~860 px hacia abajo antes de que se viera un solo producto. */
+    /* En el teléfono el panel arranca plegado y el botón lo abre; en
+       escritorio la barra lateral está siempre a la vista. */
     function sincronizaPanel() {
       panel.hidden = angosto.matches;
       filterBtn.setAttribute("aria-expanded", String(!panel.hidden));
     }
     sincronizaPanel();
     angosto.addEventListener("change", sincronizaPanel);
-
     filterBtn.addEventListener("click", function () {
       panel.hidden = !panel.hidden;
       this.setAttribute("aria-expanded", String(!panel.hidden));
@@ -653,72 +746,127 @@
     $("q").value = ""; this.hidden = true; state.q = ""; render(); $("q").focus();
   });
 
-  $("sort").addEventListener("change", function () { state.sort = this.value; render(); });
+  $("sort").addEventListener("change", function () {
+    state.sort = this.value;
+    /* "Todos" (Gabriel, 2026-09-29): todo el inventario en el orden del
+       catálogo, sin filtros ni búsqueda. */
+    if (state.sort === "todos" && clearBtn) { clearBtn.click(); return; }
+    if (state.sort === "vendidos" && !POPULARES) {
+      fetch("/api/populares").then(function (r) { return r.ok ? r.json() : {}; })
+        .catch(function () { return {}; })
+        .then(function (j) { POPULARES = (j && j.ids) || []; render(); });
+    }
+    render();
+  });
 
-  /* Solo existen en ofertas.html; en la tienda simplemente no están. */
-  var stockBox = $("stock");
-  if (stockBox) {
-    stockBox.addEventListener("click", function (e) {
-      var b = e.target.closest("[data-stock]"); if (!b) return;
-      state.stock = b.dataset.stock;
-      Array.prototype.forEach.call(stockBox.children, function (x) {
-        x.setAttribute("aria-pressed", String(x.dataset.stock === state.stock));
-      });
-      render();
+  /* Quitar filtros (arriba del catálogo): lo mismo que el de la barra lateral. */
+  if ($("filtros-quitar") && clearBtn) {
+    $("filtros-quitar").addEventListener("click", function () { clearBtn.click(); });
+  }
+
+  /* Mostrar / ocultar filtros (computadora). En celular sigue el botón
+     "Filtros" de siempre. */
+  var fToggle = $("filtros-toggle");
+  if (fToggle) {
+    var layout = document.querySelector(".shop-layout");
+    var CLAVE_F = "greenova.filtros.ocultos";
+    function ponFiltros(ocultos) {
+      layout.classList.toggle("shop-layout--sin-filtros", ocultos);
+      fToggle.setAttribute("aria-expanded", String(!ocultos));
+      fToggle.querySelector("span").textContent = ocultos ? "Mostrar filtros" : "Ocultar filtros";
+      try { localStorage.setItem(CLAVE_F, ocultos ? "1" : "0"); } catch (e) { /* modo privado */ }
+    }
+    var ocultosAntes = false;
+    try { ocultosAntes = localStorage.getItem(CLAVE_F) === "1"; } catch (e) { /* modo privado */ }
+    ponFiltros(ocultosAntes);
+    fToggle.addEventListener("click", function () {
+      ponFiltros(!layout.classList.contains("shop-layout--sin-filtros"));
     });
   }
 
+  /* Columnas: el cliente elige 3, 4 o 5 (en celular siempre 2). */
+  var colsEl = $("cols");
+  if (colsEl) {
+    var CLAVE_C = "greenova.columnas";
+    function ponCols(n) {
+      var grid = $("grid");
+      grid.classList.remove("grid-prod--c3", "grid-prod--c4", "grid-prod--c5");
+      grid.classList.add("grid-prod--c" + n);
+      Array.prototype.forEach.call(colsEl.querySelectorAll("[data-cols]"), function (b) {
+        b.setAttribute("aria-pressed", String(b.dataset.cols === String(n)));
+      });
+      try { localStorage.setItem(CLAVE_C, String(n)); } catch (e) { /* modo privado */ }
+    }
+    var colsAntes = "3";
+    try { colsAntes = localStorage.getItem(CLAVE_C) || "3"; } catch (e) { /* modo privado */ }
+    ponCols(/^[345]$/.test(colsAntes) ? colsAntes : "3");
+    colsEl.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-cols]");
+      if (b) ponCols(b.dataset.cols);
+    });
+  }
 
   }   /* fin del bloque de catálogo */
 
-  /* steppers y botones: sirven igual en la rejilla, en el cajón y en la ficha */
-  function stepperOf(el) { return el.closest("[data-role='stepper']"); }
+  /* La caja de compra: una tarjeta de la rejilla o la columna de la ficha. */
+  function cajaDe(el) { return el.closest(".pcard, .ficha__compra"); }
 
   document.addEventListener("click", function (e) {
     var stepBtn = e.target.closest("[data-step]");
     if (stepBtn) {
-      var wrap = stepperOf(stepBtn);
+      var wrap = stepBtn.closest("[data-role='stepper']");
       var input = wrap.querySelector("[data-role='qty']");
-      var lim = limites(wrap);
-      var next = Math.min(lim.max, Math.max(lim.min,
-        (parseInt(input.value, 10) || lim.min) + Number(stepBtn.dataset.step) * lim.paso));
+      var next = Math.min(999, Math.max(1, (parseInt(input.value, 10) || 1) + Number(stepBtn.dataset.step)));
       input.value = next;
       var item = stepBtn.closest(".cart__item");
-      if (item) {
-        var l = cart.filter(function (x) { return x.id === item.dataset.id; })[0];
-        if (l) { l.qty = next; paintCount(); paintSummary(); persist(); }
-      }
+      if (item) lineaCambio(item, next);
+      else input.dispatchEvent(new Event("input", { bubbles: true }));
+      return;
+    }
+
+    /* Tocar el renglón de precio (paquete o caja) también lo elige. */
+    var fila = e.target.closest(".precios__fila[data-u]");
+    if (fila) {
+      var cajaF = cajaDe(fila) || fila.closest(".pcard");
+      var boton = cajaF && cajaF.querySelector("[data-role='unidad'] [data-u='" + fila.dataset.u + "']");
+      if (boton) boton.click();
+      return;
+    }
+
+    var uBtn = e.target.closest("[data-role='unidad'] [data-u]");
+    if (uBtn) {
+      Array.prototype.forEach.call(uBtn.parentElement.children, function (b) {
+        b.setAttribute("aria-pressed", String(b === uBtn));
+      });
+      refrescaCompra(cajaDe(uBtn));
       return;
     }
 
     var del = e.target.closest("[data-role='del']");
     if (del) {
       var li = del.closest(".cart__item");
-      cart = cart.filter(function (x) { return x.id !== li.dataset.id; });
-      var c = document.querySelector('.pcard[data-id="' + li.dataset.id + '"]');
-      if (c) {
-        c.removeAttribute("data-in");
-        c.querySelector(".pcard__add .btn__label").textContent = "Añadir";
-        c.querySelector(".pcard__add use").setAttribute("href", "#i-plus");
-      }
+      cart.splice(Number(li.dataset.k), 1);
       paintCart();
+      document.querySelectorAll(".pcard, .ficha__compra").forEach(refrescaCompra);
       return;
     }
 
     var addBtn = e.target.closest("[data-role='add']");
     if (addBtn) {
-      var pc = addBtn.closest(".pcard, .ficha__compra");
+      var pc = cajaDe(addBtn);
       var v = pc.querySelector("[data-role='variant']").value;
-      var prod = PRODS.filter(function (x) { return x.id === pc.dataset.id; })[0];
+      var prod = prodDe(pc.dataset.id);
       if ((prod.agotadas || []).indexOf(v) > -1) { toast("Esa medida está agotada por ahora"); return; }
-      var qty = Math.min(maxDe(prod), Math.max(minDe(prod, v),
-        parseInt(pc.querySelector("[data-role='qty']").value, 10) || 0));
-      add(pc.dataset.id, v, qty);
-      pc.dataset.in = "true";
-      addBtn.querySelector(".btn__label").textContent = "Actualizar";
-      addBtn.querySelector("use").setAttribute("href", "#i-check");
+      var t = tamDe(prod, v);
+      var us = unidades(t);
+      var sel = pc.querySelector("[data-role='unidad'] [aria-pressed='true']");
+      var u = sel && us.indexOf(sel.dataset.u) > -1 ? sel.dataset.u : us[0];
+      if (!u) { toast("Esa medida todavía no tiene precio: pregúntanos por ella"); return; }
+      var qty = Math.min(999, Math.max(1, parseInt(pc.querySelector("[data-role='qty']").value, 10) || 1));
+      add(pc.dataset.id, v, u, qty);
+      refrescaCompra(pc);
       if (!reduce) { addBtn.classList.remove("did"); void addBtn.offsetWidth; addBtn.classList.add("did"); }
-      toast(cantidadTexto(prod, qty) + " de " + prod.nombre.toLowerCase() + " en tu carrito");
+      toast(qty + " " + unidadTexto(u, qty) + " de " + prod.nombre.toLowerCase() + " en tu carrito");
       return;
     }
 
@@ -727,52 +875,20 @@
     var body = e.target.closest(".pcard__body");
     if (body && !e.target.closest("a") && !(window.getSelection() + "")) {
       window.location.href = "producto.html?id=" + body.closest(".pcard").dataset.id;
-      return;
     }
   });
 
   document.addEventListener("change", function (e) {
     var input = e.target.closest("[data-role='qty']");
     if (input) {
-      var lim = limites(input);
-      input.value = Math.min(lim.max, Math.max(lim.min, parseInt(input.value, 10) || lim.min));
+      input.value = Math.min(999, Math.max(1, parseInt(input.value, 10) || 1));
       var item = input.closest(".cart__item");
-      if (item) {
-        var l = cart.filter(function (x) { return x.id === item.dataset.id; })[0];
-        if (l) { l.qty = Number(input.value); paintCount(); paintSummary(); persist(); }
-      }
+      if (item) lineaCambio(item, Number(input.value));
     }
-    /* cambiar de medida en una tarjeta ya agregada obliga a confirmar de nuevo */
     var sel = e.target.closest("[data-role='variant']");
     if (sel) {
-      var pc = sel.closest(".pcard");
-      /* En la ficha de producto el selector NO vive dentro de una .pcard.
-         Sin esta guarda, cambiar de medida con el carrito lleno reventaba con
-         "Cannot read properties of null (reading 'dataset')". No saltaba con el
-         carrito vacío porque `filter` no llega a ejecutar el callback. */
-      if (pc) {
-        var prodSel = PRODS.filter(function (x) { return x.id === pc.dataset.id; })[0];
-        var precioEl = pc.querySelector(".pcard__price");
-        if (prodSel && precioEl) {
-          var vi = prodSel.v.indexOf(sel.value);
-          precioEl.innerHTML = precioHTML(prodSel, vi < 0 ? 0 : vi);
-        }
-        /* Cada medida puede tener su propio pedido mínimo. */
-        if (porPieza(prodSel)) {
-          var m = minDe(prodSel, sel.value);
-          var st = pc.querySelector("[data-role='stepper']");
-          var q = st.querySelector("[data-role='qty']");
-          st.dataset.min = m; q.min = m;
-          if ((parseInt(q.value, 10) || 0) < m) q.value = m;
-          var etq = pc.querySelector("[data-role='min']");
-          if (etq) etq.textContent = "Mínimo " + m.toLocaleString("es-MX") + " pzs";
-        }
-      }
-      var l2 = pc && cart.filter(function (x) { return x.id === pc.dataset.id; })[0];
-      if (l2 && l2.v !== sel.value) {
-        pc.querySelector(".pcard__add .btn__label").textContent = "Actualizar";
-        pc.querySelector(".pcard__add use").setAttribute("href", "#i-check");
-      }
+      var caja = cajaDe(sel);
+      if (caja) refrescaCompra(caja);
     }
   });
 
@@ -785,33 +901,27 @@
 
   $("cart-clear").addEventListener("click", function () {
     cart = [];
-    document.querySelectorAll('[data-in="true"]').forEach(function (c) {
-      if (!c.querySelector(".pcard__add")) return;
-      c.removeAttribute("data-in");
-      c.querySelector(".pcard__add .btn__label").textContent = "Añadir";
-      c.querySelector(".pcard__add use").setAttribute("href", "#i-plus");
-    });
     paintCart();
-    toast("Lista vacía");
+    document.querySelectorAll(".pcard, .ficha__compra").forEach(refrescaCompra);
+    toast("Carrito vacío");
   });
 
-  $("cart-send").addEventListener("click", function () {
+  /* "Pagar mi pedido" lleva a pagar.html (envío + Openpay). "Prefiero que
+     me coticen" baja al formulario de la tienda, como antes. */
+  $("cart-send").addEventListener("click", function () { setDrawer(false); });
+  var cotizarLink = document.querySelector(".drawer__cotizar");
+  if (cotizarLink) cotizarLink.addEventListener("click", function () {
     setDrawer(false);
-    /* En la ficha de producto no hay formulario: el enlace lleva a la tienda. */
     setTimeout(function () {
       var n = $("s-nombre");
       if (n) n.focus({ preventScroll: true });
     }, 400);
   });
 
-  /* enlaces del footer que saltan a una categoría */
-  document.querySelectorAll("[data-cat][href]").forEach(function (a) {
-    a.addEventListener("click", function () {
-      state.cat = this.dataset.cat; state.q = ""; $("q").value = ""; render();
-    });
-  });
-
-  /* ============================ envío ============================ */
+  /* ============================ envío ============================
+     El pedido se guarda en la base (historial de compras del cliente, se ve
+     en el panel) y además se abre el correo a ventas con la lista, como
+     hasta ahora: si la base no responde, el pedido no se pierde. */
   var form = $("shop-form");
   if (form) {
     var status = $("shop-status"), submit = $("shop-submit");
@@ -842,48 +952,65 @@
         form.querySelector('[data-invalid="true"] input').focus();
         return;
       }
-      if (!cart.length) {
-        status.dataset.state = "warn";
-        status.textContent = "Tu lista está vacía. Agrega al menos un producto del catálogo.";
-        document.getElementById("catalogo").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
-        return;
-      }
 
       submit.dataset.loading = "true";
-      label.textContent = "Preparando";
+      label.textContent = "Enviando";
 
       var d = Object.fromEntries(new FormData(form).entries());
-      var lines = cart.map(function (l) {
-        var p = PRODS.filter(function (x) { return x.id === l.id; })[0];
-        return "- " + (p ? cantidadTexto(p, l.qty) : l.qty) + " de " + (p ? p.nombre : l.id) + " (" + l.v + ")";
+      var lineas = cart.map(function (l) {
+        var p = prodDe(l.id), t = tamDe(p, l.v);
+        return { id: l.id, nombre: p ? p.nombre : l.id, v: l.v, u: l.u, qty: l.qty,
+                 piezas: t ? piezasDe(t, l.u) * l.qty : null,
+                 precio: t ? precioDe(p, t, l.u) : null, subtotal: subtotal(l),
+                 sku: t ? t.sku : null };
+      });
+      var texto = lineas.map(function (l) {
+        return "- " + l.qty + " " + unidadTexto(l.u, l.qty) + (l.piezas ? " (" + fmt(l.piezas) + " pzs)" : "") +
+          " de " + l.nombre + " (" + l.v + ")" + (l.subtotal != null ? " = " + money(l.subtotal) : "");
       }).join("\n");
 
-      var body = [
+      var cuerpo = [
         "Nombre: " + d.nombre,
         "Negocio: " + (d.negocio || "No indicado"),
         "Correo: " + (d.correo || "No indicado"),
         "Telefono: " + (d.telefono || "No indicado"),
         "",
-        "PRODUCTOS SOLICITADOS (" + total() + (total() === 1 ? " producto" : " productos") + "):",
-        lines,
+        lineas.length ? "PEDIDO:" : "SIN PRODUCTOS EN EL CARRITO",
+        texto,
+        lineas.length ? "TOTAL: " + money(total()) + " MXN (IVA incluido)" : "",
         "",
-        "Notas:",
+        "Lista, cotización o lo que busca:",
         d.mensaje || "Sin notas."
       ].join("\n");
 
       if (window.GNmetrica) window.GNmetrica("carrito_enviado");
-      /* PENDIENTE: sustituir por un POST a un endpoint real (ver README). */
-      window.location.href = "mailto:ventas@greenovasc.com.mx?subject=" +
-        encodeURIComponent("Cotización desde la tienda (" + cart.length + " productos)") +
-        "&body=" + encodeURIComponent(body);
 
-      setTimeout(function () {
+      function abreCorreo(folio) {
+        window.location.href = "mailto:ventas@greenovasc.com.mx?subject=" +
+          encodeURIComponent((folio ? "Pedido " + folio : "Pedido") + " desde la tienda") +
+          "&body=" + encodeURIComponent((folio ? "Folio: " + folio + "\n" : "") + cuerpo);
         submit.dataset.loading = "false";
         label.textContent = "Enviar pedido";
         status.dataset.state = "ok";
-        status.textContent = "Listo. Abrimos tu correo con la lista completa. Si no se abrió, escribe a ventas@greenovasc.com.mx";
+        status.textContent = (folio ? "Recibimos tu pedido " + folio + ". " : "") +
+          "Abrimos tu correo con la lista completa. Si no se abrió, escribe a ventas@greenovasc.com.mx";
         if (!reduce && window.GN && window.GN.burst) window.GN.burst(submit);
-      }, 420);
+      }
+
+      /* Con la sesión abierta (cuenta.js) el pedido se liga a la cuenta. */
+      var cabeceras = { "Content-Type": "application/json" };
+      var tk = window.GNCuenta && window.GNCuenta.token();
+      if (tk) cabeceras.Authorization = "Bearer " + tk;
+      fetch("/api/pedido", {
+        method: "POST",
+        headers: cabeceras,
+        body: JSON.stringify({
+          nombre: d.nombre, negocio: d.negocio || "", correo: d.correo || "", telefono: d.telefono || "",
+          notas: d.mensaje || "", lineas: lineas, total: total(), sitio_web: d.sitio_web || ""
+        })
+      }).then(function (r) { return r.ok ? r.json() : {}; })
+        .catch(function () { return {}; })
+        .then(function (j) { abreCorreo(j && j.folio); });
     });
 
     form.addEventListener("input", function (e) {
@@ -892,9 +1019,25 @@
     });
   }
 
-  /* El editor del panel abre esta misma página dentro de un iframe y, cuando
-     cambias un precio o marcas un agotado, muta el catálogo y llama a repintar.
-     Así lo que ves editando es exactamente lo que ve el cliente: no hay una
-     segunda plantilla que se pueda desincronizar. */
-  window.GNTienda = { repintar: render };
+  /* Lo que usan la ficha de producto y el editor del panel. */
+  window.GNTienda = {
+    /* pagar.html: cambiar la cantidad de una línea (0 = quitarla). */
+    cambiaLinea: function (k, qty) {
+      if (!cart[k]) return;
+      if (qty < 1) cart.splice(k, 1); else cart[k].qty = Math.min(999, qty);
+      paintCart();
+    },
+    repintar: render,
+    refrescaCompra: refrescaCompra,
+    preciosHTML: preciosHTML,
+    unidades: unidades,
+    tapasPara: function (p, v) {
+      var fam = FAMILIA_TAPAS[p.cat], t = tamDe(p, v);
+      if (!fam || !t || !t.boca) return [];
+      return PRODS.filter(function (x) {
+        return x.cat === fam && x.venta && x.venta.tam.some(function (y) { return y.boca === t.boca; });
+      });
+    },
+    money: money
+  };
 })();

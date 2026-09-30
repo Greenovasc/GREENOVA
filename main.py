@@ -28,6 +28,7 @@ import re
 import sqlite3
 import threading
 import time
+import unicodedata
 
 import httpx
 from fastapi import FastAPI, Request
@@ -281,7 +282,6 @@ async def chat(request: Request):
 
 ARCHIVO_CATALOGO = "productos.js"
 DURACION_SESION = 8 * 3600  # segundos
-MIN_PIEZAS = 10000  # pedido mínimo por omisión, en piezas (Gabriel, 2026-09-24)
 ITERACIONES = 200_000
 LARGO_MIN_CLAVE = 8           # la contraseña del panel en tu computadora
 LARGO_MIN_CLAVE_RENDER = 12   # las de los administradores en Render
@@ -595,17 +595,25 @@ def ident(valor, largo: int = 80) -> str:
 
 
 LINEAS_VENTA = (
-    "papel", "papel-fsc", "pla", "pet", "kraft",
-    "bagazo", "paja-trigo", "fecula", "madera", "tapioca", "plastico", "carton",
+    "papel", "kraft", "madera", "pet", "pp", "ps",
 )
 
 
-def limpia_venta(venta, num_medidas: int):
-    """Valida `venta` (todos los materiales del catálogo, con precio y pedido mínimo por tamaño).
+def _entero(v) -> int | None:
+    return int(v) if isinstance(v, (int, float)) and not isinstance(v, bool) and v > 0 else None
 
-    Si no cuadra con el número de medidas del producto o la línea no es una
-    de las tres reconocidas, se descarta entero: mejor un producto sin venta
-    en línea que uno con tamaños desalineados vendiendo el equivocado.
+
+def _precio(v) -> float | None:
+    return round(float(v), 2) if isinstance(v, (int, float)) and not isinstance(v, bool) and v > 0 else None
+
+
+def limpia_venta(venta, num_medidas: int):
+    """Valida `venta`: por cada medida, piezas y precio por paquete y por caja.
+
+    Feedback final (2026-09-27): se vende por paquete y por caja, con los
+    precios de la lista de Excel (IVA incluido), y el mínimo es un paquete.
+    Si no cuadra con el número de medidas o la línea no se reconoce, se
+    descarta entero: mejor sin venta que con medidas desalineadas.
     """
     if not isinstance(venta, dict):
         return None
@@ -620,14 +628,23 @@ def limpia_venta(venta, num_medidas: int):
     for t in tam_in:
         if not isinstance(t, dict):
             t = {}
-        precio = t.get("precio")
-        precio = float(precio) if isinstance(precio, (int, float)) and precio > 0 else None
-        minimo = t.get("min")
-        minimo = int(minimo) if isinstance(minimo, (int, float)) and minimo >= 1 else MIN_PIEZAS
-        sku = ident(t.get("sku"), 40) or None
-        tam.append({"precio": precio, "min": minimo, "sku": sku})
+        paq, caja = _entero(t.get("paq")), _entero(t.get("caja"))
+        tam.append({
+            "paq": paq,
+            "caja": caja,
+            # sin piezas por paquete (o por caja) no hay precio que cobrar
+            "pPaq": _precio(t.get("pPaq")) if paq else None,
+            "pCaja": _precio(t.get("pCaja")) if caja else None,
+            "boca": _entero(t.get("boca")),
+            "esp": texto(t.get("esp"), 160) or None,
+            "sku": ident(t.get("sku"), 40) or None,
+            "img": ident(t.get("img"), 120) or None,
+        })
 
     return {"linea": linea, "tam": tam}
+
+
+BANDERAS = ("destacado", "fotoPropia", "personalizable")
 
 
 def render_catalogo(datos: dict) -> str:
@@ -662,8 +679,6 @@ def render_catalogo(datos: dict) -> str:
         vistos.add(pid)
 
         medidas = [texto(v, 120) for v in (p.get("v") or []) if texto(v, 120)]
-        precio = p.get("precio")
-        precio = float(precio) if isinstance(precio, (int, float)) and precio > 0 else None
 
         limpio = {
             "id": pid,
@@ -671,15 +686,13 @@ def render_catalogo(datos: dict) -> str:
             "cat": cat,
             "mat": list(dict.fromkeys(ident(m, 60) for m in (p.get("mat") or []) if ident(m, 60) in mats))[:6],
             "img": ident(p.get("img"), 120),
-            "p": int(p["p"]) if isinstance(p.get("p"), (int, float)) and p["p"] > 0 else None,
+            "uso": texto(p.get("uso"), 80),
             "desc": texto(p.get("desc"), 400),
             "v": medidas or ["Estándar"],
-            "precio": precio,
         }
-        # Banderas que usan la tienda y la ficha (foto sin marco, "bajo pedido",
-        # foto sobre placa). Antes no estaban aquí y el primer guardado del
-        # panel las borraba de productos.js.
-        for bandera in ("destacado", "fotoPropia", "servicio", "placa"):
+        # Banderas que usan la tienda y la ficha. Si se agrega una nueva, va
+        # aquí y en BANDERAS: si no, el primer guardado del panel la borra.
+        for bandera in BANDERAS:
             if p.get(bandera):
                 limpio[bandera] = True
         if texto(p.get("sello"), 40):
@@ -751,8 +764,10 @@ def render_catalogo(datos: dict) -> str:
     lineas += [
         "  };",
         "",
-        "  /* p = piezas por caja | v = medidas | precio en MXN por caja (null = cotizar)",
-        "     venta.tam = por medida: precio en MXN por pieza y min = pedido mínimo en piezas */",
+        "  /* v = medidas u opciones | venta.tam = una entrada por medida:",
+        "     paq / caja = piezas por paquete y por caja; pPaq / pCaja = precio en MXN,",
+        "     IVA incluido (null = por confirmar); boca en mm; esp = especificaciones;",
+        "     img = foto propia de esa medida. El pedido mínimo es un paquete. */",
         "  var PRODUCTOS = [",
     ]
 
@@ -769,27 +784,28 @@ def render_catalogo(datos: dict) -> str:
                 "mat: " + j(p["mat"]),
                 "img: " + j(p["img"]),
             ]
-            if p["p"]:
-                partes.append("p: " + str(p["p"]))
-            for bandera in ("destacado", "fotoPropia", "servicio", "placa"):
+            if p.get("uso"):
+                partes.append("uso: " + j(p["uso"]))
+            for bandera in BANDERAS:
                 if p.get(bandera):
                     partes.append(bandera + ": true")
             if p.get("sello"):
                 partes.append("sello: " + j(p["sello"]))
-            partes.append("precio: " + (str(p["precio"]) if p["precio"] else "null"))
             lineas.append("    { " + ", ".join(partes) + ",")
             lineas.append("      desc: " + j(p["desc"]) + ",")
             if p.get("agotadas"):
                 lineas.append("      agotadas: " + j(p["agotadas"]) + ",")
             if p.get("venta"):
-                tam = ", ".join(
-                    "{ precio: %s, min: %d, sku: %s }" % (
-                        str(t["precio"]) if t["precio"] else "null", t["min"], j(t["sku"]) if t["sku"] else "null"
-                    )
-                    for t in p["venta"]["tam"]
-                )
                 lineas.append("      v: " + j(p["v"]) + ",")
-                lineas.append("      venta: { linea: " + j(p["venta"]["linea"]) + ", tam: [ " + tam + " ] } },")
+                lineas.append("      venta: { linea: " + j(p["venta"]["linea"]) + ", tam: [")
+                filas = []
+                for t in p["venta"]["tam"]:
+                    filas.append("        { " + ", ".join(
+                        "%s: %s" % (k, j(t[k]) if t[k] is not None else "null")
+                        for k in ("paq", "caja", "pPaq", "pCaja", "boca", "esp", "sku", "img")
+                    ) + " }")
+                lineas.append(",\n".join(filas))
+                lineas.append("      ] } },")
             else:
                 lineas.append("      v: " + j(p["v"]) + " },")
         lineas.append("")
@@ -803,8 +819,7 @@ def render_catalogo(datos: dict) -> str:
         "  /* Tapas que le quedan a cada vaso (por boca/onzas). */",
         "  var TAPAS_POR_VASO = " + (json.dumps(tapas_vaso, ensure_ascii=False, indent=2).replace("\n", "\n  ") if tapas_vaso else "{}") + ";",
         "",
-        '  PRODUCTOS.forEach(function (p) { if (!("precio" in p)) p.precio = null; });',
-        "",
+
         "  return {",
         "    CATEGORIAS: CATEGORIAS, MATERIALES: MATERIALES, PRODUCTOS: PRODUCTOS, PROMOS: PROMOS,",
         "    TAPAS_POR_VASO: TAPAS_POR_VASO",
@@ -924,16 +939,38 @@ FUENTES = (("google", "Google"), ("facebook", "Facebook"), ("fb.", "Facebook"),
 ESQUEMA = (
     "CREATE TABLE IF NOT EXISTS registros ("
     " id {serial}, fecha TEXT NOT NULL, dia TEXT NOT NULL, nombre TEXT NOT NULL,"
-    " correo TEXT, telefono TEXT, necesidad TEXT, pagina TEXT, fuente TEXT)",
+    " correo TEXT, telefono TEXT, necesidad TEXT, pagina TEXT, fuente TEXT, negocio TEXT)",
     "CREATE TABLE IF NOT EXISTS metricas ("
     " dia TEXT NOT NULL, clave TEXT NOT NULL, valor BIGINT NOT NULL DEFAULT 0,"
     " PRIMARY KEY (dia, clave))",
     "CREATE TABLE IF NOT EXISTS visitantes ("
     " dia TEXT NOT NULL, vid TEXT NOT NULL, PRIMARY KEY (dia, vid))",
+    # Registro de cliente (Feedback, pág. 8 y 9): datos y facturación.
+    "CREATE TABLE IF NOT EXISTS clientes ("
+    " id {serial}, fecha TEXT NOT NULL, dia TEXT NOT NULL, titular TEXT NOT NULL,"
+    " negocio TEXT, telefono TEXT, correo TEXT, factura INTEGER NOT NULL DEFAULT 0,"
+    " razon_social TEXT, rfc TEXT, domicilio_fiscal TEXT, uso_cfdi TEXT, regimen_fiscal TEXT,"
+    " csf_fecha TEXT, csf_nombre TEXT, csf_tipo TEXT, csf {blob})",
+    # Historial de compras: cada pedido que sale de la tienda.
+    "CREATE TABLE IF NOT EXISTS pedidos ("
+    " id {serial}, fecha TEXT NOT NULL, dia TEXT NOT NULL, folio TEXT, cliente_id BIGINT,"
+    " nombre TEXT NOT NULL, negocio TEXT, correo TEXT, telefono TEXT, lineas TEXT NOT NULL,"
+    " total DOUBLE PRECISION, notas TEXT)",
+    # Cuentas de cliente (icono de persona del menú): entran con su nombre y
+    # su WhatsApp, sin contraseña, y ven sus pedidos. "sello" es un secreto al
+    # azar por cuenta con el que se firman sus sesiones.
+    "CREATE TABLE IF NOT EXISTS cuentas ("
+    " id {serial}, fecha TEXT NOT NULL, telefono TEXT NOT NULL UNIQUE, nombre TEXT NOT NULL,"
+    " correo TEXT, negocio TEXT, sello TEXT NOT NULL, cliente_id BIGINT)",
 )
 SUMA_METRICA = ("INSERT INTO metricas (dia, clave, valor) VALUES (?, ?, ?) "
                 "ON CONFLICT (dia, clave) DO UPDATE SET valor = metricas.valor + excluded.valor")
 ANOTA_VISITANTE = "INSERT INTO visitantes (dia, vid) VALUES (?, ?) ON CONFLICT DO NOTHING"
+# Columnas agregadas después de crear la tabla. En una base que ya las tiene,
+# el ALTER falla y se ignora.
+MIGRACIONES = ("ALTER TABLE registros ADD COLUMN negocio TEXT",
+               "ALTER TABLE pedidos ADD COLUMN cuenta_id BIGINT")
+TABLAS = ("registros", "metricas", "visitantes", "clientes", "pedidos", "cuentas")
 
 
 def hoy() -> str:
@@ -976,8 +1013,25 @@ class Almacen:
                     archivo, tipo = pathlib.Path("/tmp/greenova-datos.sqlite"), "temporal"
                 self._sqlite = sqlite3.connect(archivo, check_same_thread=False)
             serial = "BIGSERIAL PRIMARY KEY" if tipo == "postgres" else "INTEGER PRIMARY KEY AUTOINCREMENT"
+            blob = "BYTEA" if tipo == "postgres" else "BLOB"
             for sql in ESQUEMA:
-                await self._corre(sql.replace("{serial}", serial), [()], tipo)
+                await self._corre(sql.replace("{serial}", serial).replace("{blob}", blob), [()], tipo)
+            for sql in MIGRACIONES:
+                if tipo == "postgres":
+                    sql = sql.replace("ADD COLUMN", "ADD COLUMN IF NOT EXISTS")
+                try:
+                    await self._corre(sql, [()], tipo)
+                except Exception:  # noqa: BLE001
+                    pass
+            if tipo == "postgres":
+                # Supabase publica las tablas de "public" en su API REST. Con
+                # RLS encendida y sin políticas, esa API no puede leer nada;
+                # el servidor entra como dueño de las tablas y no le afecta.
+                for tabla in TABLAS:
+                    try:
+                        await self._corre(f"ALTER TABLE {tabla} ENABLE ROW LEVEL SECURITY", [()], tipo)
+                    except Exception:  # noqa: BLE001
+                        pass
             self.tipo = tipo
 
     @staticmethod
@@ -1008,6 +1062,20 @@ class Almacen:
         await self.abre()
         if filas:
             await self._corre(sql, list(filas))
+
+    async def inserta(self, sql: str, args: tuple) -> int:
+        """INSERT … RETURNING id: devuelve el id nuevo (y en SQLite lo guarda)."""
+        await self.abre()
+        if self.tipo == "postgres":
+            async with self._pool.acquire() as con:
+                return int(await con.fetchval(self._pg(sql), *args))
+
+        def mete():
+            with self._candado:
+                fila = self._sqlite.execute(sql, args).fetchone()
+                self._sqlite.commit()
+                return int(fila[0])
+        return await asyncio.to_thread(mete)
 
     async def consulta(self, sql: str, args: tuple = ()) -> list[tuple]:
         await self.abre()
@@ -1199,6 +1267,7 @@ async def suscribir(request: Request):
     correo = texto(cuerpo.get("correo"), 120).lower()
     telefono = re.sub(r"\D", "", texto(cuerpo.get("telefono"), 40))
     necesidad = sin_formula(" ".join(texto(cuerpo.get("necesidad"), 500).split()))
+    negocio = sin_formula(" ".join(texto(cuerpo.get("negocio"), 120).split()))
     pagina = ident(cuerpo.get("pagina"), 40)
     if pagina not in paginas_publicas():
         pagina = ""
@@ -1232,13 +1301,16 @@ async def suscribir(request: Request):
                 "UPDATE registros SET fecha = ?, dia = ?, nombre = ?, "
                 "correo = CASE WHEN ? <> '' THEN ? ELSE correo END, "
                 "telefono = CASE WHEN ? <> '' THEN ? ELSE telefono END, "
-                "necesidad = CASE WHEN ? <> '' THEN ? ELSE necesidad END WHERE id = ?",
-                (fecha, dia, nombre, correo, correo, telefono, telefono, necesidad, necesidad, previo[0][0]))
+                "necesidad = CASE WHEN ? <> '' THEN ? ELSE necesidad END, "
+                "negocio = CASE WHEN ? <> '' THEN ? ELSE negocio END WHERE id = ?",
+                (fecha, dia, nombre, correo, correo, telefono, telefono, necesidad, necesidad,
+                 negocio, negocio, previo[0][0]))
         else:
             await almacen.ejecuta(
-                "INSERT INTO registros (fecha, dia, nombre, correo, telefono, necesidad, pagina, fuente) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                (fecha, dia, nombre, correo, telefono, necesidad, pagina, fuente))
+                "INSERT INTO registros (fecha, dia, nombre, correo, telefono, necesidad, pagina, fuente, negocio) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (fecha, dia, nombre, correo, telefono, necesidad, pagina, fuente, negocio))
+        await alta_cliente(nombre, negocio, correo, telefono)
     except Exception as e:  # noqa: BLE001
         print(f"[registro] no se pudo guardar: {e}", flush=True)
         return JSONResponse({"error": "no_disponible"}, status_code=503)
@@ -1249,6 +1321,435 @@ async def suscribir(request: Request):
 
 
 # ---- lo que ve el panel ----------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# CLIENTES Y PEDIDOS (Feedback final, pág. 8 y 9)
+#
+#   /api/cliente   datos de facturación (facturacion.html): titular, teléfono,
+#                  correo, datos fiscales y la Constancia de Situación Fiscal
+#                  (no mayor a 3 meses). El "Registro de cliente" es la ventana
+#                  chica (/api/suscribir), que también da de alta al cliente.
+#   /api/pedido    cada pedido que se envía desde la tienda. Se liga al
+#                  cliente por su correo o su teléfono: es su historial.
+# ---------------------------------------------------------------------------
+
+RFC_VALIDO = re.compile(r"^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$")
+USOS_CFDI = {
+    "G01": "Adquisición de mercancías", "G02": "Devoluciones, descuentos o bonificaciones",
+    "G03": "Gastos en general", "I01": "Construcciones", "I02": "Mobiliario y equipo de oficina por inversiones",
+    "I03": "Equipo de transporte", "I04": "Equipo de cómputo y accesorios",
+    "I05": "Dados, troqueles, moldes, matrices y herramental", "I06": "Comunicaciones telefónicas",
+    "I07": "Comunicaciones satelitales", "I08": "Otra maquinaria y equipo", "S01": "Sin efectos fiscales",
+}
+REGIMENES = {
+    "601": "General de Ley Personas Morales", "603": "Personas Morales con Fines no Lucrativos",
+    "605": "Sueldos y Salarios e Ingresos Asimilados a Salarios", "606": "Arrendamiento",
+    "607": "Régimen de Enajenación o Adquisición de Bienes", "608": "Demás ingresos",
+    "610": "Residentes en el Extranjero sin Establecimiento Permanente en México",
+    "611": "Ingresos por Dividendos (socios y accionistas)",
+    "612": "Personas Físicas con Actividades Empresariales y Profesionales", "614": "Ingresos por intereses",
+    "615": "Régimen de los ingresos por obtención de premios", "616": "Sin obligaciones fiscales",
+    "620": "Sociedades Cooperativas de Producción que optan por diferir sus ingresos",
+    "621": "Incorporación Fiscal", "622": "Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras",
+    "623": "Opcional para Grupos de Sociedades", "624": "Coordinados",
+    "625": "Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas",
+    "626": "Régimen Simplificado de Confianza",
+}
+CSF_MAX = 1_400_000          # bytes del archivo; en base64 cabe en el tope del cuerpo
+CSF_TIPOS = {"application/pdf": b"%PDF", "image/jpeg": b"\xff\xd8\xff", "image/png": b"\x89PNG"}
+PEDIDOS_POR_IP = 10          # pedidos por IP cada 10 minutos
+
+
+def _contacto(cuerpo: dict):
+    """Nombre, correo y teléfono con las mismas reglas del registro."""
+    correo = texto(cuerpo.get("correo"), 120).lower()
+    telefono = re.sub(r"\D", "", texto(cuerpo.get("telefono"), 40))
+    if correo and not CORREO_VALIDO.match(correo):
+        return None, "correo_invalido"
+    if telefono and not 10 <= len(telefono) <= 15:
+        return None, "telefono_invalido"
+    return (correo, telefono), ""
+
+
+async def alta_cliente(nombre: str, negocio: str, correo: str, telefono: str) -> None:
+    """La ventana de registro también da de alta (o pone al día) al cliente,
+    para que en el panel se vea con su historial de compras."""
+    fecha = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+    previo = await _cliente_de(correo, telefono)
+    if previo:
+        await almacen.ejecuta(
+            "UPDATE clientes SET titular = ?, negocio = CASE WHEN ? <> '' THEN ? ELSE negocio END,"
+            " correo = CASE WHEN ? <> '' THEN ? ELSE correo END,"
+            " telefono = CASE WHEN ? <> '' THEN ? ELSE telefono END WHERE id = ?",
+            (nombre, negocio, negocio, correo, correo, telefono, telefono, previo))
+    else:
+        await almacen.ejecuta(
+            "INSERT INTO clientes (fecha, dia, titular, negocio, telefono, correo, factura) VALUES (?, ?, ?, ?, ?, ?, 0)",
+            (fecha, hoy(), nombre, negocio, telefono, correo))
+
+
+async def _cliente_de(correo: str, telefono: str) -> int | None:
+    filas = await almacen.consulta(
+        "SELECT id FROM clientes WHERE (correo = ? AND correo <> '') OR (telefono = ? AND telefono <> '') "
+        "ORDER BY id DESC LIMIT 1", (correo, telefono))
+    return int(filas[0][0]) if filas else None
+
+
+@app.post("/api/cliente")
+async def registrar_cliente(request: Request):
+    if "application/json" not in (request.headers.get("content-type") or ""):
+        return JSONResponse({"error": "formato"}, status_code=415)
+    cuerpo = await _cuerpo(request)
+    if texto(cuerpo.get("sitio_web"), 100):
+        return JSONResponse({"ok": True})
+
+    titular = sin_formula(" ".join(texto(cuerpo.get("titular"), 120).split()))
+    negocio = sin_formula(" ".join(texto(cuerpo.get("negocio"), 120).split()))
+    if len(titular.split()) < 2 or not re.search(r"[^\W\d_]", titular):
+        return JSONResponse({"error": "titular"}, status_code=400)
+    contacto, error = _contacto(cuerpo)
+    if not contacto:
+        return JSONResponse({"error": error}, status_code=400)
+    correo, telefono = contacto
+    if not correo:
+        return JSONResponse({"error": "correo_invalido"}, status_code=400)
+    if not telefono:
+        return JSONResponse({"error": "telefono_invalido"}, status_code=400)
+
+    factura = bool(cuerpo.get("factura"))
+    fiscal = {"razon_social": "", "rfc": "", "domicilio_fiscal": "", "uso_cfdi": "",
+              "regimen_fiscal": "", "csf_fecha": "", "csf_nombre": "", "csf_tipo": ""}
+    archivo = None
+    if factura:
+        fiscal["razon_social"] = sin_formula(" ".join(texto(cuerpo.get("razon_social"), 200).split()))
+        fiscal["rfc"] = texto(cuerpo.get("rfc"), 13).upper().replace(" ", "")
+        fiscal["domicilio_fiscal"] = sin_formula(" ".join(texto(cuerpo.get("domicilio_fiscal"), 300).split()))
+        fiscal["uso_cfdi"] = texto(cuerpo.get("uso_cfdi"), 4).upper()
+        fiscal["regimen_fiscal"] = texto(cuerpo.get("regimen_fiscal"), 3)
+        if len(fiscal["razon_social"]) < 2:
+            return JSONResponse({"error": "razon_social"}, status_code=400)
+        if not RFC_VALIDO.match(fiscal["rfc"]):
+            return JSONResponse({"error": "rfc"}, status_code=400)
+        if not re.search(r"\b\d{5}\b", fiscal["domicilio_fiscal"]):
+            return JSONResponse({"error": "domicilio_fiscal"}, status_code=400)
+        if fiscal["uso_cfdi"] not in USOS_CFDI:
+            return JSONResponse({"error": "uso_cfdi"}, status_code=400)
+        if fiscal["regimen_fiscal"] not in REGIMENES:
+            return JSONResponse({"error": "regimen_fiscal"}, status_code=400)
+        # Constancia: fecha de emisión de no más de 3 meses y archivo PDF o foto.
+        try:
+            emision = datetime.date.fromisoformat(texto(cuerpo.get("csf_fecha"), 10))
+        except ValueError:
+            return JSONResponse({"error": "csf_fecha"}, status_code=400)
+        dias = (datetime.datetime.now(MX).date() - emision).days
+        if dias < 0 or dias > 92:
+            return JSONResponse({"error": "csf_vencida"}, status_code=400)
+        fiscal["csf_fecha"] = emision.isoformat()
+        csf = cuerpo.get("csf") if isinstance(cuerpo.get("csf"), dict) else {}
+        tipo = texto(csf.get("tipo"), 40)
+        try:
+            archivo = base64.b64decode(texto(csf.get("datos"), 2_000_000), validate=True)
+        except (ValueError, TypeError):
+            archivo = None
+        firma = CSF_TIPOS.get(tipo)
+        if not archivo or not firma or not archivo.startswith(firma):
+            return JSONResponse({"error": "csf_archivo"}, status_code=400)
+        if len(archivo) > CSF_MAX:
+            return JSONResponse({"error": "csf_grande"}, status_code=400)
+        fiscal["csf_tipo"] = tipo
+        fiscal["csf_nombre"] = ident(csf.get("nombre"), 80) or "constancia"
+
+    if not cupo(ip_de(request), REG_POR_IP, "c:"):
+        return muy_intentos()
+
+    fecha = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+    dia = hoy()
+    try:
+        previo = await _cliente_de(correo, telefono)
+        valores = (fecha, dia, titular, negocio, telefono, correo, 1 if factura else 0,
+                   fiscal["razon_social"], fiscal["rfc"], fiscal["domicilio_fiscal"], fiscal["uso_cfdi"],
+                   fiscal["regimen_fiscal"], fiscal["csf_fecha"], fiscal["csf_nombre"], fiscal["csf_tipo"])
+        if previo:
+            # Actualiza sus datos; si esta vez no mandó factura, se conservan
+            # los fiscales que ya tenía.
+            if factura:
+                await almacen.ejecuta(
+                    "UPDATE clientes SET fecha = ?, dia = ?, titular = ?, negocio = ?, telefono = ?, correo = ?,"
+                    " factura = ?, razon_social = ?, rfc = ?, domicilio_fiscal = ?, uso_cfdi = ?, regimen_fiscal = ?,"
+                    " csf_fecha = ?, csf_nombre = ?, csf_tipo = ?, csf = ? WHERE id = ?",
+                    valores + (archivo, previo))
+            else:
+                await almacen.ejecuta(
+                    "UPDATE clientes SET fecha = ?, dia = ?, titular = ?, negocio = ?, telefono = ?, correo = ?"
+                    " WHERE id = ?", valores[:6] + (previo,))
+            cid = previo
+        else:
+            cid = await almacen.inserta(
+                "INSERT INTO clientes (fecha, dia, titular, negocio, telefono, correo, factura, razon_social, rfc,"
+                " domicilio_fiscal, uso_cfdi, regimen_fiscal, csf_fecha, csf_nombre, csf_tipo, csf)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id",
+                valores + (archivo,))
+    except Exception as e:  # noqa: BLE001
+        print(f"[cliente] no se pudo guardar: {e}", flush=True)
+        return JSONResponse({"error": "no_disponible"}, status_code=503)
+    suma(dia, ["evento:cliente"])
+    return JSONResponse({"ok": True, "cliente": cid})
+
+
+def _lineas_pedido(crudas) -> list[dict]:
+    lineas = []
+    ids = ids_catalogo()
+    for l in (crudas if isinstance(crudas, list) else [])[:100]:
+        if not isinstance(l, dict):
+            continue
+        pid = ident(l.get("id"), 80)
+        qty = l.get("qty")
+        u = l.get("u")
+        if pid not in ids or u not in ("paq", "caja") or not isinstance(qty, int) or not 1 <= qty <= 999:
+            continue
+        num = lambda v: round(float(v), 2) if isinstance(v, (int, float)) and not isinstance(v, bool) and v >= 0 else None
+        lineas.append({
+            "id": pid, "nombre": texto(l.get("nombre"), 120), "v": texto(l.get("v"), 120), "u": u, "qty": qty,
+            "piezas": int(l["piezas"]) if isinstance(l.get("piezas"), int) and l["piezas"] > 0 else None,
+            "precio": num(l.get("precio")), "subtotal": num(l.get("subtotal")), "sku": ident(l.get("sku"), 40) or None,
+        })
+    return lineas
+
+
+@app.post("/api/pedido")
+async def registrar_pedido(request: Request):
+    if "application/json" not in (request.headers.get("content-type") or ""):
+        return JSONResponse({"error": "formato"}, status_code=415)
+    cuerpo = await _cuerpo(request)
+    if texto(cuerpo.get("sitio_web"), 100):
+        return JSONResponse({"ok": True})
+    nombre = sin_formula(" ".join(texto(cuerpo.get("nombre"), 120).split()))
+    if len(nombre) < 2:
+        return JSONResponse({"error": "nombre"}, status_code=400)
+    contacto, error = _contacto(cuerpo)
+    if not contacto:
+        return JSONResponse({"error": error}, status_code=400)
+    correo, telefono = contacto
+    if not correo and not telefono:
+        return JSONResponse({"error": "sin_contacto"}, status_code=400)
+    lineas = _lineas_pedido(cuerpo.get("lineas"))
+    notas = sin_formula(texto(cuerpo.get("notas"), 2000))
+    if not lineas and len(notas) < 3:
+        return JSONResponse({"error": "vacio"}, status_code=400)
+    if not cupo(ip_de(request), PEDIDOS_POR_IP, "p:"):
+        return muy_intentos()
+    total = round(sum(l["subtotal"] or 0 for l in lineas), 2)
+    fecha = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+    dia = hoy()
+    try:
+        cuenta = await cuenta_de(request)
+        cid = (cuenta or {}).get("cliente_id") or await _cliente_de(correo, telefono)
+        pid = await almacen.inserta(
+            "INSERT INTO pedidos (fecha, dia, cliente_id, cuenta_id, nombre, negocio, correo, telefono, lineas,"
+            " total, notas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id",
+            (fecha, dia, cid, cuenta["id"] if cuenta else None, nombre,
+             sin_formula(texto(cuerpo.get("negocio"), 120)), correo, telefono,
+             json.dumps(lineas, ensure_ascii=False), total, notas))
+        folio = "GN-" + dia.replace("-", "")[2:] + "-" + str(pid).zfill(4)
+        await almacen.ejecuta("UPDATE pedidos SET folio = ? WHERE id = ?", (folio, pid))
+    except Exception as e:  # noqa: BLE001
+        print(f"[pedido] no se pudo guardar: {e}", flush=True)
+        return JSONResponse({"error": "no_disponible"}, status_code=503)
+    suma(dia, ["evento:pedido"])
+    return JSONResponse({"ok": True, "folio": folio})
+
+
+# ---------------------------------------------------------------------------
+# CUENTAS DE CLIENTE (el icono de persona del menú)
+#   /api/cuenta/crear    nombre y WhatsApp; correo y duda opcionales
+#   /api/cuenta/entrar   nombre y WhatsApp -> sesión de 180 días
+#   /api/cuenta          sus datos y sus pedidos (con el token)
+# Sin contraseña, como pidió Gabriel: para entrar hay que dar el WhatsApp y el
+# nombre con que se registró. Solo con el número no basta, así nadie saca
+# nombres probando números. "Mis pedidos" muestra solo lo que se pidió con la
+# sesión abierta.
+# ---------------------------------------------------------------------------
+DURACION_CUENTA = 180 * 24 * 3600
+CUENTAS_POR_IP = 5      # cuentas nuevas por IP cada 10 minutos
+ENTRADAS_POR_IP = 10    # intentos de entrar por IP cada 10 minutos
+_PALABRAS_VACIAS = {"de", "del", "la", "las", "los", "y", "e", "da", "van", "von"}
+
+
+def _llave_cuenta(sello: str) -> str:
+    return (os.environ.get("SESION_SECRETO") or "") + "|cuenta|" + sello
+
+
+def token_cuenta(cid: int, sello: str) -> str:
+    dato = f"c{cid}.{int(time.time()) + DURACION_CUENTA}"
+    return dato + "." + _firma(dato, _llave_cuenta(sello))
+
+
+def _whatsapp(valor) -> str:
+    """Los 10 dígitos del número, aunque lo escriban con +52, 521, espacios o guiones."""
+    d = re.sub(r"\D", "", texto(valor, 40))
+    if len(d) == 13 and d.startswith("521"):
+        d = d[3:]
+    elif len(d) == 12 and d.startswith("52"):
+        d = d[2:]
+    return d if len(d) == 10 else ""
+
+
+def _palabras(nombre: str) -> set[str]:
+    sin_acentos = "".join(c for c in unicodedata.normalize("NFKD", nombre.lower())
+                          if not unicodedata.combining(c))
+    return {w for w in re.findall(r"[a-zñ]+", sin_acentos) if len(w) > 1 and w not in _PALABRAS_VACIAS}
+
+
+def _mismo_nombre(escrito: str, guardado: str) -> bool:
+    """Basta una palabra en común ("Juan" contra "Juan Pérez López"), sin
+    importar mayúsculas ni acentos."""
+    return bool(_palabras(escrito) & _palabras(guardado))
+
+
+async def cuenta_de(request: Request) -> dict | None:
+    """La cuenta del token que trae la petición, o None."""
+    token = token_de(request)
+    if token.count(".") != 2 or not token.startswith("c"):
+        return None
+    cid, vence, firma = token.split(".")
+    if not cid[1:].isdigit() or not vence.isdigit() or int(vence) < time.time():
+        return None
+    filas = await almacen.consulta(
+        "SELECT id, correo, sello, nombre, negocio, telefono, cliente_id FROM cuentas WHERE id = ?",
+        (int(cid[1:]),))
+    if not filas or not hmac.compare_digest(firma, _firma(cid + "." + vence, _llave_cuenta(filas[0][2]))):
+        return None
+    f = filas[0]
+    return {"id": int(f[0]), "correo": f[1] or "", "nombre": f[3], "negocio": f[4] or "",
+            "telefono": f[5] or "", "cliente_id": f[6]}
+
+
+def _perfil(c: dict) -> dict:
+    return {"nombre": c["nombre"], "negocio": c["negocio"], "correo": c["correo"], "telefono": c["telefono"]}
+
+
+async def _cuenta_por_whatsapp(telefono: str):
+    return await almacen.consulta(
+        "SELECT id, sello, nombre, negocio, correo, telefono, cliente_id FROM cuentas WHERE telefono = ?",
+        (telefono,))
+
+
+def _sesion(f) -> JSONResponse:
+    perfil = {"nombre": f[2], "negocio": f[3] or "", "correo": f[4] or "", "telefono": f[5]}
+    return JSONResponse({"token": token_cuenta(int(f[0]), f[1]), "perfil": perfil})
+
+
+@app.post("/api/cuenta/crear")
+async def cuenta_crear(request: Request):
+    if "application/json" not in (request.headers.get("content-type") or ""):
+        return JSONResponse({"error": "formato"}, status_code=415)
+    cuerpo = await _cuerpo(request)
+    if texto(cuerpo.get("sitio_web"), 100):
+        return JSONResponse({"error": "no_disponible"}, status_code=400)
+    nombre = sin_formula(" ".join(texto(cuerpo.get("nombre"), 120).split()))
+    negocio = sin_formula(" ".join(texto(cuerpo.get("negocio"), 120).split()))
+    if len(nombre) < 2 or not _palabras(nombre):
+        return JSONResponse({"error": "nombre"}, status_code=400)
+    telefono = _whatsapp(cuerpo.get("telefono"))
+    if not telefono:
+        return JSONResponse({"error": "telefono_invalido"}, status_code=400)
+    correo = texto(cuerpo.get("correo"), 120).lower()
+    if correo and not CORREO_VALIDO.match(correo):
+        return JSONResponse({"error": "correo_invalido"}, status_code=400)
+    if not cupo(ip_de(request), CUENTAS_POR_IP, "a:"):
+        return muy_intentos()
+    fecha = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+    try:
+        previa = await _cuenta_por_whatsapp(telefono)
+        if previa:
+            # Ya tenía cuenta: si el nombre coincide, entra; si no, que inicie sesión.
+            if _mismo_nombre(nombre, previa[0][2]):
+                return _sesion(previa[0])
+            return JSONResponse({"error": "cuenta_existe"}, status_code=409)
+        await alta_cliente(nombre, negocio, correo, telefono)
+        cliente = await _cliente_de(correo, telefono)
+        sello = os.urandom(24).hex()
+        cid = await almacen.inserta(
+            "INSERT INTO cuentas (fecha, telefono, nombre, correo, negocio, sello, cliente_id)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id",
+            (fecha, telefono, nombre, correo, negocio, sello, cliente))
+    except Exception as e:  # noqa: BLE001
+        if "unique" in str(e).lower():
+            return JSONResponse({"error": "cuenta_existe"}, status_code=409)
+        print(f"[cuenta] no se pudo crear: {e}", flush=True)
+        return JSONResponse({"error": "no_disponible"}, status_code=503)
+    suma(hoy(), ["evento:cuenta"])
+    return _sesion((cid, sello, nombre, negocio, correo, telefono))
+
+
+@app.post("/api/cuenta/entrar")
+async def cuenta_entrar(request: Request):
+    ip = ip_de(request)
+    if not cupo(ip, ENTRADAS_POR_IP, "e:"):
+        return muy_intentos()
+    cuerpo = await _cuerpo(request)
+    telefono = _whatsapp(cuerpo.get("telefono"))
+    nombre = texto(cuerpo.get("nombre"), 120)
+    try:
+        filas = await _cuenta_por_whatsapp(telefono) if telefono else []
+    except Exception as e:  # noqa: BLE001
+        print(f"[cuenta] no se pudo leer: {e}", flush=True)
+        return JSONResponse({"error": "no_disponible"}, status_code=503)
+    # Misma respuesta y misma espera si el número no existe o si el nombre no
+    # coincide: así no se sabe qué números tienen cuenta.
+    if not filas or not _mismo_nombre(nombre, filas[0][2]):
+        await asyncio.sleep(0.8)
+        return JSONResponse({"error": "datos_incorrectos"}, status_code=401)
+    return _sesion(filas[0])
+
+
+@app.get("/api/cuenta")
+async def cuenta_ver(request: Request):
+    cuenta = await cuenta_de(request)
+    if not cuenta:
+        return JSONResponse({"error": "sesion_vencida"}, status_code=401)
+    filas = await almacen.consulta(
+        "SELECT folio, fecha, lineas, total FROM pedidos WHERE cuenta_id = ? ORDER BY id DESC LIMIT 30",
+        (cuenta["id"],))
+    pedidos = []
+    for folio, fecha, lineas, total in filas:
+        try:
+            ls = json.loads(lineas or "[]")
+        except ValueError:
+            ls = []
+        pedidos.append({
+            "folio": folio, "fecha": fecha, "total": total,
+            "lineas": [{"nombre": l.get("nombre"), "v": l.get("v"), "u": l.get("u"), "qty": l.get("qty")}
+                       for l in ls if isinstance(l, dict)],
+        })
+    return JSONResponse({"perfil": _perfil(cuenta), "pedidos": pedidos})
+
+
+# "Más vendidos" de la tienda: productos ordenados por cuántos pedidos los
+# llevan. Solo ids, sin cantidades ni datos de nadie. Se recalcula cada 10 min.
+_POPULARES = {"t": 0.0, "ids": []}
+
+
+@app.get("/api/populares")
+async def populares():
+    if time.time() - _POPULARES["t"] < 600:
+        return JSONResponse({"ids": _POPULARES["ids"]})
+    try:
+        filas = await almacen.consulta("SELECT lineas FROM pedidos ORDER BY id DESC LIMIT 3000")
+    except Exception:  # noqa: BLE001
+        filas = []
+    cuenta: dict[str, int] = {}
+    for (lineas,) in filas:
+        try:
+            ls = json.loads(lineas or "[]")
+        except ValueError:
+            continue
+        for pid in {l.get("id") for l in ls if isinstance(l, dict) and isinstance(l.get("id"), str)}:
+            cuenta[pid] = cuenta.get(pid, 0) + 1
+    ids = [k for k, _ in sorted(cuenta.items(), key=lambda x: -x[1])][:100]
+    _POPULARES.update(t=time.time(), ids=ids)
+    return JSONResponse({"ids": ids})
+
 
 def sin_sesion() -> JSONResponse:
     return JSONResponse({"error": "sesion_vencida"}, status_code=401)
@@ -1342,11 +1843,11 @@ async def admin_registros(request: Request):
         return sin_sesion()
     try:
         filas = await almacen.consulta(
-            "SELECT id, fecha, nombre, correo, telefono, necesidad, pagina, fuente "
+            "SELECT id, fecha, nombre, correo, telefono, necesidad, pagina, fuente, negocio "
             "FROM registros ORDER BY id DESC LIMIT 5000")
     except Exception:  # noqa: BLE001
         return JSONResponse({"error": "sin_base"}, status_code=503)
-    campos = ("id", "fecha", "nombre", "correo", "telefono", "necesidad", "pagina", "fuente")
+    campos = ("id", "fecha", "nombre", "correo", "telefono", "necesidad", "pagina", "fuente", "negocio")
     return JSONResponse({"almacen": almacen.tipo, "registros": [dict(zip(campos, f)) for f in filas]})
 
 
@@ -1360,6 +1861,87 @@ async def admin_registros_borrar(request: Request):
         return JSONResponse({"error": "id"}, status_code=400)
     await almacen.ejecuta("DELETE FROM registros WHERE id = ?", (rid,))
     return JSONResponse({"ok": True})
+
+
+CAMPOS_CLIENTE = ("id", "fecha", "titular", "negocio", "telefono", "correo", "factura", "razon_social", "rfc",
+                  "domicilio_fiscal", "uso_cfdi", "regimen_fiscal", "csf_fecha", "csf_nombre", "csf_tipo")
+
+
+@app.get("/api/admin/clientes")
+async def admin_clientes(request: Request):
+    if not token_valido(token_de(request)):
+        return sin_sesion()
+    try:
+        filas = await almacen.consulta(
+            "SELECT " + ", ".join(CAMPOS_CLIENTE) + " FROM clientes ORDER BY id DESC LIMIT 5000")
+        cuentas = await almacen.consulta(
+            "SELECT cliente_id, COUNT(*), SUM(total), MAX(fecha) FROM pedidos WHERE cliente_id IS NOT NULL GROUP BY cliente_id")
+    except Exception:  # noqa: BLE001
+        return JSONResponse({"error": "sin_base"}, status_code=503)
+    compras = {int(c[0]): {"pedidos": int(c[1]), "total": round(float(c[2] or 0), 2), "ultimo": c[3]} for c in cuentas}
+    clientes = []
+    for f in filas:
+        c = dict(zip(CAMPOS_CLIENTE, f))
+        c["factura"] = bool(c["factura"])
+        c["uso_cfdi_txt"] = USOS_CFDI.get(c["uso_cfdi"] or "", "")
+        c["regimen_txt"] = REGIMENES.get(c["regimen_fiscal"] or "", "")
+        c.update(compras.get(int(c["id"]), {"pedidos": 0, "total": 0, "ultimo": None}))
+        clientes.append(c)
+    return JSONResponse({"almacen": almacen.tipo, "clientes": clientes})
+
+
+@app.get("/api/admin/clientes/{cid}/constancia")
+async def admin_constancia(cid: int, request: Request):
+    if not token_valido(token_de(request)):
+        return sin_sesion()
+    filas = await almacen.consulta("SELECT csf, csf_tipo, csf_nombre FROM clientes WHERE id = ?", (cid,))
+    if not filas or not filas[0][0]:
+        return JSONResponse({"error": "sin_archivo"}, status_code=404)
+    datos, tipo, nombre = filas[0]
+    extension = {"application/pdf": ".pdf", "image/jpeg": ".jpg", "image/png": ".png"}.get(tipo, "")
+    return Response(bytes(datos), media_type=tipo or "application/octet-stream", headers={
+        "Content-Disposition": 'attachment; filename="' + ident(nombre, 80) + extension + '"',
+        "Cache-Control": "no-store",
+    })
+
+
+@app.post("/api/admin/clientes/borrar")
+async def admin_clientes_borrar(request: Request):
+    cuerpo = await _cuerpo(request)
+    if not token_valido(token_de(request, cuerpo)):
+        return sin_sesion()
+    cid = cuerpo.get("id")
+    if not isinstance(cid, int) or cid < 1:
+        return JSONResponse({"error": "id"}, status_code=400)
+    # Sus pedidos se quedan (son ventas), solo pierden la liga al cliente.
+    await almacen.ejecuta("UPDATE pedidos SET cliente_id = NULL WHERE cliente_id = ?", (cid,))
+    await almacen.ejecuta("UPDATE cuentas SET cliente_id = NULL WHERE cliente_id = ?", (cid,))
+    await almacen.ejecuta("DELETE FROM clientes WHERE id = ?", (cid,))
+    return JSONResponse({"ok": True})
+
+
+@app.get("/api/admin/pedidos")
+async def admin_pedidos(request: Request, cliente: int = 0):
+    if not token_valido(token_de(request)):
+        return sin_sesion()
+    campos = ("id", "fecha", "folio", "cliente_id", "nombre", "negocio", "correo", "telefono", "lineas", "total", "notas")
+    try:
+        if cliente:
+            filas = await almacen.consulta(
+                "SELECT " + ", ".join(campos) + " FROM pedidos WHERE cliente_id = ? ORDER BY id DESC LIMIT 1000", (cliente,))
+        else:
+            filas = await almacen.consulta("SELECT " + ", ".join(campos) + " FROM pedidos ORDER BY id DESC LIMIT 2000")
+    except Exception:  # noqa: BLE001
+        return JSONResponse({"error": "sin_base"}, status_code=503)
+    pedidos = []
+    for f in filas:
+        p = dict(zip(campos, f))
+        try:
+            p["lineas"] = json.loads(p["lineas"] or "[]")
+        except ValueError:
+            p["lineas"] = []
+        pedidos.append(p)
+    return JSONResponse({"almacen": almacen.tipo, "pedidos": pedidos})
 
 
 @app.post("/api/admin/metricas/reiniciar")
@@ -1504,6 +2086,23 @@ TIPOS = {
     ".xml": "application/xml; charset=utf-8",
     ".txt": "text/plain; charset=utf-8",
 }
+
+
+# Solo en la computadora: el cobro (php/checkout.php) corre en PHP, como en
+# Hostinger. Con PHP_LOCAL=http://127.0.0.1:8090 (php -S) este servidor le
+# pasa las peticiones a /php/*.php y todo el sitio se prueba en un solo lugar.
+# En Render no está definido: /php/ da 404 y pagar.html avisa que el pago en
+# línea llega pronto.
+@app.api_route("/php/{archivo}", methods=["GET", "POST"])
+async def php_local(archivo: str, request: Request):
+    destino = os.environ.get("PHP_LOCAL", "")
+    if not destino or os.environ.get("MODO_LOCAL") != "1" or not re.fullmatch(r"[a-z-]+\.php", archivo) or archivo.startswith("_"):
+        return HTMLResponse("No encontrado", status_code=404)
+    async with httpx.AsyncClient(timeout=60) as cliente:
+        r = await cliente.request(
+            request.method, f"{destino}/php/{archivo}", params=request.query_params, content=await request.body(),
+            headers={k: v for k, v in request.headers.items() if k.lower() in ("content-type", "authorization")})
+    return Response(r.content, status_code=r.status_code, media_type=r.headers.get("content-type"))
 
 
 @app.get("/{ruta:path}")

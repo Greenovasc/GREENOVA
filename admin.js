@@ -16,7 +16,6 @@
 
   var LLAVE_SESION = "greenova.panel.token";
   var LLAVE_USUARIO = "greenova.panel.usuario";
-  var MIN_PIEZAS = 10000;  /* pedido mínimo por omisión (igual que MIN_PIEZAS en main.py) */
   var $ = function (id) { return document.getElementById(id); };
 
   /* Copia de trabajo: se edita esto, no el catálogo que el sitio ya cargó. */
@@ -271,13 +270,9 @@
           '<input type="text" data-c="nombre" value="' + esc(p.nombre) + '"></div>' +
         '<div><span class="campo">Categoría</span>' +
           '<select data-c="cat">' + opcionesCat(p.cat) + "</select></div>" +
-        /* Los que se venden en línea tienen precio por pieza en cada medida
-           (bloque de abajo); el precio por caja solo aplica a los de cotización. */
-        (p.venta
-          ? '<div><span class="campo">Precio</span><p class="adm__sub">Por pieza, en cada medida ↓</p></div>'
-          : '<div><span class="campo">Precio por caja (MXN)</span>' +
-              '<input type="number" min="0" step="0.01" data-c="precio" placeholder="Cotizar" value="' +
-                (p.precio == null ? "" : p.precio) + '"></div>') +
+        /* Feedback final: precio por paquete y por caja, IVA incluido, en
+           cada medida (bloque de abajo). */
+        '<div><span class="campo">Precios</span><p class="adm__sub">Por paquete y por caja, IVA incluido, en cada medida ↓</p></div>' +
         '<div><button class="btn btn--ghost btn--sm" type="button" data-accion="borrar">' +
           '<span class="btn__label">Quitar</span></button></div>' +
       "</div>" +
@@ -288,20 +283,17 @@
         '<label><span class="campo">Descripción</span>' +
           '<textarea data-c="desc">' + esc(p.desc || "") + "</textarea></label>" +
         '<div>' +
-          /* Tope inferior de 1,000 al editar (Gabriel, 2026-09-24). No se
-             fuerza sobre lo que ya existe: 3 productos traen 300 del catálogo. */
-          '<label><span class="campo">Piezas por caja (mínimo 1,000)</span>' +
-            '<input type="number" min="1000" step="1000" data-c="p" value="' + (p.p || "") + '"></label>' +
-          '<label style="margin-top:.7rem"><span class="campo">Imagen (nombre del archivo)</span>' +
+          '<label><span class="campo">Uso</span>' +
+            '<input type="text" data-c="uso" value="' + esc(p.uso || "") + '" placeholder="Bebida fría o caliente"></label>' +
+          '<label style="margin-top:.7rem"><span class="campo">Foto principal (nombre del archivo)</span>' +
             '<input type="text" data-c="img" value="' + esc(p.img || "") + '"></label>' +
         "</div>" +
         '<div>' +
           '<span class="campo">Materiales</span>' +
           '<div class="ficha__mats">' + materialesHTML(p) + "</div>" +
-          '<label style="margin-top:.7rem"><span class="campo">Sello (opcional)</span>' +
-            '<input type="text" data-c="sello" value="' + esc(p.sello || "") + '" placeholder="SEDEMA"></label>' +
+          /* Personalización solo en lo que sí se puede imprimir (Feedback, pág. 13). */
           '<label class="marca" style="margin-top:.7rem">' +
-            '<input type="checkbox" data-c="destacado"' + (p.destacado ? " checked" : "") + "> Destacado</label>" +
+            '<input type="checkbox" data-c="personalizable"' + (p.personalizable ? " checked" : "") + "> Se puede personalizar (serigrafía)</label>" +
         "</div>" +
       "</div>" +
 
@@ -320,13 +312,11 @@
     return el;
   }
 
-  /* Precio por pieza, pedido mínimo y código por cada medida. Si un producto
-     no tiene `venta`, se vende por caja y bajo cotización: esto es aparte, no
-     lo reemplaza. La línea es el material (la misma lista que valida
-     LINEAS_VENTA en main.py); antes solo ofrecía Papel/PET/Kraft y los
-     productos de PLA, bagazo, etc. se veían como "Ninguna". */
+  /* Por cada medida: piezas y precio por paquete y por caja, boca, las
+     especificaciones, el código y su foto. La línea es el material principal
+     (la misma lista que valida LINEAS_VENTA en main.py). */
   function opcionesLinea(sel) {
-    return [["", "No — solo cotización por caja"]]
+    return [["", "No se vende en la tienda"]]
       .concat(Object.keys(datos.materiales).map(function (m) { return [m, "Sí — " + datos.materiales[m]]; }))
       .map(function (l) {
         return '<option value="' + l[0] + '"' + (l[0] === (sel || "") ? " selected" : "") + ">" + l[1] + "</option>";
@@ -340,7 +330,7 @@
     if (!p.venta) return;
     var n = p.v.length;
     var tam = (p.venta.tam || []).slice(0, n);
-    while (tam.length < n) tam.push({ precio: null, min: MIN_PIEZAS, sku: null });
+    while (tam.length < n) tam.push({ paq: null, caja: null, pPaq: null, pCaja: null, boca: null, esp: null, sku: null, img: null });
     p.venta.tam = tam;
   }
 
@@ -353,7 +343,7 @@
     if (activa) sincronizarTam(p);
     var agotadas = p.agotadas || [];
     return '<div class="ficha__venta">' +
-      '<label><span class="campo">¿Se vende en línea con precio por pieza?</span>' +
+      '<label><span class="campo">Material principal (venta en la tienda)</span>' +
         '<select data-c="venta-linea">' + opcionesLinea(activa ? p.venta.linea : "") + "</select></label>" +
       '<div class="ficha__tam">' +
         p.v.map(function (etiqueta, i) {
@@ -364,13 +354,14 @@
             '<label><span class="campo">Medida</span>' +
               '<input type="text" data-med="v" data-i="' + i + '" value="' + esc(etiqueta) + '"></label>' +
             (activa
-              ? '<label><span class="campo">Precio por pieza (MXN)</span>' +
-                  '<input type="number" min="0" step="0.01" data-tam="precio" data-i="' + i + '" placeholder="Sin precio" value="' +
-                    (t.precio == null ? "" : t.precio) + '"></label>' +
-                '<label><span class="campo">Pedido mínimo (piezas)</span>' +
-                  '<input type="number" min="1" step="1000" data-tam="min" data-i="' + i + '" value="' + (t.min || MIN_PIEZAS) + '"></label>' +
-                '<label><span class="campo">Código (SKU)</span>' +
-                  '<input type="text" data-tam="sku" data-i="' + i + '" value="' + esc(t.sku || "") + '"></label>'
+              ? campoTam("Piezas por paquete", "paq", i, t.paq, "number", "1") +
+                campoTam("Precio paquete (MXN)", "pPaq", i, t.pPaq, "number", "0.01") +
+                campoTam("Piezas por caja", "caja", i, t.caja, "number", "1") +
+                campoTam("Precio caja (MXN)", "pCaja", i, t.pCaja, "number", "0.01") +
+                campoTam("Boca (mm)", "boca", i, t.boca, "number", "1") +
+                campoTam("Especificaciones", "esp", i, t.esp, "text") +
+                campoTam("Código (SKU)", "sku", i, t.sku, "text") +
+                campoTam("Foto de esta medida", "img", i, t.img, "text")
               : "") +
             '<label class="marca ficha__agotada"><input type="checkbox" data-med="agotado" data-i="' + i + '"' +
               (agotada ? " checked" : "") + "> Agotado</label>" +
@@ -380,6 +371,12 @@
       '<button class="btn btn--ghost btn--sm ficha__agregar" type="button" data-accion="agregar-medida">' +
         '<span class="btn__label">+ Agregar medida</span></button>' +
     "</div>";
+  }
+
+  function campoTam(texto, clave, i, valor, tipo, paso) {
+    return '<label><span class="campo">' + texto + '</span><input type="' + tipo + '"' +
+      (paso ? ' min="0" step="' + paso + '"' : "") + ' data-tam="' + clave + '" data-i="' + i + '" value="' +
+      esc(valor == null ? "" : valor) + '"></label>';
   }
 
   /* Reconstruye solo esta ficha (no todo `pintar()`) para no perder el
@@ -421,9 +418,7 @@
       if (estado === "agotados" && !pr.agotado && !(p.agotadas && p.agotadas.length)) return false;
       if (estado === "ofertas" && !pr.desc) return false;
       if (estado === "sin-precio") {
-        var sinPrecio = p.venta
-          ? p.venta.tam.some(function (t) { return t.precio == null; })
-          : p.precio == null;
+        var sinPrecio = !p.venta || p.venta.tam.some(function (t) { return t.pPaq == null && t.pCaja == null; });
         if (!sinPrecio) return false;
       }
       return true;
@@ -445,7 +440,7 @@
       var pr = datos.promos[p.id] || {};
       if (pr.agotado || (p.agotadas && p.agotadas.length)) agotados++;
       if (pr.desc) ofertas++;
-      if (p.venta ? p.venta.tam.some(function (t) { return t.precio != null; }) : p.precio != null) conPrecio++;
+      if (p.venta && p.venta.tam.some(function (t) { return t.pPaq != null || t.pCaja != null; })) conPrecio++;
       if (p.venta) enLinea++;
     });
     var pendientes = Object.keys(sucios).length;
@@ -467,17 +462,11 @@
 
     var campo = e.target.dataset.c;
     if (campo) {
-      if (campo === "precio") {
-        var n = parseFloat(e.target.value);
-        p.precio = isNaN(n) || n <= 0 ? null : n;
-      } else if (campo === "p") {
-        var caja = parseInt(e.target.value, 10);
-        p.p = isNaN(caja) || caja <= 0 ? null : Math.max(1000, caja);
-      } else if (campo === "v") {
+      if (campo === "v") {
         p.v = e.target.value.split("\n").map(function (l) { return l.trim(); })
                 .filter(function (l) { return l; });
-      } else if (campo === "destacado") {
-        p.destacado = e.target.checked;
+      } else if (campo === "personalizable") {
+        p.personalizable = e.target.checked;
       } else {
         p[campo] = e.target.value;
       }
@@ -513,14 +502,14 @@
       var iTam = parseInt(e.target.dataset.i, 10);
       var entrada = p.venta.tam[iTam];
       if (!entrada) return;
-      if (campoTam === "precio") {
+      if (campoTam === "pPaq" || campoTam === "pCaja") {
         var np = parseFloat(e.target.value);
-        entrada.precio = isNaN(np) || np <= 0 ? null : np;
-      } else if (campoTam === "min") {
-        var nm = parseInt(e.target.value, 10);
-        entrada.min = isNaN(nm) || nm < 1 ? MIN_PIEZAS : nm;
-      } else if (campoTam === "sku") {
-        entrada.sku = e.target.value.trim() || null;
+        entrada[campoTam] = isNaN(np) || np <= 0 ? null : np;
+      } else if (campoTam === "paq" || campoTam === "caja" || campoTam === "boca") {
+        var ne = parseInt(e.target.value, 10);
+        entrada[campoTam] = isNaN(ne) || ne <= 0 ? null : ne;
+      } else {
+        entrada[campoTam] = e.target.value.trim() || null;
       }
       marcarSucio(id);
       return;
@@ -568,12 +557,6 @@
     }
   });
 
-  /* Piezas por caja: al salir del campo, lo que quedó abajo de 1,000 sube a 1,000. */
-  $("lista").addEventListener("change", function (e) {
-    if (e.target.dataset.c !== "p" || !e.target.value) return;
-    if (parseInt(e.target.value, 10) < 1000) e.target.value = 1000;
-  });
-
   $("lista").addEventListener("click", function (e) {
     var mas = e.target.closest('[data-accion="agregar-medida"]');
     if (mas) {
@@ -609,8 +592,10 @@
     var id = "nuevo-" + n;
     datos.productos.unshift({
       id: id, nombre: "Producto nuevo", cat: datos.categorias[0].id,
-      mat: [], img: "", p: null, desc: "", v: ["Estándar"], precio: null
+      mat: [], img: "foto-pendiente", uso: "", desc: "", v: ["Estándar"],
+      venta: { linea: Object.keys(datos.materiales)[0], tam: [] }
     });
+    sincronizarTam(datos.productos[0]);
     nuevos[id] = true;
     sucios[id] = true;
     $("buscar").value = ""; $("filtro-cat").value = ""; $("filtro-estado").value = "";
