@@ -2045,16 +2045,12 @@ a.pcard__media { cursor: pointer; }
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   padding: 4cqi 1.8cqi; text-align: center;
 }
+/* Todo el eslogan del mismo tamaño y "GreeNova" un poco más grande (Gabriel, 2026-09-29). */
 .hero-foto__titulo {
   margin: 0; color: #fff; font-family: var(--font-display); font-weight: 700;
-  line-height: .95; letter-spacing: -.03em;
+  font-size: 3.7cqi; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance;
 }
-.hero-foto__titulo small { font-size: 3.2cqi; vertical-align: .9em; margin-right: .1em; }
-.hero-foto__titulo em {
-  font-style: normal; font-size: 7.4cqi; letter-spacing: -.045em; color: var(--accent);
-}
-.hero-foto__titulo span { display: block; margin-top: .45em; font-size: 2.9cqi; letter-spacing: -.02em; }
-.hero-foto__titulo b { color: var(--accent); font-weight: inherit; }
+.hero-foto__titulo b { display: inline-block; color: var(--accent); font-weight: inherit; font-size: 1.2em; }
 .hero-foto__lede {
   margin: 1.4cqi 0 0; max-width: 24ch;
   font-size: clamp(.9rem, 1.35cqi, 1.2rem); font-weight: 500; line-height: 1.45;
@@ -2079,9 +2075,7 @@ a.pcard__media { cursor: pointer; }
 @media (max-width: 1000px) {
   .hero-foto__img { aspect-ratio: 1350 / 958; object-fit: cover; object-position: 0 50%; }
   .hero-foto__txt { position: static; padding: 1.8rem 1.4rem 2rem; }
-  .hero-foto__titulo small { font-size: clamp(1.4rem, 5cqi, 2rem); }
-  .hero-foto__titulo em { font-size: clamp(3.2rem, 13cqi, 5.4rem); }
-  .hero-foto__titulo span { font-size: clamp(1.35rem, 5.2cqi, 2.2rem); }
+  .hero-foto__titulo { font-size: clamp(1.9rem, 8.5cqi, 3rem); }
   .hero-foto__lede { margin-top: 1rem; }
   .hero-foto__acciones { margin-top: 1.5rem; }
 }
@@ -3010,9 +3004,9 @@ div.cat--info { cursor: default; }
 
 /* ---------- pie: mapa chiquito junto a "Información" ----------
    Toda la caja es un enlace a Google Maps (el mapa no recibe clics). */
-.foot__grid { grid-template-columns: minmax(0, 1.3fr) repeat(3, minmax(0, 1fr)); }
+.foot__grid { grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(0, .9fr)) minmax(0, 1.3fr); }
 .foot__mapa-caja {
-  position: relative; display: block; height: 150px; overflow: hidden;
+  position: relative; display: block; height: 210px; overflow: hidden;
   border-radius: 14px; border: 1px solid rgba(245, 249, 244, .18); background: rgba(245, 249, 244, .06);
 }
 .foot__mapa-caja iframe { display: block; width: 100%; height: 100%; border: 0; pointer-events: none; filter: saturate(.75); }
@@ -3188,5 +3182,5 @@ div.cat--info { cursor: default; }
   .recibo__papel, .recibo__papel * { visibility: visible !important; }
   .recibo__papel { position: absolute; left: 0; top: 0; width: 80mm; box-shadow: none; -webkit-mask: none; mask: none; animation: none !important; translate: none !important; }
 }
-@media (max-width: 760px) { .foot__grid { grid-template-columns: 1fr; } .foot__mapa-caja { max-width: 420px; } }
+@media (max-width: 760px) { .foot__grid { grid-template-columns: 1fr; } .foot__mapa-caja { max-width: 480px; height: 220px; } }
 .info-head, .pago-head { overflow: hidden; }
