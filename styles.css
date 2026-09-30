@@ -2033,49 +2033,55 @@ a.pcard__media { cursor: pointer; }
    foto va arriba y el texto abajo, en el mismo tono oscuro de la foto. */
 .portada { padding-top: clamp(12px, 1.6vw, 20px); background: var(--bg); }
 .hero-foto {
-  --oscuro: #15100e;
   position: relative; overflow: hidden; container-type: inline-size;
   border-radius: clamp(18px, 2.2vw, 30px);
-  background: var(--oscuro); color: #fff;
+  background: var(--forest); color: var(--brand-ink);
   box-shadow: 0 24px 60px rgba(22, 44, 37, .16);
 }
 .hero-foto__img { display: block; width: 100%; height: auto; aspect-ratio: 2000 / 958; }
 .hero-foto__txt {
-  position: absolute; inset: 0 0 0 67.75%;
+  position: absolute; inset: 0 0 0 67.55%;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   padding: 4cqi 1.8cqi; text-align: center;
+  /* La franja oscura de la foto, teñida de Pine Tail: solo colores de la guía. */
+  background: rgba(50, 98, 82, .86);
 }
-/* Todo el eslogan del mismo tamaño y "GreeNova" un poco más grande (Gabriel, 2026-09-29). */
+/* Todo el eslogan del mismo tamaño y "GreeNova" un poco más grande (Gabriel,
+   2026-09-29). Porcelain y Willow Green sobre Pine Tail. */
 .hero-foto__titulo {
-  margin: 0; color: #fff; font-family: var(--font-display); font-weight: 700;
-  font-size: 3.7cqi; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance;
+  margin: 0; color: var(--brand-ink); font-family: var(--font-display); font-weight: 700;
+  font-size: 4.25cqi; line-height: 1.06; letter-spacing: -.03em; text-wrap: balance;
 }
-.hero-foto__titulo b { display: inline-block; color: var(--accent); font-weight: inherit; font-size: 1.2em; }
+.hero-foto__titulo b { display: inline-block; color: var(--accent); font-weight: inherit; font-size: 1.16em; }
 .hero-foto__lede {
   margin: 1.4cqi 0 0; max-width: 24ch;
   font-size: clamp(.9rem, 1.35cqi, 1.2rem); font-weight: 500; line-height: 1.45;
-  color: rgba(245, 249, 244, .84);
+  color: var(--brand-ink);
 }
 .hero-foto__acciones {
   display: flex; flex-direction: column; align-items: stretch; gap: 10px;
   width: min(100%, 330px); margin-top: 2.6cqi;
 }
 .hero-foto__acciones .btn { justify-content: center; }
-.hero-foto .hero-search--gn { width: 100%; border-color: transparent; background: #fff; box-shadow: 0 10px 30px rgba(0, 0, 0, .3); }
-.hero-foto .hero-search--gn:focus-within { border-color: var(--accent); background: #fff; }
+.hero-foto .hero-search--gn { width: 100%; border-color: transparent; background: var(--bg); box-shadow: 0 10px 30px rgba(22, 44, 37, .3); }
+.hero-foto .hero-search--gn:focus-within { border-color: var(--accent); background: var(--bg); }
 .hero-foto .hero-search--gn input { color: var(--ink); font-size: .92rem; min-width: 0; }
-.hero-foto .hero-search--gn input::placeholder { color: var(--ink-3); }
+.hero-foto .hero-search--gn input::placeholder { color: var(--ink); }
 .hero-foto .hero-search--gn input::-webkit-search-cancel-button { filter: none; }
 .hero-foto .hero-search--gn button { background: var(--forest); color: #fff; }
-.hero-foto .hero-search--gn button:hover { background: var(--forest-deep); }
+.hero-foto .hero-search--gn button:hover { background: var(--sage); }
+.hero-foto .btn--acento { color: var(--forest); }
+.hero-foto .btn--acento:hover { background: var(--bg); color: var(--forest); }
 .btn--acento { background: var(--accent); color: var(--accent-ink); }
 .btn--acento:hover { background: var(--accent-soft); transform: translateY(-2px); }
+
+@media (max-width: 1180px) { .hero-foto .hero-search--gn input { font-size: .84rem; } }
 
 /* Cuadro angosto: la foto (solo la parte clara) arriba y el texto abajo. */
 @media (max-width: 1000px) {
   .hero-foto__img { aspect-ratio: 1350 / 958; object-fit: cover; object-position: 0 50%; }
-  .hero-foto__txt { position: static; padding: 1.8rem 1.4rem 2rem; }
-  .hero-foto__titulo { font-size: clamp(1.9rem, 8.5cqi, 3rem); }
+  .hero-foto__txt { position: static; padding: 1.8rem 1.4rem 2rem; background: var(--forest); }
+  .hero-foto__titulo { font-size: clamp(2.1rem, 9.6cqi, 3.3rem); }
   .hero-foto__lede { margin-top: 1rem; }
   .hero-foto__acciones { margin-top: 1.5rem; }
 }
