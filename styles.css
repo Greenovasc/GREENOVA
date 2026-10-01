@@ -2566,8 +2566,9 @@ body[data-locked="true"] .agente__lanzador { opacity: 0; pointer-events: none; }
 /* ---------- redes sociales (landing y pie) ----------
    Como la de WeCare: fotos un poco giradas que pasan solas en carrusel
    (Gabriel, 2026-09-30). La pista lleva la lista dos veces y se recorre la
-   mitad, así el giro no tiene corte. Se detiene con el cursor encima y no se
-   mueve si el sistema pide menos movimiento (entonces se desliza a mano). */
+   mitad, así el giro no tiene corte. Sigue girando aunque el cursor esté
+   encima (Gabriel lo pidió así); solo se queda quieto si el sistema pide
+   menos movimiento (entonces se desliza a mano). */
 .redes { background: var(--surface); text-align: center; overflow: hidden; }
 .redes__head h2 { margin: 0; }
 .redes__head p { margin: .7rem auto 0; max-width: 46ch; color: var(--ink-2); }
@@ -2577,7 +2578,6 @@ body[data-locked="true"] .agente__lanzador { opacity: 0; pointer-events: none; }
           mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
 .redes__pista { display: flex; width: max-content; animation: redes-giro 60s linear infinite; }
-.redes__carrusel:hover .redes__pista { animation-play-state: paused; }
 .redes__fila {
   display: flex; align-items: center; gap: clamp(12px, 1.4vw, 20px);
   margin: 0; padding: 22px clamp(6px, .7vw, 10px); list-style: none;
