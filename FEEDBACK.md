@@ -135,3 +135,8 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
 - **Síguenos en Instagram:** las fotos pasan solas en carrusel y se detienen con el cursor. El botón y el ícono del pie llevan a instagram.com/greenovasc. **Por confirmar con Gabriel que esa sea la cuenta.**
 - **Ubicación:** sección a pantalla completa debajo de la cotización, con el mapa de Google en una mitad y la frase "Desde la Ciudad de México, a todo el país." en la otra. En la landing reemplaza al mapa chiquito del pie; las demás páginas lo conservan.
 - **Menú Productos:** "Papel y bolsas" ahora tiene su propia columna (4 columnas).
+
+### Corrección del mismo día
+
+- Gabriel: la foto de la portada no se usa en ningún otro lado. Se quitaron sus recortes de las tarjetas de "Nuestros productos" y del carrusel de Instagram.
+- Las tarjetas vuelven a su foto de estudio, con el mismo efecto al pasar el cursor, hasta tener las 5 fotos de cafetería hechas con Gemini. Las referencias y los prompts están en `~/Desktop/Fotos Greenova para Gemini/Faltan por hacer/Tarjetas de Nuestros productos/`.

@@ -3004,7 +3004,8 @@ div.cat--info { cursor: default; }
   .cat:hover .cat__foto img { scale: 1.06; }
 }
 /* Al pasar el cursor, la foto de estudio cambia por una de ambiente en
-   cafetería (Gabriel, 2026-09-30). */
+   cafetería (Gabriel, 2026-09-30). Las fotos se hacen con Gemini y aún no
+   están; la de la portada no se reutiliza. */
 .cat__foto { position: relative; }
 .cat .cat__foto .cat__amb {
   position: absolute; inset: 0; opacity: 0;
