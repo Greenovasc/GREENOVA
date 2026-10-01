@@ -1465,7 +1465,7 @@ body[data-locked="true"] { overflow: hidden; }
 .mega[data-open="true"] { opacity: 1; translate: 0 0; pointer-events: auto; }
 
 .mega__inner { padding-block: 26px 20px; }
-.mega__cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 40px; max-width: 980px; }
+.mega__cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px 36px; max-width: 1240px; }
 
 .mega__col h3 {
   font-family: var(--font-body);
@@ -2041,7 +2041,7 @@ a.pcard__media { cursor: pointer; }
 }
 .hero-foto__img { display: block; width: 100%; height: auto; aspect-ratio: 2000 / 958; }
 .hero-foto__txt {
-  position: absolute; inset: 0 0 0 67.75%;
+  position: absolute; inset: 0 0 0 68.8%;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   padding: 4cqi 1.8cqi; text-align: center;
 }
@@ -2075,7 +2075,7 @@ a.pcard__media { cursor: pointer; }
 
 /* Cuadro angosto: la foto (solo la parte clara) arriba y el texto abajo. */
 @media (max-width: 1000px) {
-  .hero-foto__img { aspect-ratio: 1350 / 958; object-fit: cover; object-position: 0 50%; }
+  .hero-foto__img { aspect-ratio: 1370 / 958; object-fit: cover; object-position: 0 50%; }
   .hero-foto__txt { position: static; padding: 1.8rem 1.4rem 2rem; }
   .hero-foto__titulo { font-size: clamp(2.1rem, 9.6cqi, 3.3rem); }
   .hero-foto__lede { margin-top: 1rem; }
@@ -2564,30 +2564,41 @@ body[data-locked="true"] .agente__lanzador { opacity: 0; pointer-events: none; }
 .bienv__ignorar:hover { color: var(--bv-texto); }
 
 /* ---------- redes sociales (landing y pie) ----------
-   Como la de WeCare: fotos en abanico, un poco giradas. El botón queda
-   apagado hasta tener la liga de la cuenta. */
+   Como la de WeCare: fotos un poco giradas que pasan solas en carrusel
+   (Gabriel, 2026-09-30). La pista lleva la lista dos veces y se recorre la
+   mitad, así el giro no tiene corte. Se detiene con el cursor encima y no se
+   mueve si el sistema pide menos movimiento (entonces se desliza a mano). */
 .redes { background: var(--surface); text-align: center; overflow: hidden; }
 .redes__head h2 { margin: 0; }
 .redes__head p { margin: .7rem auto 0; max-width: 46ch; color: var(--ink-2); }
+.redes__carrusel {
+  margin: clamp(1.6rem, 3.2vw, 2.4rem) 0 clamp(1.2rem, 2.6vw, 1.8rem);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.redes__pista { display: flex; width: max-content; animation: redes-giro 60s linear infinite; }
+.redes__carrusel:hover .redes__pista { animation-play-state: paused; }
 .redes__fila {
-  display: flex; justify-content: center; align-items: center; gap: clamp(8px, 1.2vw, 16px);
-  margin: clamp(1.8rem, 3.5vw, 2.6rem) 0 clamp(1.4rem, 3vw, 2rem);
+  display: flex; align-items: center; gap: clamp(12px, 1.4vw, 20px);
+  margin: 0; padding: 22px clamp(6px, .7vw, 10px); list-style: none;
 }
 .redes__foto {
-  flex: 0 0 auto; width: clamp(120px, 13vw, 176px); aspect-ratio: 1; overflow: hidden;
+  flex: 0 0 auto; width: clamp(150px, 15vw, 210px); aspect-ratio: 1; overflow: hidden;
   border-radius: 18px; box-shadow: 0 14px 30px rgba(18, 40, 33, .16);
   transition: rotate .3s var(--ease), translate .3s var(--ease);
 }
-.redes__foto img { width: 100%; height: 100%; object-fit: cover; }
-.redes__foto:nth-child(odd) { rotate: -5deg; translate: 0 10px; }
-.redes__foto:nth-child(even) { rotate: 4deg; translate: 0 -8px; }
+.redes__foto img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.redes__foto:nth-child(odd) { rotate: -4deg; translate: 0 8px; }
+.redes__foto:nth-child(even) { rotate: 3deg; translate: 0 -6px; }
 .redes__foto:hover { rotate: 0deg; translate: 0 -4px; }
+@keyframes redes-giro { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .redes__carrusel { overflow-x: auto; scrollbar-width: none; }
+  .redes__pista { animation: none; }
+  .redes__fila[aria-hidden="true"] { display: none; }
+}
 .redes__cta { margin: 0; }
 .btn[aria-disabled="true"] { opacity: .75; cursor: default; pointer-events: none; }
-@media (max-width: 760px) {
-  .redes__fila { justify-content: flex-start; overflow-x: auto; padding: 14px 4px; scrollbar-width: none; }
-  .redes__fila::-webkit-scrollbar { display: none; }
-}
 .foot__redes-t { margin: 1.4rem 0 .6rem; font-size: .9rem; font-weight: 600; color: var(--brand-ink); }
 .foot__redes { display: flex; gap: 8px; }
 .foot__red {
@@ -2992,6 +3003,14 @@ div.cat--info { cursor: default; }
   .cat:hover .cat__barra { background: var(--forest-deep); }
   .cat:hover .cat__foto img { scale: 1.06; }
 }
+/* Al pasar el cursor, la foto de estudio cambia por una de ambiente en
+   cafetería (Gabriel, 2026-09-30). */
+.cat__foto { position: relative; }
+.cat .cat__foto .cat__amb {
+  position: absolute; inset: 0; opacity: 0;
+  transition: opacity .45s var(--ease), scale .5s var(--ease);
+}
+.cat:hover .cat__foto .cat__amb, .cat:focus-visible .cat__foto .cat__amb { opacity: 1; }
 
 /* La página baja como una landing normal (Gabriel, 2026-09-29): todo ya está
    en su lugar al hacer scroll. Nada aparece de a poco, ni sube, ni se
@@ -3002,7 +3021,7 @@ div.cat--info { cursor: default; }
 .pago-paso[hidden] { display: none; }
 /* "Papel y bolsas" va debajo de "Barra y servicio": tres columnas parejas y
    ninguna despegada (Gabriel, 2026-09-29). */
-.mega__col .mega__sub { margin-top: 18px; }
+/* "Papel y bolsas" ya tiene su propia columna (Gabriel, 2026-09-30). */
 
 /* ---------- pie: mapa chiquito junto a "Información" ----------
    Toda la caja es un enlace a Google Maps (el mapa no recibe clics). */
@@ -3186,3 +3205,39 @@ div.cat--info { cursor: default; }
 }
 @media (max-width: 760px) { .foot__grid { grid-template-columns: 1fr; } .foot__mapa-caja { max-width: 480px; height: 220px; } }
 .info-head, .pago-head { overflow: hidden; }
+
+/* ---------- 2026-09-30: ubicación al final de la landing ----------
+   Debajo de la cotización, a pantalla completa: mitad mapa de Google, mitad
+   frase (Gabriel, 2026-09-30). Fondo Porcelain entre el verde de la
+   cotización y el del pie. En la landing sustituye al mapa chiquito del pie. */
+.ubica {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-height: clamp(420px, 62vh, 580px); background: var(--bg);
+}
+.ubica__mapa { position: relative; min-height: 320px; background: var(--tint-sage); }
+.ubica__mapa iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: saturate(.8); }
+.ubica__txt {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 6vw, 6rem);
+}
+.ubica__ceja {
+  display: inline-flex; align-items: center; gap: 8px; margin: 0 0 1rem;
+  font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--sage);
+}
+.ubica__ceja .ico { width: 18px; height: 18px; color: var(--forest); }
+.ubica__txt h2 {
+  margin: 0; max-width: 14ch; color: var(--heading); font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.04; letter-spacing: -.03em; text-wrap: balance;
+}
+.ubica__txt h2 span { display: block; color: var(--sage); }
+.ubica__txt > p:not(.ubica__ceja) { margin: 1.2rem 0 0; max-width: 42ch; font-size: clamp(1rem, 1.3vw, 1.12rem); line-height: 1.6; color: var(--ink); }
+.ubica__acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: clamp(1.6rem, 3vw, 2.2rem); }
+.ubica__wa .ico { color: var(--forest); }
+@media (max-width: 860px) {
+  .ubica { grid-template-columns: 1fr; min-height: 0; }
+  .ubica__mapa { min-height: 300px; }
+  .ubica__acciones .btn { flex: 1 1 100%; justify-content: center; }
+}
+/* El pie de la landing ya no lleva mapa: tres columnas. */
+.foot__grid.foot__grid--sin-mapa { grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr)); }
+@media (max-width: 760px) { .foot__grid.foot__grid--sin-mapa { grid-template-columns: 1fr; } }

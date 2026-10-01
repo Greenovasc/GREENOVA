@@ -127,3 +127,11 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
 - A la foto se le quitaron el texto pegado ("se sirve en Grinova"), el logo blanco, el botón "Ver empaques" y la marca "texto texto" de la pared.
 - Encima, en la franja oscura: "El futuro se sirve en GreeNova.", "Empaque biodegradable para tu negocio de comida.", "¿Qué empaque necesitas?" (abre el asistente) e "Ir a la tienda".
 - En celular, la foto va arriba y el texto abajo.
+
+## Ronda 11 (2026-09-30)
+
+- **Portada:** queda igual, pero con la foto nueva de Gemini (pizarrón sin logo). A la foto se le quitaron el texto pegado (traía "Grimova", "biodegradabe" y "comda"), el logo blanco y el botón.
+- **Nuestros productos:** al pasar el cursor, cada tarjeta cambia a una foto de ambiente en cafetería. Bebidas, Contenedores, Bowls y Complementos son recortes de la foto de la portada; Bolsas usa la foto de bolsas con "Your logo".
+- **Síguenos en Instagram:** las fotos pasan solas en carrusel y se detienen con el cursor. El botón y el ícono del pie llevan a instagram.com/greenovasc. **Por confirmar con Gabriel que esa sea la cuenta.**
+- **Ubicación:** sección a pantalla completa debajo de la cotización, con el mapa de Google en una mitad y la frase "Desde la Ciudad de México, a todo el país." en la otra. En la landing reemplaza al mapa chiquito del pie; las demás páginas lo conservan.
+- **Menú Productos:** "Papel y bolsas" ahora tiene su propia columna (4 columnas).
