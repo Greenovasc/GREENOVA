@@ -139,4 +139,4 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
 ### Corrección del mismo día
 
 - Gabriel: la foto de la portada no se usa en ningún otro lado. Se quitaron sus recortes de las tarjetas de "Nuestros productos" y del carrusel de Instagram.
-- Las tarjetas vuelven a su foto de estudio, con el mismo efecto al pasar el cursor, hasta tener las 5 fotos de cafetería hechas con Gemini. Las referencias y los prompts están en `~/Desktop/Fotos Greenova para Gemini/Faltan por hacer/Tarjetas de Nuestros productos/`.
+- Las tarjetas vuelven a su foto de estudio, con el mismo efecto al pasar el cursor, hasta tener las 5 fotos de cafetería hechas con Gemini. Las referencias y los prompts están en `~/Desktop/Fotos Greenova para Gemini/Faltan por hacer/Fotos de ambiente para la landing/` (9 fotos, un prompt por foto; 01-05 tarjetas, 06-09 carrusel de Instagram).
