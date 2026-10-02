@@ -149,3 +149,4 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
 - "GreeNova." ya no se parte en dos renglones en pantallas muy angostas.
 - Gabriel (2026-10-01): mientras el Excel diga que esas piezas existen (cualquier hoja), las 5 tarjetas se quedan como están. La foto de Gemini de la bolsa kraft (con "Eat Better") en una panadería ya aparece en la tarjeta de Bolsas (`assets/landing/cafe-bolsas.webp`).
 - Gabriel no quiere archivos TXT: los prompts se le escriben en el chat.
+- (2026-10-02) Ya están las 5 fotos de cafetería de las tarjetas: contenedor con helado, ensaladera con ensalada y smoothie en vaso PET con domo (`cafe-contenedores`, `cafe-bowls`, `cafe-complementos`).
