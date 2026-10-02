@@ -147,3 +147,5 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
 - Gabriel: "no hay que usar las mismas ni repetirlas, se ve barato". El carrusel de Instagram ya no repite fotos de las tarjetas: entran vaso kraft, vaso doble pared negro y tapa negra.
 - Servicios: las 3 fotos de "YOUR LOGO" se ven baratas. Los prompts y referencias para las nuevas están en la carpeta de Gemini (10 a 12) y usan el símbolo de GreeNova en vez de "YOUR LOGO".
 - "GreeNova." ya no se parte en dos renglones en pantallas muy angostas.
+- Gabriel (2026-10-01): mientras el Excel diga que esas piezas existen (cualquier hoja), las 5 tarjetas se quedan como están. La foto de Gemini de la bolsa kraft (con "Eat Better") en una panadería ya aparece en la tarjeta de Bolsas (`assets/landing/cafe-bolsas.webp`).
+- Gabriel no quiere archivos TXT: los prompts se le escriben en el chat.
