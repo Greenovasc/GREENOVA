@@ -140,3 +140,10 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
 
 - Gabriel: la foto de la portada no se usa en ningún otro lado. Se quitaron sus recortes de las tarjetas de "Nuestros productos" y del carrusel de Instagram.
 - Las tarjetas vuelven a su foto de estudio, con el mismo efecto al pasar el cursor, hasta tener las 5 fotos de cafetería hechas con Gemini. Las referencias y los prompts están en `~/Desktop/Fotos Greenova para Gemini/Faltan por hacer/Fotos de ambiente para la landing/` (9 fotos, un prompt por foto; 01-05 tarjetas, 06-09 carrusel de Instagram).
+
+## Ronda 12 (2026-10-01)
+
+- La foto de Gemini de Bebidas (vaso con fajilla GreeNova y frappé con domo) ya aparece al pasar el cursor por la tarjeta (`assets/landing/cafe-bebidas.webp`).
+- Gabriel: "no hay que usar las mismas ni repetirlas, se ve barato". El carrusel de Instagram ya no repite fotos de las tarjetas: entran vaso kraft, vaso doble pared negro y tapa negra.
+- Servicios: las 3 fotos de "YOUR LOGO" se ven baratas. Los prompts y referencias para las nuevas están en la carpeta de Gemini (10 a 12) y usan el símbolo de GreeNova en vez de "YOUR LOGO".
+- "GreeNova." ya no se parte en dos renglones en pantallas muy angostas.

@@ -2050,6 +2050,7 @@ a.pcard__media { cursor: pointer; }
   margin: 0; color: #fff; font-family: var(--font-display); font-weight: 700;
   font-size: 4.25cqi; line-height: 1.06; letter-spacing: -.03em; text-wrap: balance;
 }
+.hero-foto__marca { white-space: nowrap; }
 .hero-foto__titulo b { display: inline-block; color: var(--accent); font-weight: inherit; font-size: 1.16em; }
 .hero-foto__lede {
   margin: 1.4cqi 0 0; max-width: 24ch;
