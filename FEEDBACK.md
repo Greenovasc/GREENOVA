@@ -234,3 +234,10 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
 - (2026-10-03) Primera foto con comida, la 05 (doble pared con latte). Gemini la entregó como 3 paneles verticales. Se separaron y se recortaron en cuadrado de cerca (vapor, arte latte y la parte de arriba del vaso). Extender los lados del vaso completo dejaba marcas falsas.
   - Quedó en `assets/uso/vaso-papel-doble-pared-{blanco,negro,generico}.webp`, con una foto por color en `FOTOS_USO` (claves "id|Negro" e "id|Genérico").
   - Si otra foto llega en paneles, se hace igual.
+- (2026-10-03) Gabriel: "no le pongas 'Ideal para'; es para que lo sepa el agente, no para que lo vean los clientes". Se quitó de la ficha. La guía de usos sigue en el asistente y en el buscador de la tienda.
+- "Las imágenes parecen que cambian de tamaño". Se midió el producto en cada foto con Vision de macOS (`VNGenerateForegroundInstanceMaskRequest`, script en el scratchpad).
+  - Se igualaron 34 fotos de estudio: el producto ocupa la misma área que el vaso de papel blanco de la portada (raíz de alto × ancho ≈ 0.63) y nunca más de 0.80 del lado.
+  - Se recortaron desde la original en alta resolución cuando la había. Las que ya eran grandes (almeja, rebanada de pastel, domo, cono) quedaron igual.
+  - Rutas de la tienda y la ficha con `?v=20261003n`.
+- "Cuando el cursor le dé clic, cambie de color a azul y después a gris". Ahora las tarjetas con varias fotos cambian a la siguiente con cada clic en la foto (rojo → azul → gris), con puntitos abajo. El nombre y "Comprar ahora" siguen llevando a la ficha.
+- "No pongas las que te pasé hasta que te dé las definitivas". Se retiraron las fotos del latte (05) y `FOTOS_USO` quedó vacío. La original se guardó como borrador en `Listas/Fotos con comida`.

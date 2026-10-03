@@ -585,10 +585,6 @@ window.GREENOVA_AGENTE = (function () {
      Mientras un producto no tenga la suya, se usa su foto de estudio.
      --------------------------------------------------------------------- */
   var FOTOS_USO = {
-    /* 05 · vaso de doble pared con latte (una foto por color) */
-    "vaso-papel-doble-pared": { f: "vaso-papel-doble-pared-blanco", alt: "Latte con arte en vaso de papel de doble pared blanco." },
-    "vaso-papel-doble-pared|Negro": { f: "vaso-papel-doble-pared-negro", alt: "Latte con arte en vaso de papel de doble pared negro." },
-    "vaso-papel-doble-pared|Genérico": { f: "vaso-papel-doble-pared-generico", alt: "Latte con arte en vaso de papel de doble pared con estampado verde." }
   };
 
   /* Preguntas sugeridas que aparecen al abrir el chat. */

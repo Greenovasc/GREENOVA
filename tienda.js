@@ -58,7 +58,7 @@
   function src(name) {
     var path = "assets/prod/" + name + ".webp";
     /* ?v= obliga al navegador a bajar la foto nueva si se reemplazó */
-    return (window.GN_ASSETS && window.GN_ASSETS[path]) || path + "?v=20260927b";
+    return (window.GN_ASSETS && window.GN_ASSETS[path]) || path + "?v=20261003n";
   }
 
   function esc(s) {
@@ -545,10 +545,25 @@
     /* La foto con comida (FOTOS_USO), si ya la tiene: sale al pasar el cursor,
        como en las tarjetas de la portada. */
     var amb = agente().fotoUso ? agente().fotoUso(p.id) : null;
+    /* Varias fotos (un color o un modelo por medida): con cada clic en la foto
+       cambia a la siguiente, sin salir de la tienda (Gabriel, 2026-10-03: "que
+       cambie de color a azul y después a gris"). El nombre y el botón siguen
+       llevando a la ficha. */
+    var fotos = [p.img];
+    (p.venta ? p.venta.tam : []).forEach(function (t) {
+      if (t.img && fotos.indexOf(t.img) === -1) fotos.push(t.img);
+    });
+    var varias = fotos.length > 1;
     return '' +
       '<article class="pcard pcard--info rv" data-d="' + (i % 4) + '" data-id="' + p.id + '">' +
-        '<a class="pcard__media" href="' + url + '" aria-label="Ver ' + esc(p.nombre) + '">' +
+        (varias
+          ? '<a class="pcard__media pcard__media--fotos" href="' + url + '" data-fotos="' + fotos.join(",") + '" data-i="0"' +
+              ' aria-label="' + esc(p.nombre) + ': toca para ver la siguiente foto (' + fotos.length + ')">'
+          : '<a class="pcard__media" href="' + url + '" aria-label="Ver ' + esc(p.nombre) + '">') +
           '<img src="' + src(p.img) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async">' +
+          (varias ? '<span class="pcard__puntos" aria-hidden="true">' + fotos.map(function (f, k) {
+            return '<i' + (k === 0 ? ' class="on"' : "") + "></i>";
+          }).join("") + "</span>" : "") +
           (amb ? '<img class="pcard__amb" src="' + amb.src + '" alt="" loading="lazy" decoding="async">' : "") +
           (promo && promo.desc ? '<span class="pcard__flag pcard__flag--off">-' + promo.desc + "%</span>" : "") +
           (agotadas.length === p.v.length || (promo && promo.agotado) ? '<span class="pcard__out">Agotado</span>' : "") +
@@ -1072,6 +1087,30 @@
   }
 
   }   /* fin del bloque de catálogo */
+
+  /* Foto de la tarjeta con varias fotos: cada clic pasa a la siguiente (rojo,
+     azul, gris…). Con Ctrl o Cmd abre la ficha como cualquier enlace. */
+  document.addEventListener("click", function (e) {
+    var m = e.target.closest(".pcard__media--fotos");
+    if (!m || e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
+    e.preventDefault();
+    var fotos = m.dataset.fotos.split(",");
+    var i = (Number(m.dataset.i) + 1) % fotos.length;
+    m.dataset.i = i;
+    var img = m.querySelector("img:not(.pcard__amb)");
+    if (img) img.src = src(fotos[i]);
+    Array.prototype.forEach.call(m.querySelectorAll(".pcard__puntos i"), function (p, k) {
+      p.classList.toggle("on", k === i);
+    });
+  });
+  /* Las demás fotos se precargan al acercar el cursor, para que el cambio
+     sea inmediato. */
+  document.addEventListener("pointerover", function (e) {
+    var m = e.target.closest && e.target.closest(".pcard__media--fotos:not([data-pre])");
+    if (!m) return;
+    m.setAttribute("data-pre", "");
+    m.dataset.fotos.split(",").forEach(function (f) { var im = new Image(); im.src = src(f); });
+  });
 
   /* "Pedir cotización" de una tarjeta: en la misma página, el formulario
      "Envía tu lista" se llena con el producto y se baja a él. */

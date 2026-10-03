@@ -49,7 +49,7 @@
      pueda sustituirlas por data URIs en el archivo autocontenido. */
   function src(name) {
     var path = "assets/prod/" + name + ".webp";
-    return (window.GN_ASSETS && window.GN_ASSETS[path]) || path + "?v=20260927b";
+    return (window.GN_ASSETS && window.GN_ASSETS[path]) || path + "?v=20261003n";
   }
 
   /* ---------- producto inexistente: no dejamos la página en blanco ---------- */
@@ -99,7 +99,6 @@
   var AG = window.GREENOVA_AGENTE || {};
   function ambDe(i) { return AG.fotoUso ? AG.fotoUso(p.id, p.v[i]) : null; }
   var AMB = ambDe(INI);
-  var USOS = AG.usosDe ? AG.usosDe(p.id) : [];
 
   /* ======================= cabecera del documento ======================= */
   var SITIO = "https://www.greenovasc.com.mx";
@@ -215,11 +214,6 @@
       '<p class="eyebrow"><a href="tienda.html?cat=' + cat.id + '">' + esc(cat.nombre) + "</a></p>" +
       "<h1>" + esc(p.nombre) + "</h1>" +
       '<p class="ficha__lede">' + esc(p.desc) + "</p>" +
-      /* Los usos en los que este producto sale recomendado; cada uno abre la
-         tienda con la lista completa para ese uso. */
-      (USOS.length ? '<p class="ficha__usos"><span>Ideal para</span>' + USOS.map(function (g) {
-        return '<a href="tienda.html?q=' + encodeURIComponent(g.dice[0]) + '">' + esc(g.nombre) + "</a>";
-      }).join("") + "</p>" : "") +
 
       '<div class="ficha__bloque">' +
         '<p class="ficha__label" id="lbl-variante">' + (unica ? "Medida" : "Elige la medida") + ': ' +
