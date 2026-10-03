@@ -312,7 +312,7 @@
      haría un vendedor, con foto, medida y para qué sirve cada cosa. La tabla
      se edita en agente-criterios.js (GIROS y COTIZA). */
 
-  function tarjetaDe(r) {
+  function tarjetaDe(r, giro) {
     if (r.cotiza) {
       var c = (CFG.COTIZA || {})[r.cotiza];
       if (!c) return null;
@@ -327,7 +327,7 @@
     if (!p) return null;
     var k = CFG.medidaDe(p, r.v);
     var t = (p.venta && p.venta.tam && p.venta.tam[k]) || {};
-    var f = CFG.fotoUso(p.id, p.v[k]);
+    var f = CFG.fotoUso(p.id, p.v[k], giro);
     return {
       titulo: p.nombre, medida: r.v, por: r.por, cotiza: !tienePrecio(p),
       img: f ? f.src : "assets/prod/" + (t.img || p.img) + ".webp",
@@ -339,7 +339,7 @@
     var giro = CFG.usoDe ? CFG.usoDe(pregunta, true) : null;
     if (!giro) return null;
 
-    var tarjetas = giro.recs.map(tarjetaDe).filter(Boolean);
+    var tarjetas = giro.recs.map(function (r) { return tarjetaDe(r, giro.nombre); }).filter(Boolean);
     if (!tarjetas.length) return null;
     var enTienda = tarjetas.some(function (x) { return !x.cotiza; });
     var cotiza = tarjetas.some(function (x) { return x.cotiza; });

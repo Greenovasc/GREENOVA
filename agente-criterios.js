@@ -584,7 +584,41 @@ window.GREENOVA_AGENTE = (function () {
      de 4 oz sale con helado aunque el de 12 oz salga con café.
      Mientras un producto no tenga la suya, se usa su foto de estudio.
      --------------------------------------------------------------------- */
+  /* Al recomendar por negocio (GIROS), la foto con comida solo sale si va con
+     ese negocio: a una heladería no se le enseña un capuchino, ni el vaso del
+     consomé de la taquería sale con café. "giros" son los nombres de GIROS, o
+     su principio ("Oficinas" vale por "Oficinas, consultorios y hospitales").
+     Si no va, la tarjeta lleva la foto de estudio. En la tienda y en la ficha
+     la foto sale siempre. */
+  var CAFE = ["Cafetería", "Oficinas", "Hoteles", "Panadería", "Crepas", "Eventos", "Tiendas de conveniencia", "Negocio nuevo"];
+  var CAFE_TAPADO = CAFE.concat(["Tamales"]);   /* vaso con tapa: no se ve qué lleva */
+
   var FOTOS_USO = {
+    /* Las definitivas de Gabriel (2026-10-03). El número es el de su carpeta
+       "Fotos con comida (tienda y asistente)". Falta la 04 (vaso kraft). */
+    /* 01 y 02 · vaso de papel blanco: capuchino; el de 4 oz, con helado */
+    "vaso-papel-blanco": { f: "vaso-papel-blanco-capuchino", alt: "Capuchino con arte latte en vaso de papel blanco, junto a un croissant.", giros: CAFE },
+    "vaso-papel-blanco|4 oz": { f: "vaso-papel-blanco-helado", alt: "Helado de pistache y de fresa en vasos de papel blanco de 4 oz.", giros: ["Helado"] },
+    /* 03 · vaso de papel negro: americano */
+    "vaso-papel-negro": { f: "vaso-papel-negro-americano", alt: "Café americano recién servido en vaso de papel negro, con galletas.", giros: CAFE },
+    /* 05 · doble pared: los tres colores con latte */
+    "vaso-papel-doble-pared": { f: "vaso-papel-doble-pared-latte", alt: "Lattes en vasos de doble pared blanco, con estampado verde y negro.", giros: CAFE },
+    /* 06 · vaso de color de 44 oz: refresco */
+    "vaso-papel-color-44": { f: "vaso-papel-color-44-refresco", alt: "Refresco con hielo en vasos de papel rojo, azul y gris de 44 oz.", giros: ["Pizzería", "Hamburguesas", "Cine", "Tiendas de conveniencia", "Eventos", "Restaurantes", "Tacos", "Negocio nuevo"] },
+    /* 07 a 10 · tapas para vaso de papel */
+    "tapa-cafetera-62": { f: "tapa-cafetera-62-espresso", alt: "Vasos de 4 oz con tapa blanca y tapa negra, junto a una cafetera de espresso.", giros: CAFE_TAPADO },
+    "tapa-cafetera-80": { f: "tapa-cafetera-80-capuchino", alt: "Vaso de 8 oz con tapa negra, café caliente y una galleta.", giros: CAFE_TAPADO },
+    "tapa-cafetera-90": { f: "tapa-cafetera-90-desayuno", alt: "Vaso de café con tapa blanca de 3 óvalos, en un desayuno con pan y jugo.", giros: CAFE_TAPADO },
+    "tapa-papel-90": { f: "tapa-papel-90-chai", alt: "Té chai en vaso con tapa de papel blanca, con canela y anís estrella.", giros: CAFE_TAPADO },
+    /* 11 y 12 · complementos */
+    "fajilla-kraft": { f: "fajilla-kraft-capuchino", alt: "Mano sosteniendo un café para llevar con fajilla kraft.", giros: CAFE_TAPADO },
+    "removedor-madera": { f: "removedor-madera-cafe", alt: "Café con leche en vaso de papel con removedor de madera.", giros: CAFE },
+    /* 13 a 17 · vasos PET */
+    "vaso-pet-78": { f: "vaso-pet-78-fruta", alt: "Fruta picada con chile y limón en vasos PET.", giros: ["Fruta", "Escuelas", "Ensaladas", "Eventos"] },
+    "vaso-pet-92": { f: "vaso-pet-92-iced-latte", alt: "Iced latte en vaso PET transparente.", giros: ["Frappés", "Cafetería", "Negocio nuevo"] },
+    "vaso-pet-95": { f: "vaso-pet-95-limonadas", alt: "Agua de pepino con hierbabuena y limonada en vasos PET.", giros: ["Aguas", "Jugos", "Escuelas", "Hoteles", "Pizzería", "Tacos", "Restaurantes", "Eventos", "Sushi", "Negocio nuevo"] },
+    "vaso-pet-98": { f: "vaso-pet-98-licuado", alt: "Licuado de fresa con plátano en vaso PET.", giros: ["Jugos", "Frappés", "Crepas", "Negocio nuevo"] },
+    "vaso-pet-107": { f: "vaso-pet-107-michelada", alt: "Michelada escarchada con chile y limón en vaso PET de 32 oz.", giros: ["Micheladas", "Mariscos", "Cine"] }
   };
 
   /* Preguntas sugeridas que aparecen al abrir el chat. */
@@ -735,17 +769,35 @@ window.GREENOVA_AGENTE = (function () {
   }
 
   /* Foto con comida de un producto (y de su medida, si tiene una propia).
+     Con "giro" (el nombre de un renglón de GIROS) solo devuelve una foto que
+     vaya con ese negocio: la de la medida, o si la general no va, la de otra
+     medida que sí (el vaso blanco de 8 oz sale con helado en "Helado y nieve";
+     el de 4 oz para el agua de la oficina no sale con capuchino).
      Devuelve { src, alt } o null. */
-  function fotoUso(id, medida) {
+  function fotoUso(id, medida, giro) {
+    var claves = Object.keys(FOTOS_USO).filter(function (c) { return c.split("|")[0] === id; });
     var f = null;
     if (medida) {
-      Object.keys(FOTOS_USO).some(function (clave) {
-        var partes = clave.split("|");
-        if (partes[0] === id && partes[1] && medida.indexOf(partes[1]) === 0) { f = FOTOS_USO[clave]; return true; }
+      claves.some(function (c) {
+        var m = c.split("|")[1];
+        if (m && medida.indexOf(m) === 0) { f = FOTOS_USO[c]; return true; }
         return false;
       });
     }
     f = f || FOTOS_USO[id];
+    if (giro) {
+      var va = function (x) {
+        return !!x && (x.giros || []).some(function (g) { return giro.indexOf(g) === 0; });
+      };
+      if (!va(f)) {
+        var general = f === FOTOS_USO[id];
+        f = null;
+        if (general) claves.some(function (c) {
+          if (c.indexOf("|") !== -1 && va(FOTOS_USO[c])) { f = FOTOS_USO[c]; return true; }
+          return false;
+        });
+      }
+    }
     return f ? { src: "assets/uso/" + f.f + ".webp?v=" + (f.ver || "1"), alt: f.alt || "" } : null;
   }
 

@@ -3324,13 +3324,16 @@ div.cat--info { cursor: default; }
 .uso__item small { font-size: .8rem; color: var(--ink-2); }
 @media (max-width: 640px) { .uso { padding: 16px; } .uso__lista { grid-template-columns: 1fr; } }
 
-/* Tarjeta de la tienda: la foto con comida aparece al pasar el cursor. */
+/* Tarjeta de la tienda: la foto con comida es la última del ciclo de clics
+   (tienda.js pone .ver-uso); cubre la caja entera y no crece con el cursor. */
 .pcard__media .pcard__amb {
   top: 0; left: 0; width: 100%; height: 100%;
   object-fit: cover; filter: none; opacity: 0; z-index: 1;
-  transition: opacity .45s var(--ease);
+  transform: none; scale: 1; translate: 0;
+  transition: opacity .35s var(--ease);
 }
-.pcard:hover .pcard__media .pcard__amb, .pcard:focus-within .pcard__media .pcard__amb { opacity: 1; transform: none; scale: 1; translate: 0; }
+.pcard:hover .pcard__media .pcard__amb { transform: none; scale: 1; translate: 0; }
+.pcard__media.ver-uso .pcard__amb { opacity: 1; }
 
 /* Ficha: Producto / Así se ve servido. */
 .ficha__foto .ficha__amb {

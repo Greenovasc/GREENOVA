@@ -542,26 +542,27 @@
       p.mat.map(function (m) { return '<span class="tag tag--' + m + '">' + esc(MATS[m]) + "</span>"; }).join("") +
       (seCotiza(p) ? '<span class="tag tag--cotiza">Se cotiza</span>' : "");
     var url = "producto.html?id=" + p.id;
-    /* La foto con comida (FOTOS_USO), si ya la tiene: sale al pasar el cursor,
-       como en las tarjetas de la portada. */
+    /* Varias fotos (un color o un modelo por medida, y al final la foto con
+       comida de FOTOS_USO si ya la tiene): con cada clic en la foto cambia a la
+       siguiente, sin salir de la tienda (Gabriel, 2026-10-03: "que cambie de
+       color a azul y después a gris"). El nombre y el botón siguen llevando a
+       la ficha. La foto con comida ya no sale al pasar el cursor: tapaba el
+       cambio de color. */
     var amb = agente().fotoUso ? agente().fotoUso(p.id) : null;
-    /* Varias fotos (un color o un modelo por medida): con cada clic en la foto
-       cambia a la siguiente, sin salir de la tienda (Gabriel, 2026-10-03: "que
-       cambie de color a azul y después a gris"). El nombre y el botón siguen
-       llevando a la ficha. */
     var fotos = [p.img];
     (p.venta ? p.venta.tam : []).forEach(function (t) {
       if (t.img && fotos.indexOf(t.img) === -1) fotos.push(t.img);
     });
-    var varias = fotos.length > 1;
+    var total = fotos.length + (amb ? 1 : 0);
+    var varias = total > 1;
     return '' +
       '<article class="pcard pcard--info rv" data-d="' + (i % 4) + '" data-id="' + p.id + '">' +
         (varias
           ? '<a class="pcard__media pcard__media--fotos" href="' + url + '" data-fotos="' + fotos.join(",") + '" data-i="0"' +
-              ' aria-label="' + esc(p.nombre) + ': toca para ver la siguiente foto (' + fotos.length + ')">'
+              ' aria-label="' + esc(p.nombre) + ': toca para ver la siguiente foto (' + total + ')">'
           : '<a class="pcard__media" href="' + url + '" aria-label="Ver ' + esc(p.nombre) + '">') +
           '<img src="' + src(p.img) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async">' +
-          (varias ? '<span class="pcard__puntos" aria-hidden="true">' + fotos.map(function (f, k) {
+          (varias ? '<span class="pcard__puntos" aria-hidden="true">' + Array.apply(null, Array(total)).map(function (x, k) {
             return '<i' + (k === 0 ? ' class="on"' : "") + "></i>";
           }).join("") + "</span>" : "") +
           (amb ? '<img class="pcard__amb" src="' + amb.src + '" alt="" loading="lazy" decoding="async">' : "") +
@@ -695,7 +696,7 @@
         var p = prodDe(r.id);
         if (!p) return "";
         var k = A.medidaDe(p, r.v);
-        var f = A.fotoUso(p.id, p.v[k]);
+        var f = A.fotoUso(p.id, p.v[k], uso.nombre);
         nombre = p.nombre; medida = r.v;
         href = "producto.html?id=" + p.id + "&v=" + k;
         foto = f ? f.src : src(imgDe(p, p.v[k]));
@@ -1095,10 +1096,13 @@
     if (!m || e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
     e.preventDefault();
     var fotos = m.dataset.fotos.split(",");
-    var i = (Number(m.dataset.i) + 1) % fotos.length;
+    var conUso = !!m.querySelector(".pcard__amb");
+    var i = (Number(m.dataset.i) + 1) % (fotos.length + (conUso ? 1 : 0));
     m.dataset.i = i;
+    /* Después de las de estudio va la foto con comida (encima, a todo lo ancho). */
+    m.classList.toggle("ver-uso", i === fotos.length);
     var img = m.querySelector("img:not(.pcard__amb)");
-    if (img) img.src = src(fotos[i]);
+    if (img && i < fotos.length) img.src = src(fotos[i]);
     Array.prototype.forEach.call(m.querySelectorAll(".pcard__puntos i"), function (p, k) {
       p.classList.toggle("on", k === i);
     });

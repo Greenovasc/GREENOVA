@@ -241,3 +241,9 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
   - Rutas de la tienda y la ficha con `?v=20261003n`.
 - "Cuando el cursor le dé clic, cambie de color a azul y después a gris". Ahora las tarjetas con varias fotos cambian a la siguiente con cada clic en la foto (rojo → azul → gris), con puntitos abajo. El nombre y "Comprar ahora" siguen llevando a la ficha.
 - "No pongas las que te pasé hasta que te dé las definitivas". Se retiraron las fotos del latte (05) y `FOTOS_USO` quedó vacío. La original se guardó como borrador en `Listas/Fotos con comida`.
+- (2026-10-03) Llegaron las 16 fotos con comida definitivas: carpetas 01 a 03 y 05 a 17. Falta la 04 (vaso kraft, café de olla).
+  - Quedaron en `assets/uso/` (900 px, webp q82, sin recorte: Gabriel las mandó como definitivas). Ejemplos: `vaso-papel-blanco-capuchino`, `vaso-papel-blanco-helado` (clave "vaso-papel-blanco|4 oz"), `tapa-cafetera-62-espresso`, `vaso-pet-107-michelada`.
+  - La 05 nueva trae los tres vasos de doble pared juntos, así que es una sola foto para el producto. Las tres fotos del latte por color ya no se usan.
+  - **Tienda:** la foto con comida es la última del ciclo de clics de la tarjeta, después de los colores. Por ejemplo, el vaso de color de 44 oz va rojo → azul → gris → refresco. Ya no sale al pasar el cursor porque tapaba el cambio de color.
+  - **Ficha:** se ve con los botones Producto / Así se ve servido. El vaso blanco de 4 oz trae la foto de helado y las demás medidas, la del capuchino.
+  - **Asistente y recomendaciones por negocio:** cada foto lleva `giros` (los negocios donde va). Si no va con el negocio, la tarjeta lleva la foto de estudio. Así, una heladería ve el helado también en el vaso de 8 y 12 oz, y no ve capuchinos. El consomé de la taquería y el agua de la oficina tampoco salen con café.
