@@ -86,10 +86,20 @@
     var k = TAM.map(function (t) { return t.boca; }).indexOf(bocaPedida);
     if (k > -1) INI = k;
   }
+  /* ?v= viene de las recomendaciones por uso (asistente y tienda): abre la
+     ficha ya en la medida recomendada, p. ej. el vaso de 4 oz para helado. */
+  var vPedida = qs.get("v");
+  if (vPedida && /^\d+$/.test(vPedida) && Number(vPedida) < p.v.length) INI = Number(vPedida);
   while (INI < p.v.length - 1 && agotada(INI)) INI++;
   var promo = PROMOS[p.id];
 
   function imgDe(i) { return (TAM[i] && TAM[i].img) || p.img; }
+
+  /* Guía de usos y fotos con comida (agente-criterios.js). */
+  var AG = window.GREENOVA_AGENTE || {};
+  function ambDe(i) { return AG.fotoUso ? AG.fotoUso(p.id, p.v[i]) : null; }
+  var AMB = ambDe(INI);
+  var USOS = AG.usosDe ? AG.usosDe(p.id) : [];
 
   /* ======================= cabecera del documento ======================= */
   var SITIO = "https://www.greenovasc.com.mx";
@@ -149,10 +159,28 @@
     });
     var campo = document.getElementById("f-variante");
     document.getElementById("variante-actual").textContent = chip.dataset.v;
+    /* Si esa medida tiene su propia foto con comida, se cambia también. */
+    var amb = document.getElementById("ficha-amb");
+    var nueva = ambDe(Number(chip.dataset.i));
+    if (amb && nueva && amb.getAttribute("src") !== nueva.src) {
+      amb.setAttribute("src", nueva.src);
+      amb.setAttribute("alt", nueva.alt);
+    }
     if (campo && campo.value !== chip.dataset.v) {
       campo.value = chip.dataset.v;
       campo.dispatchEvent(new Event("change", { bubbles: true }));
     }
+  });
+
+  /* Producto / Así se ve servido. */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest(".ficha__vistas button");
+    if (!b) return;
+    Array.prototype.forEach.call(b.parentElement.children, function (x) {
+      x.setAttribute("aria-pressed", String(x === b));
+    });
+    var foto = document.querySelector(".ficha__foto");
+    if (foto) foto.dataset.vista = b.dataset.vista;
   });
 
   /* ======================= migas ======================= */
@@ -172,7 +200,14 @@
       '<div class="ficha__foto' + (p.fotoPropia ? " ficha__foto--propia" : "") + '">' +
         (promo && promo.desc ? '<span class="pcard__flag pcard__flag--off">-' + promo.desc + "%</span>" : "") +
         '<img data-role="foto" src="' + src(imgDe(INI)) + '" alt="' + esc(p.nombre) + '" width="900" height="900" fetchpriority="high">' +
+        (AMB ? '<img class="ficha__amb" id="ficha-amb" src="' + AMB.src + '" alt="' + esc(AMB.alt) + '" width="900" height="900" loading="lazy" decoding="async">' : "") +
       "</div>" +
+      /* Con foto con comida: dos botones para alternar entre el producto y
+         cómo se ve servido. */
+      (AMB ? '<div class="ficha__vistas" role="group" aria-label="Qué foto ver">' +
+               '<button type="button" data-vista="prod" aria-pressed="true">Producto</button>' +
+               '<button type="button" data-vista="uso" aria-pressed="false">Así se ve servido</button>' +
+             "</div>" : "") +
       '<p class="ficha__nota">Foto de referencia. El acabado puede variar según la medida.</p>' +
     "</div>" +
 
@@ -180,6 +215,11 @@
       '<p class="eyebrow"><a href="tienda.html?cat=' + cat.id + '">' + esc(cat.nombre) + "</a></p>" +
       "<h1>" + esc(p.nombre) + "</h1>" +
       '<p class="ficha__lede">' + esc(p.desc) + "</p>" +
+      /* Los usos en los que este producto sale recomendado; cada uno abre la
+         tienda con la lista completa para ese uso. */
+      (USOS.length ? '<p class="ficha__usos"><span>Ideal para</span>' + USOS.map(function (g) {
+        return '<a href="tienda.html?q=' + encodeURIComponent(g.dice[0]) + '">' + esc(g.nombre) + "</a>";
+      }).join("") + "</p>" : "") +
 
       '<div class="ficha__bloque">' +
         '<p class="ficha__label" id="lbl-variante">' + (unica ? "Medida" : "Elige la medida") + ': ' +

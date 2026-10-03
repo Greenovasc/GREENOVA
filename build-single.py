@@ -19,15 +19,17 @@ ROOT = pathlib.Path(__file__).parent
 DIST = ROOT / "dist"
 
 # pagina -> (archivo de salida, scripts que lleva, en ese orden)
-AGENTE = ["agente-criterios.js", "agente.js"]
+# agente-criterios.js va justo después de productos.js: la tienda y la ficha
+# leen de ahí la guía de usos y las fotos con comida al pintar.
+AGENTE = ["agente.js"]
 PAGES = {
-    "index.html":   ("greenova-landing.html", ["productos.js", "greenova.js"] + AGENTE),
-    "tienda.html":  ("greenova-tienda.html",  ["productos.js", "greenova.js", "tienda.js"] + AGENTE),
-    "ofertas.html": ("greenova-ofertas.html", ["productos.js", "greenova.js", "tienda.js"] + AGENTE),
+    "index.html":   ("greenova-landing.html", ["productos.js", "agente-criterios.js", "greenova.js"] + AGENTE),
+    "tienda.html":  ("greenova-tienda.html",  ["productos.js", "agente-criterios.js", "greenova.js", "tienda.js"] + AGENTE),
+    "ofertas.html": ("greenova-ofertas.html", ["productos.js", "agente-criterios.js", "greenova.js", "tienda.js"] + AGENTE),
     # La ficha se abre con ?id=; en el bundle también funciona porque el
     # parámetro sobrevive al abrir el archivo directo.
     "producto.html": ("greenova-producto.html",
-                      ["productos.js", "greenova.js", "producto.js", "tienda.js"] + AGENTE),
+                      ["productos.js", "agente-criterios.js", "greenova.js", "producto.js", "tienda.js"] + AGENTE),
 }
 
 MIME = {".webp": "image/webp", ".png": "image/png",

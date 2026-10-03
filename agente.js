@@ -77,6 +77,21 @@
       s.dice.slice(0, 6).join(", ") + " se refieren a " + s.es + ".";
   }));
 
+  /* La guía de usos (GIROS) también viaja a la IA, en prosa: así, aunque la
+     pregunta no use ninguna de las palabras de la tabla ("vendo cosas frías
+     en la playa"), la IA recomienda con el mismo criterio que el vendedor. */
+  CRITERIOS_IA = CRITERIOS_IA.concat((CFG.GIROS || []).map(function (g) {
+    return "Guía de usos, " + g.nombre + " (" + g.dice.slice(0, 5).join(", ") + "): " +
+      g.recs.map(function (r) {
+        if (r.cotiza) {
+          var c = (CFG.COTIZA || {})[r.cotiza];
+          return c ? c.nombre + ", " + c.v + ", se cotiza (" + r.por + ")" : "";
+        }
+        var p = PRODS.filter(function (x) { return x.id === r.id; })[0];
+        return p ? p.nombre + " " + r.v + " (" + r.por + ")" : "";
+      }).filter(Boolean).join("; ") + ".";
+  }));
+
   function expandir(pregunta) {
     var n = norm(pregunta);
     var extra = "";
@@ -249,48 +264,58 @@
     return p.v.length + " medidas";
   }
 
-  /* ======================= recomendación por giro =======================
+  /* ======================= recomendación por uso =======================
      Antes de buscar en el catálogo palabra por palabra, se revisa si la persona
-     está describiendo su negocio o su necesidad. Ahí no hay que buscar: hay que
-     recomendar, que es lo que haría un vendedor. La tabla se edita en
-     agente-criterios.js (GIROS). */
+     está describiendo su negocio o lo que va a servir ("vasos para helado",
+     "tengo una heladería"). Ahí no hay que buscar: hay que recomendar, como lo
+     haría un vendedor, con foto, medida y para qué sirve cada cosa. La tabla
+     se edita en agente-criterios.js (GIROS y COTIZA). */
 
-  var GIROS = (CFG.GIROS || []).map(function (g) {
+  function tarjetaDe(r) {
+    if (r.cotiza) {
+      var c = (CFG.COTIZA || {})[r.cotiza];
+      if (!c) return null;
+      var fc = CFG.fotoUso(r.cotiza);
+      return {
+        titulo: c.nombre, medida: c.v, por: r.por, cotiza: true,
+        img: fc ? fc.src : "assets/prod/" + c.img + ".webp",
+        enlace: "tienda.html?pide=" + encodeURIComponent(c.pide)
+      };
+    }
+    var p = PRODS.filter(function (x) { return x.id === r.id; })[0];
+    if (!p) return null;
+    var k = CFG.medidaDe(p, r.v);
+    var t = (p.venta && p.venta.tam && p.venta.tam[k]) || {};
+    var f = CFG.fotoUso(p.id, p.v[k]);
     return {
-      dice: g.dice.map(function (t) {
-        return new RegExp("(^| )" + norm(t) + "(e?s)?( |$)");
-      }),
-      intro: g.intro,
-      ids: g.ids
+      titulo: p.nombre, medida: r.v, por: r.por,
+      img: f ? f.src : "assets/prod/" + (t.img || p.img) + ".webp",
+      enlace: "producto.html?id=" + encodeURIComponent(p.id) + "&v=" + k
     };
-  });
+  }
 
   function respuestaGiro(pregunta) {
-    var n = norm(pregunta);
-    var giro = null;
-    for (var i = 0; i < GIROS.length && !giro; i++) {
-      for (var j = 0; j < GIROS[i].dice.length; j++) {
-        if (GIROS[i].dice[j].test(n)) { giro = GIROS[i]; break; }
-      }
-    }
+    var giro = CFG.usoDe ? CFG.usoDe(pregunta) : null;
     if (!giro) return null;
 
-    var prods = giro.ids.map(function (id) {
-      return PRODS.filter(function (p) { return p.id === id; })[0];
-    }).filter(Boolean);
-    if (!prods.length) return null;
-
-    var lista = prods.map(function (p) {
-      return p.nombre.toLowerCase() + (medida(p) ? " (" + medida(p) + ")" : "");
-    });
+    var tarjetas = giro.recs.map(tarjetaDe).filter(Boolean);
+    if (!tarjetas.length) return null;
+    var enTienda = tarjetas.some(function (x) { return !x.cotiza; });
+    var cotiza = tarjetas.some(function (x) { return x.cotiza; });
 
     return {
-      texto: giro.intro + " " + lista.slice(0, -1).join(", ") + " y " +
-             lista[lista.length - 1] + ". Los encuentras en la tienda por paquete o por caja. " +
-             "¿Cuántos necesitas de cada uno? También puedes marcar al " + TEL + ".",
-      fuente: "Recomendación",
-      enlace: "tienda.html?cat=" + prods[0].cat,
-      enlaceTexto: "Ver estos productos"
+      texto: giro.intro,
+      tarjetas: tarjetas,
+      pie: (enTienda ? "Lo de la tienda se compra por paquete o por caja. " : "") +
+           (cotiza ? "Lo que dice «se cotiza» lo pides con tu lista. " : "") +
+           "¿Cuántos necesitas de cada uno? También puedes marcar al " + TEL + ".",
+      /* Para la IA, si la plática sigue: la misma recomendación en palabras. */
+      memoria: giro.intro + " " + tarjetas.map(function (x) {
+        return x.titulo.toLowerCase() + " " + x.medida + (x.cotiza ? ", se cotiza" : "") + " (" + x.por + ")";
+      }).join("; "),
+      fuente: "Recomendación · " + giro.nombre,
+      enlace: enTienda ? "tienda.html?q=" + encodeURIComponent(giro.dice[0]) : null,
+      enlaceTexto: "Verlo todo en la tienda"
     };
   }
 
@@ -400,6 +425,40 @@
     var p = document.createElement("p");
     p.textContent = texto;
     el.appendChild(p);
+    if (extra && extra.tarjetas) {
+      el.classList.add("ag-msg--recs");
+      var ul = document.createElement("ul");
+      ul.className = "ag-recs";
+      extra.tarjetas.forEach(function (x) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.className = "ag-rec";
+        a.href = x.enlace;
+        var img = document.createElement("img");
+        img.src = x.img; img.alt = ""; img.width = 56; img.height = 56;
+        img.loading = "lazy"; img.decoding = "async";
+        var txt = document.createElement("span");
+        txt.className = "ag-rec__txt";
+        var b = document.createElement("b");
+        b.textContent = x.titulo;
+        var m = document.createElement("span");
+        m.className = "ag-rec__medida";
+        m.textContent = x.medida + (x.cotiza ? " · se cotiza" : "");
+        var por = document.createElement("span");
+        por.className = "ag-rec__por";
+        por.textContent = x.por;
+        txt.appendChild(b); txt.appendChild(m); txt.appendChild(por);
+        a.appendChild(img); a.appendChild(txt);
+        li.appendChild(a);
+        ul.appendChild(li);
+      });
+      el.appendChild(ul);
+    }
+    if (extra && extra.pie) {
+      var pie = document.createElement("p");
+      pie.textContent = extra.pie;
+      el.appendChild(pie);
+    }
     if (extra && extra.enlace) {
       var a = document.createElement("a");
       a.href = extra.enlace;
@@ -414,7 +473,13 @@
       el.appendChild(f);
     }
     hilo.appendChild(el);
-    hilo.scrollTop = hilo.scrollHeight;
+    /* Una recomendación con tarjetas es más alta que el chat: se deja a la
+       vista desde su primera línea, no desde el final. */
+    if (extra && extra.tarjetas) {
+      hilo.scrollTop += el.getBoundingClientRect().top - hilo.getBoundingClientRect().top - 12;
+    } else {
+      hilo.scrollTop = hilo.scrollHeight;
+    }
     return p;
   }
 
@@ -450,7 +515,7 @@
     var giro = respuestaGiro(texto);
     if (giro) {
       burbuja("bot", giro.texto, giro);
-      historial.push({ role: "assistant", content: giro.texto });
+      historial.push({ role: "assistant", content: giro.memoria });
       return;
     }
 

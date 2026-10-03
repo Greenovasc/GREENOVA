@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=20261003a">
+<link rel="stylesheet" href="styles.css?v=20261003b">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body data-modo="todo">
@@ -190,6 +190,20 @@
            ensaladeras, portavasos, bolsas…). El menú Productos llega aquí con
            ?pide= (Gabriel, 2026-10-03): se avisa que van por cotización y el
            formulario de abajo ya trae el producto escrito. -->
+      <!-- Búsqueda por uso ("vasos para helado", Gabriel 2026-10-03): qué le
+           sirve, con medida y para qué. Lo llena tienda.js con la tabla GIROS
+           de agente-criterios.js, la misma del asistente. -->
+      <div class="uso" id="uso" hidden>
+        <div class="uso__head">
+          <span class="pide__ico" aria-hidden="true"><svg class="ico"><use href="#i-sparkle"></use></svg></span>
+          <div>
+            <p class="uso__ceja">Recomendado para tu negocio</p>
+            <h3 id="uso-t"></h3>
+          </div>
+        </div>
+        <ul class="uso__lista" id="uso-lista"></ul>
+      </div>
+
       <div class="pide" id="pide" hidden>
         <span class="pide__ico" aria-hidden="true"><svg class="ico"><use href="#i-package"></use></svg></span>
         <div class="pide__txt">
@@ -381,12 +395,12 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="productos.js?v=20260927c"></script>
+<script src="agente-criterios.js?v=20261003b"></script>
 <script src="cuenta.js?v=20260929b"></script>
 <script src="greenova.js?v=20260929d"></script>
-<script src="tienda.js?v=20261003a"></script>
+<script src="tienda.js?v=20261003b"></script>
 <script src="pulso.js?v=20260927c"></script>
-<script src="agente-criterios.js?v=20261003a"></script>
-<script src="agente.js?v=20260927c"></script>
+<script src="agente.js?v=20261003b"></script>
 
 </body>
 </html>

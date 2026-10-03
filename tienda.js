@@ -161,7 +161,7 @@
   /* Equivalencias del asistente, reutilizadas aquí: quien busca "vasos para
      café" no encuentra nada, porque en el catálogo se llaman "vaso de papel".
      La tabla se edita en un solo lugar, agente-criterios.js (SINONIMOS). Se
-     arma en la primera búsqueda: ese archivo carga después de este. */
+     arma en la primera búsqueda, por si algún día ese archivo carga después. */
   var SINON = null;
   function sinonimos() {
     if (SINON) return SINON;
@@ -295,7 +295,35 @@
   }
   var ultimaCorreccion = "";
 
+  /* ---------- búsqueda por uso ----------
+     Gabriel (2026-10-03): quien abrió una heladería busca "vasos para helado"
+     y le tienen que salir las opciones que sirven para helado. Si lo que se
+     escribió describe un uso o un negocio (tabla GIROS de agente-criterios.js,
+     la misma del asistente), la rejilla enseña lo recomendado para ese uso,
+     en ese orden, y arriba sale la lista con medida y para qué sirve cada cosa. */
+  function agente() { return window.GREENOVA_AGENTE || {}; }
+  function usoActual() {
+    var A = agente();
+    return state.q.trim() && A.usoDe ? A.usoDe(state.q) : null;
+  }
+  function deUso(uso) {
+    var ids = [];
+    uso.recs.forEach(function (r) { if (r.id && ids.indexOf(r.id) === -1) ids.push(r.id); });
+    var out = ids.map(prodDe).filter(function (p) { return p && BASE.indexOf(p) > -1 && pasaFiltros(p); });
+    /* "vasos para helado": si pidió vasos, la rejilla trae solo vasos (las
+       tapas siguen en la lista de arriba); igual con "tapas para frappé". */
+    var n = norm(state.q);
+    var solo = /\bvas/.test(n) ? "vasos" : /\btap/.test(n) ? "tapas" : "";
+    var tipo = solo ? out.filter(function (p) { return p.cat.indexOf(solo) === 0; }) : out;
+    return tipo.length ? tipo : out;
+  }
+
   function filtered() {
+    var uso = usoActual();
+    if (uso) {
+      ultimaCorreccion = "";
+      return ordena(deUso(uso), true);
+    }
     var crudos = [];
     palabras(state.q.trim()).forEach(function (t) {
       var e = Object.prototype.hasOwnProperty.call(EQUIV, t) ? EQUIV[t] : t;
@@ -324,8 +352,16 @@
         });
       }
     }
+    return ordena(out, false);
+  }
+
+  /* El orden que eligió la persona. En "todos", la búsqueda por uso respeta
+     el orden de la recomendación (lo más útil primero). */
+  function ordena(out, porUso) {
     var order = CATS.map(function (c) { return c.id; });
+    var base = out.slice();
     function relevancia(a, b) {
+      if (porUso) return base.indexOf(a) - base.indexOf(b);
       return ((b.destacado ? 1 : 0) - (a.destacado ? 1 : 0)) ||
              (order.indexOf(a.cat) - order.indexOf(b.cat)) || (PRODS.indexOf(a) - PRODS.indexOf(b));
     }
@@ -333,7 +369,7 @@
       return (order.indexOf(a.cat) - order.indexOf(b.cat)) || (PRODS.indexOf(a) - PRODS.indexOf(b));
     }
     out.sort(function (a, b) {
-      if (state.sort === "todos") return catalogo(a, b);
+      if (state.sort === "todos") return porUso ? relevancia(a, b) : catalogo(a, b);
       if (state.sort === "az") return a.nombre.localeCompare(b.nombre, "es");
       if (state.sort === "za") return b.nombre.localeCompare(a.nombre, "es");
       if (state.sort === "precio") {
@@ -431,10 +467,14 @@
     var tags = (tipo ? '<span class="tag tag--tipo">' + tipo + "</span>" : "") +
       p.mat.map(function (m) { return '<span class="tag tag--' + m + '">' + esc(MATS[m]) + "</span>"; }).join("");
     var url = "producto.html?id=" + p.id;
+    /* La foto con comida (FOTOS_USO), si ya la tiene: sale al pasar el cursor,
+       como en las tarjetas de la portada. */
+    var amb = agente().fotoUso ? agente().fotoUso(p.id) : null;
     return '' +
       '<article class="pcard pcard--info rv" data-d="' + (i % 4) + '" data-id="' + p.id + '">' +
         '<a class="pcard__media" href="' + url + '" aria-label="Ver ' + esc(p.nombre) + '">' +
           '<img src="' + src(p.img) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async">' +
+          (amb ? '<img class="pcard__amb" src="' + amb.src + '" alt="" loading="lazy" decoding="async">' : "") +
           (promo && promo.desc ? '<span class="pcard__flag pcard__flag--off">-' + promo.desc + "%</span>" : "") +
           (agotadas.length === p.v.length || (promo && promo.agotado) ? '<span class="pcard__out">Agotado</span>' : "") +
         "</a>" +
@@ -534,12 +574,50 @@
       "</div>";
   }
 
+  /* La lista de arriba de la rejilla en la búsqueda por uso: cada cosa con su
+     medida y para qué sirve, incluidas las que se cotizan (que no están en la
+     rejilla porque no se venden en línea). */
+  function pintaUso(uso) {
+    var box = $("uso");
+    if (!box) return;
+    box.hidden = !uso;
+    if (!uso) return;
+    var A = agente();
+    $("uso-t").textContent = uso.intro.replace(/:\s*$/, "");
+    $("uso-lista").innerHTML = uso.recs.map(function (r) {
+      var nombre, medida, href, foto;
+      if (r.cotiza) {
+        var c = (A.COTIZA || {})[r.cotiza];
+        if (!c) return "";
+        var fc = A.fotoUso(r.cotiza);
+        nombre = c.nombre; medida = c.v + " · se cotiza";
+        href = "tienda.html?pide=" + encodeURIComponent(c.pide);
+        foto = fc ? fc.src : src(c.img);
+      } else {
+        var p = prodDe(r.id);
+        if (!p) return "";
+        var k = A.medidaDe(p, r.v);
+        var f = A.fotoUso(p.id, p.v[k]);
+        nombre = p.nombre; medida = r.v;
+        href = "producto.html?id=" + p.id + "&v=" + k;
+        foto = f ? f.src : src(imgDe(p, p.v[k]));
+      }
+      return '<li><a class="uso__item" href="' + href + '">' +
+        '<img src="' + foto + '" alt="" loading="lazy" decoding="async" width="52" height="52">' +
+        "<span><b>" + esc(nombre) + '</b><em>' + esc(medida) + "</em><small>" + esc(r.por) + "</small></span></a></li>";
+    }).join("");
+  }
+
   function render() {
     var grid = $("grid");
     if (!grid) return;
     var list = filtered();
+    var uso = usoActual();
     grid.innerHTML = list.map(card).join("");
-    $("empty").hidden = list.length > 0;
+    pintaUso(uso);
+    /* Un uso sin nada en la tienda (tortas, tacos) no es "sin resultados":
+       la lista de arriba trae lo que se cotiza. */
+    $("empty").hidden = list.length > 0 || !!uso;
     renderTapasRel(list);
 
     /* Sin cuántos productos hay (Feedback final): solo qué se está viendo. */
@@ -680,7 +758,8 @@
     /* Del menú Productos llegan con ?pide= los que no se venden en línea
        (Gabriel, 2026-10-03): aviso arriba de la rejilla y el formulario
        "Envía tu lista" ya trae el producto escrito. */
-    var PIDE = ["Popotes", "Contenedores kraft", "Charolas y cajas", "Ensaladeras", "Portavasos", "Bolsas kraft"];
+    var PIDE = ["Popotes", "Contenedores kraft", "Charolas y cajas", "Ensaladeras", "Portavasos", "Bolsas kraft",
+                "Servilletas", "Papel grado alimenticio"];
     var pide = qs.get("pide");
     if (pide && PIDE.indexOf(pide) > -1 && $("pide")) {
       $("pide-t").textContent = pide + ": cotiza ya";
