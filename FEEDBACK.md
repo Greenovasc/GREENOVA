@@ -211,3 +211,18 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
   - El PDF trae piezas por caja distintas al Excel en 8 tapas de vaso de papel. Se dejaron las del Excel; el precio por pieza sí coincide.
   - La página 22 del PDF (tapas PET de 107 y 90 mm) trae $1.39 y $1.25 en todas, que parece de relleno.
 - `main.py` acepta las líneas `pla` y `otro`. El viaje de ida y vuelta por `render_catalogo` conserva los 48 productos sin cambios.
+
+## Ronda 17 (2026-10-03): plan de fotos
+
+- **Fotos de estudio pendientes:** son 26, todas en `~/Desktop/Fotos Greenova para Gemini/Faltan por hacer/` y se hacen con el PROMPT 1 y el PROMPT 2 del LEEME, con la "00 Referencia de estilo". A qué foto de la tienda reemplaza cada una:
+  - 01 → tienda-01 · 02 → tienda-02 · 03 → tienda-03 · 05 → tienda-05 · 08 → tienda-08 · 10 → tienda-10
+  - 12 → tienda-12 · 13 → tienda-13 · 15 → tienda-15 · 16 → tienda-16
+  - 40 → tienda-40 · 41 → tienda-41 · 42 → tienda-42 · 44 → tienda-44 · 46 → tienda-46 · 49 → tienda-49 · 50 → tienda-50
+  - 52 → popote-tapioca · 53 → popote-tapioca-estuchado · 54 → servilleta-larga · 55 → papel-encerado-kraft · 56 → papel-rh
+  - 57, 58 y 59 → `img` por medida de vaso-papel-color-44 (rojo, azul y gris)
+  - 60 → `img` de la medida "2 espacios" de portavaso-charola
+  - La 51 ya no hace falta, porque los vasos de color tienen su propia foto en el PDF.
+- **Necesitan foto real** (no hay foto en ningún documento): popote cuchara, popote PLA estuchado, tapa de 32 oz (105 mm), vaso PP fiestero, soufflé PP de 2 oz, tapa para soufflé, bobina Egapack y Sanitas. También hay que confirmar con foto real la caja kraft y el contenedor PET, que hoy usan fotos de un producto parecido.
+- **Fotos con comida nuevas:** 34 a 41, en `Fotos con comida (tienda y asistente)/`. Claves de `FOTOS_USO`:
+  - 34 contenedor-papel · 35 caja-kraft · 36 charola-papas · 37 contenedor-pet
+  - 38 contenedor-pet-pastel · 39 ensaladera-pet · 40 cono-crepa · 41 bolsa-semikraft
