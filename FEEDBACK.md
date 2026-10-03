@@ -158,3 +158,4 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
 - Menú Productos: todo lleva a la tienda. Lo que no se vende en línea (popotes, contenedores kraft, charolas y cajas, ensaladeras, portavasos, bolsas kraft) abre `tienda.html?pide=…`, con el aviso "X: cotiza ya" y el formulario "Envía tu lista" ya escrito.
 - Prompts de Gemini (en el chat) para las 3 fotos nuevas de Servicios, con "TU LOGO", y para el vaso del encabezado de la tienda: lleno, con vapor, que venda emoción.
 - (2026-10-03) Serigrafía en Servicios: foto nueva de Gemini (estudio de diseño con vasos impresos con "TU LOGO"), recortada para dejar fuera las notas del cuaderno (`serv-serigrafia.webp`).
+- (2026-10-03) Bolsas en Servicios: foto nueva de Gemini (3 bolsas kraft con fuelle, dos con "TU LOGO") (`serv-bolsas.webp`). El vaso del encabezado de la tienda salió feo: se le dio otro prompt.
