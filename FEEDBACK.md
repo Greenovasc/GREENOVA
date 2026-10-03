@@ -151,3 +151,9 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
 - Gabriel no quiere archivos TXT: los prompts se le escriben en el chat.
 - (2026-10-02) Ya están las 5 fotos de cafetería de las tarjetas: contenedor con helado, ensaladera con ensalada y smoothie en vaso PET con domo (`cafe-contenedores`, `cafe-bowls`, `cafe-complementos`).
 - (2026-10-02) Bebidas sin "GREENOVA -SC-": la tarjeta usa el vaso de papel blanco liso. En la foto de cafetería se borró el texto de la fajilla, que quedó kraft lisa. En el carrusel, el vaso blanco se cambió por el doble pared genérico para no repetir. Gabriel pasó el `Catálogo_Greenovasc_2026-2.pdf` (págs. 12-24: vasos, tapas y accesorios).
+
+## Ronda 13 (2026-10-03)
+
+- Dirección de GreeNova (la eligió el tío de Gabriel): Cacamatzin 21, Arenal 1ra Secc., Venustiano Carranza, 15600, CDMX. Está en el mapa de la landing (con la dirección escrita), en Contacto, en el mini mapa del pie de todas las páginas, en el domicilio del Aviso de privacidad y en los datos del asistente.
+- Menú Productos: todo lleva a la tienda. Lo que no se vende en línea (popotes, contenedores kraft, charolas y cajas, ensaladeras, portavasos, bolsas kraft) abre `tienda.html?pide=…`, con el aviso "X: cotiza ya" y el formulario "Envía tu lista" ya escrito.
+- Prompts de Gemini (en el chat) para las 3 fotos nuevas de Servicios, con "TU LOGO", y para el vaso del encabezado de la tienda: lleno, con vapor, que venda emoción.
