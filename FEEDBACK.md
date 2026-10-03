@@ -259,3 +259,12 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
   - Vinieron en 1024 px y se bajaron a 900.
   - Quedan pendientes la 04 (vaso kraft), la 19 (vaso PP con milk tea) y de la 28 a la 42.
   - Sus `giros` se revisaron negocio por negocio. Por ejemplo, la tapa domo sale con frappé en "Frappés", "Helado" y "Crepas", pero no en "Mariscos" ni "Fruta", porque ahí va con coctel o con fruta.
+- (2026-10-03) "El vaso negro, el kraft, el de doble pared, la tapa plana sin ranura y más no tienen el fondo igual que todos los demás." Se midió en cada foto de la tienda cuánto panel verde salvia tiene, y luego se revisaron a ojo.
+  - **Sin el fondo de estudio hay 18:** 03, 08, 40, 41, 42, 44, 49, 50, 52 a 56 y 60, que ya estaban en "Faltan por hacer", y cuatro nuevas.
+  - Las nuevas se agregaron a "Faltan por hacer". Su referencia es la foto actual de la tienda, de 900 px:
+    - 61 → `vaso-papel-negro`
+    - 62 → `vaso-papel-kraft`
+    - 63 → `img` de las medidas "Blanco" de vaso-papel-doble-pared
+    - 64 → `img` de las medidas "Negro" de vaso-papel-doble-pared
+  - Al instalarlas hay que darles nombre nuevo para que el navegador no muestre la foto vieja.
+  - Se le mandaron todas a Gabriel con la 00 de referencia, para hacerlas con el PROMPT 1 y el PROMPT 2 del LEEME.
