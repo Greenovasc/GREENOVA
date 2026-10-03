@@ -3324,35 +3324,32 @@ div.cat--info { cursor: default; }
 .uso__item small { font-size: .8rem; color: var(--ink-2); }
 @media (max-width: 640px) { .uso { padding: 16px; } .uso__lista { grid-template-columns: 1fr; } }
 
-/* Tarjeta de la tienda: la foto con comida es la última del ciclo de clics
-   (tienda.js pone .ver-uso); cubre la caja entera y no crece con el cursor. */
+/* Tarjeta de la tienda: capas de foto encima de la portada (otros colores o
+   modelos, y la foto con comida). tienda.js enciende una a la vez (.on) al
+   pasar el cursor. La de comida cubre la caja entera y no crece. */
+.pcard__media .pcard__capa {
+  opacity: 0; z-index: 1;
+  transition: opacity .45s var(--ease), transform .5s var(--ease), scale .5s var(--ease), translate .5s var(--ease);
+}
+.pcard__media .pcard__capa.on { opacity: 1; }
 .pcard__media .pcard__amb {
   top: 0; left: 0; width: 100%; height: 100%;
-  object-fit: cover; filter: none; opacity: 0; z-index: 1;
-  transform: none; scale: 1; translate: 0;
-  transition: opacity .35s var(--ease);
+  object-fit: cover; filter: none;
 }
 .pcard:hover .pcard__media .pcard__amb { transform: none; scale: 1; translate: 0; }
-.pcard__media.ver-uso .pcard__amb { opacity: 1; }
 
-/* Ficha: Producto / Así se ve servido. */
-.ficha__foto .ficha__amb {
-  top: 0; left: 0; width: 100%; height: 100%;
-  object-fit: cover; filter: none; opacity: 0; pointer-events: none;
-  transition: opacity .4s var(--ease);
+/* Ficha: las fotos con comida van abajo de la foto del producto, una tras
+   otra, como en WeCare (Gabriel, 2026-10-03). Con ellas la columna ya no se
+   queda fija: es más alta que la pantalla. */
+.ficha__media--galeria { position: static; }
+.ficha__galeria { display: grid; gap: 16px; margin-top: 16px; }
+.ficha__galeria img {
+  display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover;
+  border-radius: var(--r-card); background: var(--surface-2);
 }
-.ficha__foto[data-vista="uso"] .ficha__amb { opacity: 1; }
-.ficha__vistas { display: flex; gap: 6px; margin-top: 12px; }
-.ficha__vistas button {
-  border: 1px solid var(--line); border-radius: var(--r-pill); cursor: pointer;
-  background: var(--surface); color: var(--ink-2);
-  padding: 8px 14px; font: inherit; font-size: .82rem; font-weight: 600;
-}
-.ficha__vistas button[aria-pressed="true"] { background: var(--forest); border-color: var(--forest); color: #f5f9f4; }
-.ficha__vistas button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ag-rec, .uso__item, .pcard__amb, .ficha__amb { transition: none !important; }
+  .ag-rec, .uso__item, .pcard__capa { transition: none !important; }
   .ag-rec:hover { transform: none; }
 }
 
@@ -3390,7 +3387,7 @@ div.cat--info { cursor: default; }
 .chips__sub .chip { white-space: normal; line-height: 1.3; }
 .chips__sec--abierta > .chip--sec[aria-pressed="false"] { border-color: var(--green); color: var(--heading); }
 
-/* Tarjeta con varias fotos: puntitos abajo; cada clic en la foto cambia a la siguiente. */
+/* Tarjeta con varias fotos: puntitos abajo; marcan la que se ve al pasar el cursor. */
 .pcard__puntos {
   position: absolute; left: 50%; bottom: 12px; z-index: 2; translate: -50% 0;
   display: flex; gap: 6px; padding: 5px 8px; border-radius: var(--r-pill);
@@ -3398,5 +3395,3 @@ div.cat--info { cursor: default; }
 }
 .pcard__puntos i { width: 7px; height: 7px; border-radius: 50%; background: rgba(50, 98, 82, .28); transition: background .2s; }
 .pcard__puntos i.on { background: var(--forest); }
-.pcard__media--fotos { cursor: pointer; }
-.pcard__media--fotos img { transition: opacity .2s var(--ease), transform .5s var(--ease); }

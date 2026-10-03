@@ -542,12 +542,9 @@
       p.mat.map(function (m) { return '<span class="tag tag--' + m + '">' + esc(MATS[m]) + "</span>"; }).join("") +
       (seCotiza(p) ? '<span class="tag tag--cotiza">Se cotiza</span>' : "");
     var url = "producto.html?id=" + p.id;
-    /* Varias fotos (un color o un modelo por medida, y al final la foto con
-       comida de FOTOS_USO si ya la tiene): con cada clic en la foto cambia a la
-       siguiente, sin salir de la tienda (Gabriel, 2026-10-03: "que cambie de
-       color a azul y después a gris"). El nombre y el botón siguen llevando a
-       la ficha. La foto con comida ya no sale al pasar el cursor: tapaba el
-       cambio de color. */
+    /* Varias fotos (un color o un modelo por medida, y la foto con comida de
+       FOTOS_USO si ya la tiene): al pasar el cursor van saliendo solas, la de
+       comida primero (ver "Foto de la tarjeta" abajo). */
     var amb = agente().fotoUso ? agente().fotoUso(p.id) : null;
     var fotos = [p.img];
     (p.venta ? p.venta.tam : []).forEach(function (t) {
@@ -557,15 +554,13 @@
     var varias = total > 1;
     return '' +
       '<article class="pcard pcard--info rv" data-d="' + (i % 4) + '" data-id="' + p.id + '">' +
-        (varias
-          ? '<a class="pcard__media pcard__media--fotos" href="' + url + '" data-fotos="' + fotos.join(",") + '" data-i="0"' +
-              ' aria-label="' + esc(p.nombre) + ': toca para ver la siguiente foto (' + total + ')">'
-          : '<a class="pcard__media" href="' + url + '" aria-label="Ver ' + esc(p.nombre) + '">') +
+        '<a class="pcard__media' + (varias ? " pcard__media--fotos" : "") + '" href="' + url + '"' +
+          (varias ? ' data-fotos="' + fotos.join(",") + '"' : "") + ' aria-label="Ver ' + esc(p.nombre) + '">' +
           '<img src="' + src(p.img) + '" alt="' + esc(p.nombre) + '" loading="lazy" decoding="async">' +
+          (amb ? '<img class="pcard__capa pcard__amb" data-k="' + fotos.length + '" src="' + amb.src + '" alt="" loading="lazy" decoding="async">' : "") +
           (varias ? '<span class="pcard__puntos" aria-hidden="true">' + Array.apply(null, Array(total)).map(function (x, k) {
             return '<i' + (k === 0 ? ' class="on"' : "") + "></i>";
           }).join("") + "</span>" : "") +
-          (amb ? '<img class="pcard__amb" src="' + amb.src + '" alt="" loading="lazy" decoding="async">' : "") +
           (promo && promo.desc ? '<span class="pcard__flag pcard__flag--off">-' + promo.desc + "%</span>" : "") +
           (agotadas.length === p.v.length || (promo && promo.agotado) ? '<span class="pcard__out">Agotado</span>' : "") +
         "</a>" +
@@ -1089,31 +1084,94 @@
 
   }   /* fin del bloque de catálogo */
 
-  /* Foto de la tarjeta con varias fotos: cada clic pasa a la siguiente (rojo,
-     azul, gris…). Con Ctrl o Cmd abre la ficha como cualquier enlace. */
-  document.addEventListener("click", function (e) {
-    var m = e.target.closest(".pcard__media--fotos");
-    if (!m || e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) return;
-    e.preventDefault();
-    var fotos = m.dataset.fotos.split(",");
-    var conUso = !!m.querySelector(".pcard__amb");
-    var i = (Number(m.dataset.i) + 1) % (fotos.length + (conUso ? 1 : 0));
-    m.dataset.i = i;
-    /* Después de las de estudio va la foto con comida (encima, a todo lo ancho). */
-    m.classList.toggle("ver-uso", i === fotos.length);
-    var img = m.querySelector("img:not(.pcard__amb)");
-    if (img && i < fotos.length) img.src = src(fotos[i]);
-    Array.prototype.forEach.call(m.querySelectorAll(".pcard__puntos i"), function (p, k) {
-      p.classList.toggle("on", k === i);
+  /* Foto de la tarjeta: al pasar el cursor sale la foto con comida (como en
+     las tarjetas de la portada) y luego, sola, cada foto que tenga el producto
+     (otros colores o modelos), hasta volver a la portada. Al quitar el cursor
+     regresa la portada, y un clic abre la ficha (Gabriel, 2026-10-03: "sin
+     necesidad de hacer clic, solo poner el cursor; y si le da clic, mételo al
+     producto"). Sirve igual en la tienda y en "Más …" de la ficha: basta con
+     .pcard__media--fotos, data-fotos y, si la hay, la capa .pcard__amb. */
+  var PASO_FOTO = 1300;
+  var QUIETO = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var giro = null;   /* { m, orden, pos, porK, t } de la tarjeta bajo el cursor */
+
+  /* Las otras fotos de estudio se crean al primer paso del cursor (así la
+     tienda no baja fotos que nadie ve). Van debajo de la de comida. */
+  function capasDe(m) {
+    if (!m.hasAttribute("data-listo")) {
+      m.setAttribute("data-listo", "");
+      var fotos = m.dataset.fotos.split(",");
+      var base = m.querySelector("img");
+      for (var k = fotos.length - 1; k >= 1; k--) {
+        var im = document.createElement("img");
+        im.className = "pcard__capa";
+        im.alt = ""; im.decoding = "async";
+        im.setAttribute("data-k", k);
+        im.src = src(fotos[k]);
+        base.insertAdjacentElement("afterend", im);
+      }
+    }
+    var porK = {};
+    Array.prototype.forEach.call(m.querySelectorAll(".pcard__capa"), function (c) { porK[c.dataset.k] = c; });
+    return porK;
+  }
+  function muestraFoto(m, k) {
+    Array.prototype.forEach.call(m.querySelectorAll(".pcard__capa"), function (c) {
+      c.classList.toggle("on", Number(c.dataset.k) === k);
     });
-  });
-  /* Las demás fotos se precargan al acercar el cursor, para que el cambio
-     sea inmediato. */
+    Array.prototype.forEach.call(m.querySelectorAll(".pcard__puntos i"), function (p, j) {
+      p.classList.toggle("on", j === k);
+    });
+  }
+  function paraFotos() {
+    if (!giro) return;
+    clearInterval(giro.t);
+    muestraFoto(giro.m, 0);
+    giro = null;
+  }
+  function arrancaFotos(m) {
+    if (giro && giro.m === m) return;
+    paraFotos();
+    var porK = capasDe(m);
+    var n = m.dataset.fotos.split(",").length;
+    var orden = porK[n] ? [n] : [];          /* la de comida primero */
+    for (var k = 1; k < n; k++) orden.push(k);
+    orden.push(0);                          /* y al final la portada */
+    giro = { m: m, orden: orden, pos: 0, porK: porK };
+    muestraFoto(m, orden[0]);
+    /* Con solo dos fotos se queda en la segunda, como en la portada. */
+    if (orden.length < 3 || QUIETO) return;
+    giro.t = setInterval(function () {
+      var g = giro;
+      if (!g) return;
+      if (!document.body.contains(g.m)) { paraFotos(); return; }
+      var pos = (g.pos + 1) % g.orden.length;
+      var c = g.porK[g.orden[pos]];
+      if (c && !(c.complete && c.naturalWidth)) return;   /* si no ha cargado, la espera */
+      g.pos = pos;
+      muestraFoto(g.m, g.orden[pos]);
+    }, PASO_FOTO);
+  }
+  /* Con el cursor sobre cualquier parte de la tarjeta. En el celular no hay
+     cursor: tocar la tarjeta abre la ficha. */
   document.addEventListener("pointerover", function (e) {
-    var m = e.target.closest && e.target.closest(".pcard__media--fotos:not([data-pre])");
-    if (!m) return;
-    m.setAttribute("data-pre", "");
-    m.dataset.fotos.split(",").forEach(function (f) { var im = new Image(); im.src = src(f); });
+    if (e.pointerType && e.pointerType !== "mouse" && e.pointerType !== "pen") return;
+    var tarjeta = e.target.closest && e.target.closest(".pcard");
+    var m = tarjeta && tarjeta.querySelector(".pcard__media--fotos");
+    if (m) arrancaFotos(m);
+  });
+  document.addEventListener("pointerout", function (e) {
+    if (!giro) return;
+    var tarjeta = giro.m.closest(".pcard");
+    if (!tarjeta || !tarjeta.contains(e.relatedTarget)) paraFotos();
+  });
+  /* Con el teclado, igual al llegar a la foto. */
+  document.addEventListener("focusin", function (e) {
+    var m = e.target.closest && e.target.closest(".pcard__media--fotos");
+    if (m) arrancaFotos(m);
+  });
+  document.addEventListener("focusout", function (e) {
+    if (giro && e.target === giro.m) paraFotos();
   });
 
   /* "Pedir cotización" de una tarjeta: en la misma página, el formulario

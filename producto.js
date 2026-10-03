@@ -95,10 +95,10 @@
 
   function imgDe(i) { return (TAM[i] && TAM[i].img) || p.img; }
 
-  /* Guía de usos y fotos con comida (agente-criterios.js). */
+  /* Fotos con comida (agente-criterios.js): van abajo de la foto del
+     producto, como en WeCare. */
   var AG = window.GREENOVA_AGENTE || {};
-  function ambDe(i) { return AG.fotoUso ? AG.fotoUso(p.id, p.v[i]) : null; }
-  var AMB = ambDe(INI);
+  var GALERIA = AG.fotosUsoDe ? AG.fotosUsoDe(p.id, p.v[INI]) : [];
 
   /* ======================= cabecera del documento ======================= */
   var SITIO = "https://www.greenovasc.com.mx";
@@ -158,28 +158,10 @@
     });
     var campo = document.getElementById("f-variante");
     document.getElementById("variante-actual").textContent = chip.dataset.v;
-    /* Si esa medida tiene su propia foto con comida, se cambia también. */
-    var amb = document.getElementById("ficha-amb");
-    var nueva = ambDe(Number(chip.dataset.i));
-    if (amb && nueva && amb.getAttribute("src") !== nueva.src) {
-      amb.setAttribute("src", nueva.src);
-      amb.setAttribute("alt", nueva.alt);
-    }
     if (campo && campo.value !== chip.dataset.v) {
       campo.value = chip.dataset.v;
       campo.dispatchEvent(new Event("change", { bubbles: true }));
     }
-  });
-
-  /* Producto / Así se ve servido. */
-  document.addEventListener("click", function (e) {
-    var b = e.target.closest(".ficha__vistas button");
-    if (!b) return;
-    Array.prototype.forEach.call(b.parentElement.children, function (x) {
-      x.setAttribute("aria-pressed", String(x === b));
-    });
-    var foto = document.querySelector(".ficha__foto");
-    if (foto) foto.dataset.vista = b.dataset.vista;
   });
 
   /* ======================= migas ======================= */
@@ -195,18 +177,14 @@
   /* ======================= ficha ======================= */
   var unica = p.v.length === 1;
   ficha.innerHTML =
-    '<div class="ficha__media">' +
+    '<div class="ficha__media' + (GALERIA.length ? " ficha__media--galeria" : "") + '">' +
       '<div class="ficha__foto' + (p.fotoPropia ? " ficha__foto--propia" : "") + '">' +
         (promo && promo.desc ? '<span class="pcard__flag pcard__flag--off">-' + promo.desc + "%</span>" : "") +
         '<img data-role="foto" src="' + src(imgDe(INI)) + '" alt="' + esc(p.nombre) + '" width="900" height="900" fetchpriority="high">' +
-        (AMB ? '<img class="ficha__amb" id="ficha-amb" src="' + AMB.src + '" alt="' + esc(AMB.alt) + '" width="900" height="900" loading="lazy" decoding="async">' : "") +
       "</div>" +
-      /* Con foto con comida: dos botones para alternar entre el producto y
-         cómo se ve servido. */
-      (AMB ? '<div class="ficha__vistas" role="group" aria-label="Qué foto ver">' +
-               '<button type="button" data-vista="prod" aria-pressed="true">Producto</button>' +
-               '<button type="button" data-vista="uso" aria-pressed="false">Así se ve servido</button>' +
-             "</div>" : "") +
+      (GALERIA.length ? '<div class="ficha__galeria">' + GALERIA.map(function (f) {
+        return '<img src="' + f.src + '" alt="' + esc(f.alt) + '" width="900" height="900" loading="lazy" decoding="async">';
+      }).join("") + "</div>" : "") +
       '<p class="ficha__nota">Foto de referencia. El acabado puede variar según la medida.</p>' +
     "</div>" +
 
@@ -363,6 +341,24 @@
   });
 
   /* ======================= relacionados ======================= */
+  /* La foto de cada tarjeta, como en la tienda: al pasar el cursor sale la
+     foto con comida y las demás que tenga (tienda.js las va cambiando). */
+  function mediaDe(h) {
+    var fotos = [h.img];
+    (h.venta ? h.venta.tam : []).forEach(function (t) {
+      if (t.img && fotos.indexOf(t.img) === -1) fotos.push(t.img);
+    });
+    var amb = AG.fotoUso ? AG.fotoUso(h.id) : null;
+    var total = fotos.length + (amb ? 1 : 0);
+    if (total < 2) return '<div class="pcard__media"><img src="' + src(h.img) + '" alt="" loading="lazy" decoding="async"></div>';
+    return '<div class="pcard__media pcard__media--fotos" data-fotos="' + fotos.join(",") + '">' +
+      '<img src="' + src(h.img) + '" alt="" loading="lazy" decoding="async">' +
+      (amb ? '<img class="pcard__capa pcard__amb" data-k="' + fotos.length + '" src="' + amb.src + '" alt="" loading="lazy" decoding="async">' : "") +
+      '<span class="pcard__puntos" aria-hidden="true">' + Array.apply(null, Array(total)).map(function (x, k) {
+        return "<i" + (k === 0 ? ' class="on"' : "") + "></i>";
+      }).join("") + "</span></div>";
+  }
+
   var hermanos = PRODS.filter(function (x) { return x.cat === p.cat && x.id !== p.id; }).slice(0, 4);
 
   rel.innerHTML =
@@ -375,7 +371,7 @@
         '<div class="grid-prod">' +
           hermanos.map(function (h, i) {
             return '<a class="pcard pcard--link rv" data-d="' + (i % 4) + '" href="producto.html?id=' + h.id + '">' +
-              '<div class="pcard__media"><img src="' + src(h.img) + '" alt="" loading="lazy" decoding="async"></div>' +
+              mediaDe(h) +
               '<div class="pcard__body">' +
                 '<div class="pcard__tags">' +
                   h.mat.map(function (m) { return '<span class="tag tag--' + m + '">' + MATS[m] + "</span>"; }).join("") +

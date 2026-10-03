@@ -801,6 +801,18 @@ window.GREENOVA_AGENTE = (function () {
     return f ? { src: "assets/uso/" + f.f + ".webp?v=" + (f.ver || "1"), alt: f.alt || "" } : null;
   }
 
+  /* Todas las fotos con comida de un producto, para la galería de la ficha.
+     Primero la de "medida" (la que se eligió), luego las demás. */
+  function fotosUsoDe(id, medida) {
+    var primera = fotoUso(id, medida);
+    var todas = Object.keys(FOTOS_USO).filter(function (c) { return c.split("|")[0] === id; })
+      .map(function (c) { var f = FOTOS_USO[c]; return { src: "assets/uso/" + f.f + ".webp?v=" + (f.ver || "1"), alt: f.alt || "" }; });
+    if (primera) {
+      todas = [primera].concat(todas.filter(function (x) { return x.src !== primera.src; }));
+    }
+    return todas;
+  }
+
   /* Los usos en los que sale un producto, para la ficha ("Ideal para"). */
   function usosDe(id) {
     return GIROS.filter(function (g) {
@@ -821,6 +833,7 @@ window.GREENOVA_AGENTE = (function () {
     corrector: corrector,
     medidaDe: medidaDe,
     fotoUso: fotoUso,
+    fotosUsoDe: fotosUsoDe,
     usosDe: usosDe,
     /* Dónde vive la función que guarda la API key. Hay dos versiones del mismo
        endpoint porque hay dos tipos de hosting: Node (Render, Vercel) y PHP

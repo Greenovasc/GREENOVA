@@ -247,3 +247,11 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
   - **Tienda:** la foto con comida es la última del ciclo de clics de la tarjeta, después de los colores. Por ejemplo, el vaso de color de 44 oz va rojo → azul → gris → refresco. Ya no sale al pasar el cursor porque tapaba el cambio de color.
   - **Ficha:** se ve con los botones Producto / Así se ve servido. El vaso blanco de 4 oz trae la foto de helado y las demás medidas, la del capuchino.
   - **Asistente y recomendaciones por negocio:** cada foto lleva `giros` (los negocios donde va). Si no va con el negocio, la tarjeta lleva la foto de estudio. Así, una heladería ve el helado también en el vaso de 8 y 12 oz, y no ve capuchinos. El consomé de la taquería y el agua de la oficina tampoco salen con café.
+- (2026-10-03) Gabriel, viendo WeCare: "quita lo de 'Así se ve servido', pon imágenes abajo como WeCare". También pidió que en la tienda, como en la portada, salga la foto con comida al pasar el cursor, y que las fotos cambien solas sin clic. El clic tiene que meter al producto.
+  - **Ficha:** se quitaron los botones Producto / Así se ve servido. Las fotos con comida del producto van abajo de la foto principal, una tras otra, a todo lo ancho. Sale primero la de la medida que se abrió.
+    - Con galería, la columna de fotos ya no se queda fija al bajar (`.ficha__media--galeria`).
+  - **Tarjeta de la tienda y "Más …" de la ficha:** con el cursor encima de cualquier parte de la tarjeta sale la foto con comida. Luego, cada 1.3 s, sale cada foto que tenga (otros colores o modelos) hasta volver a la portada, y así se repite. Por ejemplo, el vaso de color: comida → azul → gris → rojo.
+    - Si solo hay dos fotos, se queda en la de comida, como en la portada.
+    - Al quitar el cursor regresa a la portada. Un clic abre la ficha y ya no cambia la foto.
+    - En el celular no hay cursor, así que tocar la tarjeta abre la ficha.
+    - Con "reducir movimiento" sale solo la primera foto, sin que cambien solas.
