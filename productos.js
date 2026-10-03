@@ -91,29 +91,29 @@ window.GREENOVA = (function () {
         { paq: 28, caja: 560, pPaq: 83.46, pCaja: 1590.72, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-05", img: "vaso-papel-doble-pared-negro" },
         { paq: 25, caja: 500, pPaq: 57.39, pCaja: 1077.87, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-06", img: "vaso-papel-doble-pared-generico" }
       ] } },
-    { id: "vaso-papel-color-44", nombre: "Vaso de papel de color 44 oz", cat: "vasos-papel", mat: ["papel"], img: "foto-pendiente", uso: "Bebida fría o caliente", personalizable: true,
+    { id: "vaso-papel-color-44", nombre: "Vaso de papel de color 44 oz", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-44-rojo", uso: "Bebida fría o caliente", fotoPropia: true, personalizable: true,
       desc: "Vaso de papel de 44 oz en rojo, azul o gris, con recubrimiento interior de polietileno.",
       v: ["Rojo · 44 oz · boca 115 mm", "Azul · 44 oz · boca 115 mm", "Gris · 44 oz · boca 115 mm"],
       venta: { linea: "papel", tam: [
-        { paq: 50, caja: 500, pPaq: 156.28, pCaja: 1492.83, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-COLOR-44-01", img: null },
-        { paq: 50, caja: 500, pPaq: 156.28, pCaja: 1492.83, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-COLOR-44-02", img: null },
-        { paq: 50, caja: 500, pPaq: 156.28, pCaja: 1492.83, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-COLOR-44-03", img: null }
+        { paq: 50, caja: 500, pPaq: 156.28, pCaja: 1492.83, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-COLOR-44-01", img: "vaso-papel-44-rojo" },
+        { paq: 50, caja: 500, pPaq: 156.28, pCaja: 1492.83, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-COLOR-44-02", img: "vaso-papel-44-azul" },
+        { paq: 50, caja: 500, pPaq: 156.28, pCaja: 1492.83, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-COLOR-44-03", img: "vaso-papel-44-gris" }
       ] } },
 
     /* ---------------- tapas para vaso de papel ---------------- */
-    { id: "tapa-cafetera-62", nombre: "Tapa para vaso de papel de 4 oz", cat: "tapas-papel", mat: ["ps"], img: "tienda-01", uso: "Tapa para vaso de papel de 4 oz",
+    { id: "tapa-cafetera-62", nombre: "Tapa para vaso de papel de 4 oz", cat: "tapas-papel", mat: ["ps"], img: "tapa-cafetera-62-blanca", uso: "Tapa para vaso de papel de 4 oz", fotoPropia: true,
       desc: "Tapa cafetera de poliestireno para vaso de papel de 4 oz (boca 62 mm).",
       v: ["Blanca", "Negra"],
       venta: { linea: "ps", tam: [
-        { paq: 50, caja: 1000, pPaq: 42.65, pCaja: 713.02, boca: 62, esp: "Boca 62 mm", sku: "GN-TAPA-CAFETERA-62-01", img: "tienda-01" },
-        { paq: 50, caja: 1000, pPaq: 42.65, pCaja: 713.02, boca: 62, esp: "Boca 62 mm", sku: "GN-TAPA-CAFETERA-62-02", img: "tienda-02" }
+        { paq: 50, caja: 1000, pPaq: 42.65, pCaja: 713.02, boca: 62, esp: "Boca 62 mm", sku: "GN-TAPA-CAFETERA-62-01", img: "tapa-cafetera-62-blanca" },
+        { paq: 50, caja: 1000, pPaq: 42.65, pCaja: 713.02, boca: 62, esp: "Boca 62 mm", sku: "GN-TAPA-CAFETERA-62-02", img: "tapa-cafetera-62-negra" }
       ] } },
     { id: "tapa-cafetera-80", nombre: "Tapa para vaso de papel de 8 oz", cat: "tapas-papel", mat: ["ps", "pp"], img: "tapa-blanca-solo", uso: "Tapa para vaso de papel de 8 oz", fotoPropia: true,
       desc: "Tapas cafeteras para vaso de papel de 8 oz (boca 80 mm), en poliestireno y polipropileno.",
       v: ["Blanca · poliestireno", "Negra · poliestireno", "Negra plana con solapa · poliestireno", "Negra · polipropileno"],
       venta: { linea: "ps", tam: [
         { paq: 100, caja: 1000, pPaq: 159.56, pCaja: 1455.59, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-01", img: "tapa-blanca-solo" },
-        { paq: 50, caja: 100, pPaq: null, pCaja: null, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-02", img: "tienda-05" },
+        { paq: 50, caja: 100, pPaq: null, pCaja: null, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-02", img: "tapa-cafetera-80-negra-ps" },
         { paq: 50, caja: 1000, pPaq: 39.24, pCaja: 644.77, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-03", img: "tienda-03" },
         { paq: 50, caja: 1000, pPaq: 58.11, pCaja: 1022.21, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-04", img: "tapa-kraft-cafe" }
       ] } },
@@ -122,14 +122,14 @@ window.GREENOVA = (function () {
       v: ["Blanca 3 óvalos · poliestireno", "Negra 3 óvalos · poliestireno", "Negra · poliestireno", "Negra plana con solapa · poliestireno", "Negra con tapón · poliestireno", "Blanca · polipropileno", "Negra · polipropileno", "Blanca con tapón · polipropileno", "Negra con tapón · polipropileno"],
       venta: { linea: "ps", tam: [
         { paq: 50, caja: 1000, pPaq: 49.83, pCaja: 856.54, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-01", img: "tapa-blanca-plana" },
-        { paq: 50, caja: 1000, pPaq: 49.83, pCaja: 856.54, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-02", img: "tienda-10" },
-        { paq: 50, caja: 1000, pPaq: 56.75, pCaja: 994.9, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-03", img: "tienda-13" },
+        { paq: 50, caja: 1000, pPaq: 49.83, pCaja: 856.54, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-02", img: "tapa-cafetera-90-negra-3ovalos" },
+        { paq: 50, caja: 1000, pPaq: 56.75, pCaja: 994.9, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-03", img: "tapa-cafetera-90-negra-solo" },
         { paq: 50, caja: 1000, pPaq: 48.72, pCaja: 834.31, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-04", img: "tienda-08" },
         { paq: 50, caja: 1000, pPaq: 50.79, pCaja: 875.79, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-05", img: "tapa-viajera-negra" },
         { paq: 50, caja: 1000, pPaq: 52.25, pCaja: 904.9, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-06", img: "tapa-domo-blanca" },
-        { paq: 50, caja: 1000, pPaq: 52.25, pCaja: 904.9, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-07", img: "tienda-12" },
-        { paq: 100, caja: 1200, pPaq: 134.32, pCaja: 1443.87, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-08", img: "tienda-15" },
-        { paq: 100, caja: 1200, pPaq: 126.5, pCaja: 1350.04, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-09", img: "tienda-16" }
+        { paq: 50, caja: 1000, pPaq: 52.25, pCaja: 904.9, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-07", img: "tapa-cafetera-90-negra-pp" },
+        { paq: 100, caja: 1200, pPaq: 134.32, pCaja: 1443.87, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-08", img: "tapa-cafetera-90-blanca-tapon" },
+        { paq: 100, caja: 1200, pPaq: 126.5, pCaja: 1350.04, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-09", img: "tapa-cafetera-90-negra-tapon" }
       ] } },
     { id: "tapa-papel-90", nombre: "Tapa de papel para vaso de 10 a 20 oz", cat: "tapas-papel", mat: ["papel"], img: "tapa-papel-blanca", uso: "Tapa para vaso de papel de 10 a 20 oz", fotoPropia: true, personalizable: true,
       desc: "Tapa de papel para vaso de papel de 10 a 20 oz (boca 90 mm). Se vende por caja.",
@@ -243,13 +243,13 @@ window.GREENOVA = (function () {
         { paq: 100, caja: 1000, pPaq: 103.32, pCaja: 893.2, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-DOMO-06", img: "tapa-fria-domo" },
         { paq: 50, caja: 500, pPaq: 69.61, pCaja: 626.05, boca: 107, esp: "Boca 107 mm", sku: "GN-TAPA-PET-DOMO-07", img: "tapa-fria-domo" }
       ] } },
-    { id: "tapa-pet-domo-oso", nombre: "Tapa PET domo oso con orificio", cat: "tapas-pet", mat: ["pet"], img: "tienda-46", uso: "Tapa para vaso PET",
+    { id: "tapa-pet-domo-oso", nombre: "Tapa PET domo oso con orificio", cat: "tapas-pet", mat: ["pet"], img: "tapa-pet-domo-oso", uso: "Tapa para vaso PET", fotoPropia: true,
       desc: "Tapa domo de PET con orejas de oso y orificio.",
       v: ["Boca 90 mm", "Boca 95 mm", "Boca 98 mm"],
       venta: { linea: "pet", tam: [
-        { paq: 50, caja: 1000, pPaq: 60.22, pCaja: 1064.41, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-PET-DOMO-OSO-01", img: "tienda-46" },
-        { paq: 50, caja: 1000, pPaq: 63.56, pCaja: 1131.1, boca: 95, esp: "Boca 95 mm", sku: "GN-TAPA-PET-DOMO-OSO-02", img: "tienda-46" },
-        { paq: 50, caja: 1000, pPaq: 67.67, pCaja: 1213.39, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-DOMO-OSO-03", img: "tienda-46" }
+        { paq: 50, caja: 1000, pPaq: 60.22, pCaja: 1064.41, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-PET-DOMO-OSO-01", img: "tapa-pet-domo-oso" },
+        { paq: 50, caja: 1000, pPaq: 63.56, pCaja: 1131.1, boca: 95, esp: "Boca 95 mm", sku: "GN-TAPA-PET-DOMO-OSO-02", img: "tapa-pet-domo-oso" },
+        { paq: 50, caja: 1000, pPaq: 67.67, pCaja: 1213.39, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-DOMO-OSO-03", img: "tapa-pet-domo-oso" }
       ] } },
     { id: "tapa-pet-sorbe", nombre: "Tapa PET sorbe", cat: "tapas-pet", mat: ["pet"], img: "tapa-fria-plana-lisa", uso: "Tapa para vaso PET", fotoPropia: true,
       desc: "Tapa de PET para beber sin popote.",

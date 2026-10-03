@@ -227,3 +227,7 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
   - 34 contenedor-papel · 35 caja-kraft · 36 charola-papas · 37 contenedor-pet
   - 38 contenedor-pet-pastel · 39 ensaladera-pet · 40 cono-crepa · 41 bolsa-semikraft
 - (2026-10-03) Gabriel no entendía por qué salían "esas tapas" con los contenedores. Sí son las suyas (Hoja1, filas 100, 103, 105, 108 y 109, debajo de cada contenedor), pero la foto era la de un bowl con domo y el letrero decía "vasos". Ahora dice "Tapas para estos contenedores" y la tapa usa "Foto en proceso". Se agregó a la lista de fotos reales que faltan.
+- (2026-10-03) Llegaron 14 fotos de estudio de Gemini y se instalaron 12, con nombres nuevos para que el navegador no muestre la vieja: 01, 02, 05, 10, 12, 13, 15, 16, 46 y 57 a 59. Por ejemplo: `tapa-cafetera-62-blanca`, `tapa-cafetera-90-negra-solo` y `vaso-papel-44-azul`.
+  - La 03 y la 08 se regresaron porque no son iguales a la tapa real. La 03 tiene las letras mal escritas ("CNPION CONTENTS HOI", "LOSK TURH") y la 08 no tiene la palanca de la solapa. Quedaron en la carpeta como "REHACER (intento 1)".
+  - La 10 y la 15 tienen el panel verde en otro ángulo, pero sí se pusieron. Se le sugirió rehacerlas para que la tienda quede pareja.
+  - Las originales están en `Fotos Greenova para Gemini/Listas` y sus referencias se marcaron "YA ESTÁ".
