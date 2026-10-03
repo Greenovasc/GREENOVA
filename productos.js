@@ -325,7 +325,7 @@ window.GREENOVA = (function () {
         { paq: 25, caja: 500, pPaq: 59.48, pCaja: 1119.59, boca: 115, esp: "Boca 115 mm", sku: "GN-CONTENEDOR-PAPEL-05", img: null },
         { paq: 25, caja: 500, pPaq: 74.83, pCaja: 1426.55, boca: 115, esp: "Boca 115 mm", sku: "GN-CONTENEDOR-PAPEL-06", img: null }
       ] } },
-    { id: "tapa-contenedor", nombre: "Tapa para contenedor de papel", cat: "tapas-contenedor", mat: ["pet", "papel"], img: "bowl-domo", uso: "Tapa para contenedor de papel", fotoPropia: true,
+    { id: "tapa-contenedor", nombre: "Tapa para contenedor de papel", cat: "tapas-contenedor", mat: ["pet", "papel"], img: "foto-pendiente", uso: "Tapa para contenedor de papel",
       desc: "Tapas para el contenedor de papel blanco: domo de PET con orificio, de papel o plana de PET, según la boca.",
       v: ["Domo PET con orificio · boca 75 mm", "Domo PET con orificio · boca 95 mm", "Domo PET con orificio · boca 101 mm", "De papel · boca 115 mm", "Plana PET · boca 115 mm"],
       venta: { linea: "pet", tam: [

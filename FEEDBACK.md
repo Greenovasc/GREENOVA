@@ -226,3 +226,4 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
 - **Fotos con comida nuevas:** 34 a 41, en `Fotos con comida (tienda y asistente)/`. Claves de `FOTOS_USO`:
   - 34 contenedor-papel · 35 caja-kraft · 36 charola-papas · 37 contenedor-pet
   - 38 contenedor-pet-pastel · 39 ensaladera-pet · 40 cono-crepa · 41 bolsa-semikraft
+- (2026-10-03) Gabriel no entendía por qué salían "esas tapas" con los contenedores. Sí son las suyas (Hoja1, filas 100, 103, 105, 108 y 109, debajo de cada contenedor), pero la foto era la de un bowl con domo y el letrero decía "vasos". Ahora dice "Tapas para estos contenedores" y la tapa usa "Foto en proceso". Se agregó a la lista de fotos reales que faltan.

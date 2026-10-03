@@ -645,7 +645,9 @@
     box.hidden = tapas.length === 0;
     if (!tapas.length) { box.innerHTML = ""; return; }
     box.innerHTML =
-      '<p class="tapas-rel__label">Tapas para estos vasos</p>' +
+      '<p class="tapas-rel__label">' + (vasos.every(function (p) { return p.cat === "contenedores"; })
+        ? "Tapas para estos contenedores" : vasos.some(function (p) { return p.cat === "contenedores"; })
+        ? "Tapas que les quedan" : "Tapas para estos vasos") + "</p>" +
       '<div class="tapas-rel__list">' +
       tapas.map(function (x) {
         return '<a class="tapas-rel__chip" href="producto.html?id=' + x.p.id + "&boca=" + x.bocas[0] + '">' +
