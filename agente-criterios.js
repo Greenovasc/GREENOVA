@@ -48,7 +48,7 @@ window.GREENOVA_AGENTE = (function () {
      --------------------------------------------------------------------- */
   var HECHOS = [
     { t: "Contacto y horario de ventas",
-      c: "Correo: ventas@greenovasc.com.mx. Teléfonos: 55 2260 1113 y 55 7051 1149. Sitio: www.greenovasc.com.mx. GreeNova SC está en la Ciudad de México." },
+      c: "Correo: ventas@greenovasc.com.mx. Teléfonos: 55 2260 1113 y 55 7051 1149. Sitio: www.greenovasc.com.mx. GreeNova SC está en Cacamatzin 21, Arenal 1ra Secc., Venustiano Carranza, 15600, Ciudad de México." },
 
     { t: "Cómo se compra: paquete o caja",
       c: "En la tienda cada producto se compra por paquete o por caja. Cada medida dice cuántas piezas trae el paquete y cuántas la caja, y su precio con IVA incluido. El pedido mínimo es un paquete." },

@@ -677,6 +677,21 @@
     var cat = qs.get("cat");
     var q = qs.get("q");
     var oz = qs.get("oz");
+    /* Del menú Productos llegan con ?pide= los que no se venden en línea
+       (Gabriel, 2026-10-03): aviso arriba de la rejilla y el formulario
+       "Envía tu lista" ya trae el producto escrito. */
+    var PIDE = ["Popotes", "Contenedores kraft", "Charolas y cajas", "Ensaladeras", "Portavasos", "Bolsas kraft"];
+    var pide = qs.get("pide");
+    if (pide && PIDE.indexOf(pide) > -1 && $("pide")) {
+      $("pide-t").textContent = pide + ": cotiza ya";
+      $("pide").hidden = false;
+      var msj = $("s-mensaje");
+      if (msj && !msj.value) msj.value = "Me interesa: " + pide + ". ";
+      window.addEventListener("DOMContentLoaded", function () {
+        var c = document.getElementById("catalogo");
+        if (c) c.scrollIntoView({ block: "start" });
+      });
+    }
     if (cat && CATS.some(function (c) { return c.id === cat; })) state.cat = cat;
     if (oz && /^\d+$/.test(oz)) state.oz = [oz];
     if (q) {
