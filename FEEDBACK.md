@@ -159,3 +159,4 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
 - Prompts de Gemini (en el chat) para las 3 fotos nuevas de Servicios, con "TU LOGO", y para el vaso del encabezado de la tienda: lleno, con vapor, que venda emoción.
 - (2026-10-03) Serigrafía en Servicios: foto nueva de Gemini (estudio de diseño con vasos impresos con "TU LOGO"), recortada para dejar fuera las notas del cuaderno (`serv-serigrafia.webp`).
 - (2026-10-03) Bolsas en Servicios: foto nueva de Gemini (3 bolsas kraft con fuelle, dos con "TU LOGO") (`serv-bolsas.webp`). El vaso del encabezado de la tienda salió feo: se le dio otro prompt.
+- (2026-10-03) Contenedores a medida en Servicios: foto nueva de Gemini (diseño del troquel en tableta, contenedores kraft y blancos, uno con "TU LOGO"), recortada para dejar fuera las muestras de papel con texto (`serv-contenedores.webp`). Ya no queda ninguna foto de "YOUR LOGO" en la landing.
