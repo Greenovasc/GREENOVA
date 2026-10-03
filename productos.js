@@ -15,7 +15,10 @@ window.GREENOVA = (function () {
     { id: "fajillas", nombre: "Fajillas", icono: "i-package" },
     { id: "removedores", nombre: "Removedores", icono: "i-fork-knife" },
     { id: "vasos-pet", nombre: "Vasos PET y PP", icono: "i-cup-cold" },
-    { id: "tapas-pet", nombre: "Tapas para vaso PET", icono: "i-circle-half" }
+    { id: "tapas-pet", nombre: "Tapas para vaso PET", icono: "i-circle-half" },
+    { id: "popotes", nombre: "Popotes", icono: "i-cup-cold" },
+    { id: "portavasos", nombre: "Portavasos", icono: "i-coffee" },
+    { id: "servilletas-papel", nombre: "Servilletas y papel", icono: "i-leaf" }
   ];
 
   /* Materiales -> etiqueta visible. */
@@ -25,7 +28,9 @@ window.GREENOVA = (function () {
     "madera": "Madera",
     "pet": "PET",
     "pp": "Polipropileno",
-    "ps": "Poliestireno"
+    "ps": "Poliestireno",
+    "tapioca": "Tapioca",
+    "carton": "Cartón"
   };
 
   /* v = medidas u opciones | venta.tam = una entrada por medida:
@@ -254,6 +259,32 @@ window.GREENOVA = (function () {
         { paq: 50, caja: 1000, pPaq: 55.83, pCaja: 976.51, boca: 95, esp: "Boca 95 mm", sku: "GN-TAPA-PET-SORBE-TAPON-02", img: "tienda-49" },
         { paq: 50, caja: 1000, pPaq: 62.77, pCaja: 1115.48, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-SORBE-TAPON-03", img: "tienda-50" }
       ] } },
+
+    /* ---------------- popotes, portavasos, servilletas y papel ---------------- */
+    { id: "popote-tapioca", nombre: "Popote de tapioca biodegradable", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca", uso: "Popote para bebida fría",
+      desc: "Popote biodegradable de tapioca, de 21 cm. Se cotiza por caja.",
+      v: ["21 cm · caja de 5 kg"] },
+    { id: "popote-tapioca-estuchado", nombre: "Popote de tapioca estuchado", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca-estuchado", uso: "Popote para bebida fría",
+      desc: "Popote biodegradable de tapioca, de 21 cm, en sobre individual. Se cotiza por caja.",
+      v: ["21 cm · caja de 2,000 pzs"] },
+    { id: "popote-cuchara", nombre: "Popote cuchara biodegradable", cat: "popotes", mat: [], img: "foto-pendiente", uso: "Popote para raspados, nieves y frappés",
+      desc: "Popote biodegradable de 26 cm con punta de cuchara. Se cotiza por caja.",
+      v: ["26 cm · caja de 5 kg"] },
+    { id: "portavaso-charola", nombre: "Portavasos charola", cat: "portavasos", mat: ["carton"], img: "portavaso-charola-4", uso: "Para llevar 2 o 4 bebidas", fotoPropia: true,
+      desc: "Charola portavasos para llevar 2 o 4 bebidas. Se cotiza por caja.",
+      v: ["2 espacios · caja de 600 pzs", "4 espacios · caja de 300 pzs"] },
+    { id: "portavaso-asa", nombre: "Portavasos con asa", cat: "portavasos", mat: ["carton"], img: "portavaso-caja-kraft", uso: "Para llevar 2 o 4 bebidas", fotoPropia: true,
+      desc: "Portavasos de cartón con asa, para llevar 2 o 4 bebidas. Se cotiza por caja.",
+      v: ["2 espacios · caja de 250 pzs", "4 espacios · caja de 200 pzs"] },
+    { id: "servilleta-larga", nombre: "Servilleta larga", cat: "servilletas-papel", mat: ["papel"], img: "servilleta-larga", uso: "Servilleta para mesa o para llevar",
+      desc: "Servilleta de papel de 39.0 x 37.5 cm. Se cotiza por caja.",
+      v: ["39.0 x 37.5 cm · caja de 1,200 pzs"] },
+    { id: "papel-encerado", nombre: "Papel grado alimenticio encerado", cat: "servilletas-papel", mat: ["papel"], img: "papel-encerado-kraft", uso: "Para envolver alimentos",
+      desc: "Papel encerado grado alimenticio, para envolver alimentos. Se cotiza por caja.",
+      v: ["Caja de 1,000 pzs"] },
+    { id: "papel-rh", nombre: "Papel grado alimenticio RH", cat: "servilletas-papel", mat: ["papel"], img: "papel-rh", uso: "Para envolver alimentos",
+      desc: "Papel grado alimenticio RH, para envolver alimentos. Se cotiza por caja.",
+      v: ["Caja de 1,000 pzs"] },
 
   ];
 

@@ -174,7 +174,7 @@
         });
         return "<li><div class=\"cuenta__ped\"><b>" + esc(p.folio || "Pedido") + "</b><span>" + fecha(p.fecha) + "</span></div>" +
           (arts.length ? "<p>" + arts.join("<br>") + "</p>" : "") +
-          (p.total ? '<p class="cuenta__total">' + money(p.total) + " MXN · IVA incluido</p>" : "") + "</li>";
+          (p.total ? '<p class="cuenta__total">' + money(p.total) + " MXN</p>" : "") + "</li>";
       }).join("") + "</ul>";
     }).catch(function () {
       var caja = cuerpo && cuerpo.querySelector(".cuenta__pedidos");

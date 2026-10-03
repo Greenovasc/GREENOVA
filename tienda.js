@@ -89,7 +89,9 @@
      elegida resaltada. Sirve a la tarjeta y al carrito. */
   function preciosHTML(p, t, uSel) {
     var us = unidades(t);
-    if (!us.length) return '<p class="precios__nada">Precio por confirmar</p>';
+    /* Sin precio en la lista (popotes, portavasos, servilletas…): se cotiza. */
+    if (!us.length) return '<p class="precios__nada"><b>Se cotiza.</b> Lo surtimos sobre pedido: dinos cuánto ' +
+      "necesitas y te mandamos precio y tiempo de entrega.</p>";
     var promo = PROMOS[p.id];
     return us.map(function (u) {
       var base = u === "paq" ? t.pPaq : t.pCaja;
@@ -252,8 +254,8 @@
   /* Lo que se cotiza pero no está en la tienda: si lo buscan (aunque sea mal
      escrito) no se confunde con otra palabra; sale "Sin resultados" con el
      botón para pedirlo. */
-  var FUERA = ["bolsa", "popote", "contenedor", "charola", "caja", "ensaladera", "portavaso", "servilleta",
-               "bowl", "plato", "cuchara", "tenedor", "cuchillo", "cubierto", "almeja", "bisagra", "encerado",
+  var FUERA = ["bolsa", "contenedor", "charola", "caja", "ensaladera",
+               "bowl", "plato", "cuchara", "tenedor", "cuchillo", "cubierto", "almeja", "bisagra",
                "domo pastel", "cono", "crepa", "souffle", "bagazo", "helado", "pizza"]
     .map(function (w) { return { w: w, s: suena(w) }; });
   var VOCAB = null;
@@ -352,12 +354,18 @@
         });
       }
     }
-    return ordena(out, false);
+    /* Lo que se llama como lo buscado va primero: quien busca "popote" quiere
+       popotes antes que las tapas que dicen "con ranura para popote". */
+    var porNombre = terms.length ? out.filter(function (p) {
+      var n = norm(p.nombre);
+      return terms.every(function (t) { return n.indexOf(t) > -1; });
+    }) : [];
+    return ordena(out, false, porNombre);
   }
 
   /* El orden que eligió la persona. En "todos", la búsqueda por uso respeta
      el orden de la recomendación (lo más útil primero). */
-  function ordena(out, porUso) {
+  function ordena(out, porUso, porNombre) {
     var order = CATS.map(function (c) { return c.id; });
     var base = out.slice();
     function relevancia(a, b) {
@@ -368,8 +376,12 @@
     function catalogo(a, b) {
       return (order.indexOf(a.cat) - order.indexOf(b.cat)) || (PRODS.indexOf(a) - PRODS.indexOf(b));
     }
+    var primero = porNombre || [];
     out.sort(function (a, b) {
-      if (state.sort === "todos") return porUso ? relevancia(a, b) : catalogo(a, b);
+      if (state.sort === "todos") {
+        if (porUso) return relevancia(a, b);
+        return ((primero.indexOf(b) > -1) - (primero.indexOf(a) > -1)) || catalogo(a, b);
+      }
       if (state.sort === "az") return a.nombre.localeCompare(b.nombre, "es");
       if (state.sort === "za") return b.nombre.localeCompare(a.nombre, "es");
       if (state.sort === "precio") {
@@ -440,7 +452,14 @@
      (vasos, tapas o accesorios, y de qué material: si es PET dice PET) y sus
      especificaciones. Paquete, caja y precio van dentro, en la ficha. */
   var TIPO = { "vasos-papel": "Vasos", "vasos-pet": "Vasos", "tapas-papel": "Tapas",
-               "tapas-pet": "Tapas", "fajillas": "Accesorios", "removedores": "Accesorios" };
+               "tapas-pet": "Tapas", "fajillas": "Accesorios", "removedores": "Accesorios",
+               "popotes": "Accesorios", "portavasos": "Accesorios", "servilletas-papel": "Accesorios" };
+
+  /* Lo que no tiene ningún precio en la lista se cotiza (Gabriel, 2026-10-03:
+     los popotes tienen que salir en la tienda aunque no tengan precio). */
+  function seCotiza(p) {
+    return !(p.venta && p.venta.tam.some(function (t) { return unidades(t).length > 0; }));
+  }
 
   function lista(xs) {
     return xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + " y " + xs[xs.length - 1];
@@ -465,7 +484,8 @@
     var agotadas = p.agotadas || [];
     var tipo = TIPO[p.cat];
     var tags = (tipo ? '<span class="tag tag--tipo">' + tipo + "</span>" : "") +
-      p.mat.map(function (m) { return '<span class="tag tag--' + m + '">' + esc(MATS[m]) + "</span>"; }).join("");
+      p.mat.map(function (m) { return '<span class="tag tag--' + m + '">' + esc(MATS[m]) + "</span>"; }).join("") +
+      (seCotiza(p) ? '<span class="tag tag--cotiza">Se cotiza</span>' : "");
     var url = "producto.html?id=" + p.id;
     /* La foto con comida (FOTOS_USO), si ya la tiene: sale al pasar el cursor,
        como en las tarjetas de la portada. */
@@ -758,9 +778,29 @@
     /* Del menú Productos llegan con ?pide= los que no se venden en línea
        (Gabriel, 2026-10-03): aviso arriba de la rejilla y el formulario
        "Envía tu lista" ya trae el producto escrito. */
-    var PIDE = ["Popotes", "Contenedores kraft", "Charolas y cajas", "Ensaladeras", "Portavasos", "Bolsas kraft",
-                "Servilletas", "Papel grado alimenticio"];
+    var PIDE = ["Contenedores kraft", "Contenedores de papel", "Charolas y cajas", "Ensaladeras", "Bolsas kraft",
+                "Conos para crepa", "Soufflés"];
+    /* Popotes, portavasos, servilletas y papel ya están en la tienda (se
+       cotizan desde su ficha): los enlaces viejos abren su categoría. */
+    var YA_EN_TIENDA = { "Popotes": "popotes", "Portavasos": "portavasos",
+                         "Servilletas": "servilletas-papel", "Papel grado alimenticio": "servilletas-papel" };
     var pide = qs.get("pide");
+    if (pide && YA_EN_TIENDA[pide] && !cat) cat = YA_EN_TIENDA[pide];
+    /* ?cotiza=<id>&v=<medida>: viene del botón "Pedir cotización" de la ficha.
+       El formulario de abajo ya trae el producto escrito. */
+    var cotiza = prodDe(qs.get("cotiza") || "");
+    if (cotiza) {
+      var vc = Number(qs.get("v")) || 0;
+      var medida = cotiza.v[vc] || cotiza.v[0];
+      var nota = $("s-mensaje");
+      if (nota && !nota.value) nota.value = "Me interesa: " + cotiza.nombre + " (" + medida + "). Necesito: ";
+      /* El #cotizar-tienda del enlace a veces llega antes de que la rejilla
+         termine de pintarse; se baja al formulario ya con todo en su lugar. */
+      window.addEventListener("load", function () {
+        var form = document.getElementById("cotizar-tienda");
+        if (form) form.scrollIntoView({ block: "start" });
+      });
+    }
     if (pide && PIDE.indexOf(pide) > -1 && $("pide")) {
       $("pide-t").textContent = pide + ": cotiza ya";
       $("pide").hidden = false;

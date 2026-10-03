@@ -243,7 +243,7 @@
         '<div class="precios precios--ficha" data-role="precios"></div>' +
       "</div>" +
 
-      '<div class="ficha__bloque">' +
+      '<div class="ficha__bloque ficha__bloque--comprar">' +
         '<p class="ficha__label">Comprar por</p>' +
         '<div class="seg seg--ficha" data-role="unidad" role="group" aria-label="Comprar por"></div>' +
         '<div class="ficha__cant">' +
@@ -260,6 +260,12 @@
       "</div>" +
 
       '<div class="ficha__cta">' +
+        /* Lo que no tiene precio en la lista (popotes, portavasos…) no va al
+           carrito: se pide cotización con el producto ya escrito. */
+        '<a class="btn btn--primary btn--block ficha__cotizar" id="btn-cotizar" href="tienda.html?cotiza=' + encodeURIComponent(p.id) + '#cotizar-tienda">' +
+          '<span class="btn__label">Pedir cotización</span>' +
+          '<svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg>' +
+        "</a>" +
         '<button class="btn btn--ghost btn--block pcard__add" type="button" data-role="add" data-texto="Añadir al carrito">' +
           '<span class="btn__label">Añadir al carrito</span>' +
           '<svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg>' +
@@ -292,13 +298,13 @@
   function pintaCars() {
     var i = selIndex(), t = TAM[i] || {};
     var cars = [];
-    cars.push({ ico: "i-package", t: "Material", c: p.mat.map(function (m) { return MATS[m]; }).join(", ") });
+    if (p.mat.length) cars.push({ ico: "i-package", t: "Material", c: p.mat.map(function (m) { return MATS[m]; }).join(", ") });
     if (t.esp) cars.push({ ico: "i-ruler", t: "Especificaciones", c: t.esp });
     if (p.uso) cars.push({ ico: "i-coffee", t: "Uso", c: p.uso });
     /* Sin "Presentación": las piezas por paquete y por caja ya salen en el
        precio de arriba (Gabriel, 2026-09-28). */
     cars.push({ ico: "i-package", t: "Pedido mínimo",
-                c: t.paq && t.pPaq != null ? "1 paquete" : t.caja && t.pCaja != null ? "1 caja" : "Por confirmar" });
+                c: t.paq && t.pPaq != null ? "1 paquete" : t.caja && t.pCaja != null ? "1 caja" : "Se cotiza" });
     cars.push({ ico: "i-truck", t: "Envío", c: "A nivel nacional, con salida desde la Ciudad de México." });
     if (p.personalizable) {
       cars.push({ ico: "i-paint-brush-broad", t: "Personalización", c: "Se puede imprimir tu logo en serigrafía." });
@@ -316,7 +322,12 @@
     var n = Math.min(999, Math.max(1, parseInt(cantEl.value, 10) || 1));
     var piezas = t && u ? (u === "paq" ? t.paq : t.caja) * n : 0;
     var sin = precio == null || agotada(i);
-    totalEl.innerHTML = sin ? "" : "Total: <b>" + money(precio * n) + " MXN</b> · " + fmt(piezas) + " piezas · IVA incluido";
+    /* Medida sin ningún precio: modo cotización (sin carrito ni pago). */
+    var cotiza = !(t && ((t.paq && t.pPaq != null) || (t.caja && t.pCaja != null)));
+    caja.classList.toggle("ficha__compra--cotiza", cotiza);
+    document.getElementById("btn-cotizar").href =
+      "tienda.html?cotiza=" + encodeURIComponent(p.id) + "&v=" + i + "#cotizar-tienda";
+    totalEl.innerHTML = sin ? "" : "Total: <b>" + money(precio * n) + " MXN</b> · " + fmt(piezas) + " piezas";
     btnComprar.disabled = sin;
     document.getElementById("nota-agotada").hidden = !agotada(i);
   }

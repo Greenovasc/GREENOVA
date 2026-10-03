@@ -172,3 +172,19 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
   01 vaso-papel-blanco · 02 vaso-papel-blanco|4 oz · 03 vaso-papel-negro · 04 vaso-papel-kraft · 05 vaso-papel-doble-pared · 06 vaso-papel-color-44 · 07 tapa-cafetera-62 · 08 tapa-cafetera-80 · 09 tapa-cafetera-90 · 10 tapa-papel-90 · 11 fajilla-kraft · 12 removedor-madera · 13 vaso-pet-78 · 14 vaso-pet-92 · 15 vaso-pet-95 · 16 vaso-pet-98 · 17 vaso-pet-107 · 18 vaso-pet-u · 19 vaso-pp · 20 tapa-pet-plana-ranura · 21 tapa-pet-plana-sin-ranura · 22 tapa-pet-domo · 23 tapa-pet-domo-oso · 24 tapa-pet-sorbe · 25 tapa-pet-sorbe-tapon · 26 portavaso-charola · 27 portavaso-asa · 28 servilleta-larga · 29 papel-encerado · 30 papel-rh · 31 popote-tapioca · 32 popote-tapioca-estuchado · 33 popote-cuchara
 - Miniaturas de servilleta, papel RH y popotes, sacadas del `Catálogo_Greenovasc_2026-3.pdf` (`assets/prod/servilleta-larga`, `papel-rh`, `popote-tapioca`, `popote-tapioca-estuchado`). El popote cuchara no trae foto en el PDF.
 - Gabriel confirmó que la cuenta de Instagram es @greenovasc.
+
+## Ronda 15 (2026-10-03)
+
+- Gabriel: "que todos los errores de ortografía los entienda el agente". El asistente corrige cada palabra que no conoce por la más parecida del catálogo o de la guía de usos. Compara cómo suenan (b = v, s = z = c, sin h, sin plural) y tolera 1 a 3 letras de diferencia. Ejemplos: "vachos" → vasos, "eladería" → heladería, "pissería" → pizzería, "frape" → frappé. Las ciudades y las palabras comunes no se tocan. El corrector está en `agente-criterios.js` (`corrector`) y también lo usa el buscador de la tienda para los usos.
+- "No solo heladerías y cafeterías: pizzerías y todos los comercios que nos podrían necesitar". Ahora son 25 usos: escuelas, oficinas y hospitales, hoteles, frappés, tamales y atole, helado, cafetería, jugos, bubble tea, aguas frescas, mariscos, fruta y postres, pizzería, hamburguesas y alitas, tacos y antojitos, ensaladas, sushi, panadería, crepas, cine, bar, eventos, tiendas de conveniencia y gasolineras, restaurantes y negocio nuevo. Solo recomiendan productos que existen en el Excel: lo de la Hoja1 (contenedores de papel, cajas kraft, ensaladeras, soufflé, cono para crepa, charola para papas, bolsas) sale como "se cotiza". El orden importa: primero lo específico y al final lo genérico.
+- El asistente también contesta sin la IA:
+  - "¿qué tapa va con el vaso de 12 oz?", por la boca del vaso;
+  - precios con medida (lista de precios) y sin medida (rango y "¿de qué medida?");
+  - dónde estamos.
+- "Evita decir IVA muchas veces". Queda una mención por página, donde están los precios: en el precio de la ficha, en el total del carrito y en el sello de pagar.html. Se quitó del pie de todas las páginas, del encabezado de la tienda, del subtítulo de pagar, del total de la ficha y del historial de pedidos.
+- "¿Por qué los popotes no salen en la página de ventas?" Porque no tienen precio en el catálogo, que dice "Cotizar". Ahora sí salen en la tienda, como productos de las categorías Popotes, Portavasos y Servilletas y papel:
+  - Son 8 productos: popote de tapioca, popote estuchado, popote cuchara, portavasos charola, portavasos con asa, servilleta larga, papel encerado y papel RH.
+  - Las cajas son las del PDF 2026-3.
+  - Llevan la etiqueta "Se cotiza". En su ficha, en lugar de carrito y pago, sale "Pedir cotización", que abre el formulario con el producto y la medida ya escritos (`tienda.html?cotiza=<id>&v=<medida>`).
+  - Los enlaces viejos `?pide=Popotes` y `?pide=Portavasos` abren su categoría.
+  - `main.py` acepta las líneas `tapioca` y `carton`, por si un día se les pone precio en el panel.

@@ -49,7 +49,11 @@
      imprimir / imprime / impresión caen en la misma raíz, igual que
      envío / envíos / enviar o contenedor / contenedores. Es tosco, pero para
      un corpus de este tamaño funciona mejor que exigir prefijo exacto. */
-  function raiz(t) { return t.length > 6 ? t.slice(0, 6) : t; }
+  function raiz(t) {
+    /* sin plural: "vasos" y "vaso" son la misma palabra */
+    if (t.length > 4 && /[^s]s$/.test(t)) t = t.slice(0, -1);
+    return t.length > 6 ? t.slice(0, 6) : t;
+  }
 
   function raices(s) { return tokens(s).map(raiz); }
 
@@ -106,8 +110,21 @@
   /* Pedido mínimo: un paquete; si el producto solo se vende por caja, una caja. */
   function minimoTexto(p) {
     var tam = (p.venta && p.venta.tam) || [];
+    if (!tienePrecio(p)) return "se cotiza";
     return tam.some(function (t) { return t.paq && t.pPaq != null; }) ? "1 paquete" : "1 caja";
   }
+
+  /* Popotes, portavasos, servilletas y papel están en la tienda sin precio:
+     se cotizan desde su ficha. */
+  function tienePrecio(p) {
+    return !!(p.venta && p.venta.tam.some(function (t) {
+      return (t.paq && t.pPaq != null) || (t.caja && t.pCaja != null);
+    }));
+  }
+
+  /* "Tapa PET domo" -> "tapa PET domo": minúscula solo la primera letra, para
+     no escribir "pet" o "rh". */
+  function minus(s) { return s.charAt(0).toLowerCase() + s.slice(1); }
 
   function pesos(n) {
     return "$" + n.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -120,7 +137,7 @@
       var t = tam[k] || {}, partes = [];
       if (t.paq && t.pPaq != null) partes.push("paquete de " + t.paq.toLocaleString("es-MX") + " pzs " + pesos(t.pPaq));
       if (t.caja && t.pCaja != null) partes.push("caja de " + t.caja.toLocaleString("es-MX") + " pzs " + pesos(t.pCaja));
-      return v + (t.esp ? " (" + t.esp + ")" : "") + (partes.length ? ": " + partes.join(", ") : ": precio por confirmar");
+      return v + (t.esp ? " (" + t.esp + ")" : "") + (partes.length ? ": " + partes.join(", ") : ": se cotiza");
     }).join("; ");
   }
 
@@ -135,7 +152,8 @@
       id: p.id,
       titulo: p.nombre,
       cuerpo: p.desc + " Categoría: " + cat + ". Material: " + mats + "." +
-              " Medidas y precios con IVA incluido: " + medidasTexto(p) + "." +
+              (tienePrecio(p) ? " Medidas y precios con IVA incluido: " : " Medidas (no tiene precio en línea, se cotiza desde su ficha): ") +
+              medidasTexto(p) + "." +
               " Pedido mínimo: " + minimoTexto(p) + ".",
       enlace: "tienda.html?cat=" + p.cat,
       prod: p
@@ -163,6 +181,24 @@
     IDF[w] = Math.log(1 + DOCS.length / IDF[w]);
   });
 
+  /* ======================= faltas de ortografía =======================
+     Antes de todo, cada palabra que el asistente no conoce se cambia por la
+     del catálogo o de la guía de usos que más se le parece ("vachos" -> vaso,
+     "eladeria" -> heladeria). Las reglas están en agente-criterios.js. */
+  var corrige = (function () {
+    if (!CFG.corrector) return function (t) { return t; };
+    var fuertes = [];
+    PRODS.forEach(function (p) { fuertes.push(p.nombre); });
+    CATS.forEach(function (c) { fuertes.push(c.nombre); });
+    Object.keys(MATS).forEach(function (m) { fuertes.push(MATS[m]); });
+    (CFG.GIROS || []).forEach(function (g) { fuertes = fuertes.concat(g.dice); });
+    (CFG.SINONIMOS || []).forEach(function (g) { fuertes = fuertes.concat(g.dice); });
+    Object.keys(CFG.COTIZA || {}).forEach(function (k) { fuertes.push(CFG.COTIZA[k].nombre); });
+    fuertes = fuertes.concat(["tapa", "tapas", "vaso", "vasos", "precio", "envio", "logo", "serigrafia"]);
+    var conocidas = DOCS.map(function (d) { return d.titulo + " " + d.cuerpo; });
+    return CFG.corrector(fuertes, conocidas);
+  })();
+
   function buscar(pregunta, k) {
     /* Sin repetidos: si la equivalencia agrega una palabra que la persona ya
        había escrito, no debe contar doble. */
@@ -179,6 +215,9 @@
       });
       /* el nombre completo dentro de la pregunta es señal fuerte */
       if (nq.indexOf(norm(d.titulo)) > -1) s += 14;
+      /* Lo que es el producto va en su primera palabra: quien escribe "vasos"
+         quiere vasos, no "Tapa para vaso…". */
+      if (d.tipo === "producto" && qs.indexOf(raiz(tokens(d.titulo)[0] || "")) > -1) s += 6;
       return { d: d, s: s / Math.sqrt(qs.length) };
     }).filter(function (x) { return x.s > 0; });
 
@@ -288,14 +327,14 @@
     var t = (p.venta && p.venta.tam && p.venta.tam[k]) || {};
     var f = CFG.fotoUso(p.id, p.v[k]);
     return {
-      titulo: p.nombre, medida: r.v, por: r.por,
+      titulo: p.nombre, medida: r.v, por: r.por, cotiza: !tienePrecio(p),
       img: f ? f.src : "assets/prod/" + (t.img || p.img) + ".webp",
       enlace: "producto.html?id=" + encodeURIComponent(p.id) + "&v=" + k
     };
   }
 
   function respuestaGiro(pregunta) {
-    var giro = CFG.usoDe ? CFG.usoDe(pregunta) : null;
+    var giro = CFG.usoDe ? CFG.usoDe(pregunta, true) : null;
     if (!giro) return null;
 
     var tarjetas = giro.recs.map(tarjetaDe).filter(Boolean);
@@ -311,7 +350,7 @@
            "¿Cuántos necesitas de cada uno? También puedes marcar al " + TEL + ".",
       /* Para la IA, si la plática sigue: la misma recomendación en palabras. */
       memoria: giro.intro + " " + tarjetas.map(function (x) {
-        return x.titulo.toLowerCase() + " " + x.medida + (x.cotiza ? ", se cotiza" : "") + " (" + x.por + ")";
+        return minus(x.titulo) + " " + x.medida + (x.cotiza ? ", se cotiza" : "") + " (" + x.por + ")";
       }).join("; "),
       fuente: "Recomendación · " + giro.nombre,
       enlace: enTienda ? "tienda.html?q=" + encodeURIComponent(giro.dice[0]) : null,
@@ -343,12 +382,152 @@
     var p = d.prod;
     var partes = [p.nombre + ". " + p.desc];
     partes.push("Medidas: " + p.v.join(" · ") + ".");
-    partes.push("Se compra por paquete o por caja, IVA incluido. Pedido mínimo: " + minimoTexto(p) + ".");
+    partes.push(tienePrecio(p)
+      ? "Se compra por paquete o por caja. Pedido mínimo: " + minimoTexto(p) + "."
+      : "Se cotiza: en su ficha está el botón «Pedir cotización».");
     return {
       texto: partes.join(" "),
       fuente: "Catálogo",
       enlace: d.enlace,
       enlaceTexto: "Verlo en la tienda"
+    };
+  }
+
+  /* ======================= qué tapa le queda =======================
+     "¿Qué tapa va con el vaso de 12 oz?": la tapa se elige por la boca del
+     vaso. Se buscan los vasos de esas onzas, sus bocas, y las tapas de su
+     misma familia con esa boca. */
+  var FAMILIA_TAPAS = { "vasos-papel": "tapas-papel", "vasos-pet": "tapas-pet" };
+
+  function respuestaTapa(pregunta) {
+    var n = norm(pregunta);
+    if (!/\btapa/.test(n) || PIDE_PRECIO.test(n)) return null;
+    var oz = (n.match(/(\d+)\s*(?:oz|onzas?)\b/) || [])[1];
+    if (!oz) return null;
+    var soloPet = /\b(pet|plastico|transparente|frio|fria|frappe|pp)\b/.test(n);
+    var soloPapel = /\b(papel|cafe|caliente|kraft)\b/.test(n) && !soloPet;
+
+    var bocas = {};   // familia de tapas -> { boca: true }
+    PRODS.forEach(function (p) {
+      var fam = FAMILIA_TAPAS[p.cat];
+      if (!fam || !p.venta) return;
+      if ((soloPet && p.cat !== "vasos-pet") || (soloPapel && p.cat !== "vasos-papel")) return;
+      p.v.forEach(function (v, k) {
+        var b = p.venta.tam[k] && p.venta.tam[k].boca;
+        if (b && new RegExp("(^|· )" + oz + " oz\\b").test(v)) (bocas[fam] = bocas[fam] || {})[b] = true;
+      });
+    });
+
+    var lineas = [];
+    [["tapas-papel", "vaso de papel"], ["tapas-pet", "vaso PET"]].forEach(function (f) {
+      var bs = Object.keys(bocas[f[0]] || {}).map(Number).sort(function (a, b) { return a - b; });
+      bs.forEach(function (b) {
+        var tapas = PRODS.filter(function (tp) {
+          return tp.cat === f[0] && tp.venta && tp.venta.tam.some(function (t) { return t.boca === b; });
+        }).map(function (tp) { return minus(tp.nombre); });
+        if (tapas.length) {
+          lineas.push("En " + f[1] + " de " + oz + " oz con boca de " + b + " mm: " +
+            (tapas.length > 1 ? tapas.slice(0, -1).join(", ") + " o " + tapas[tapas.length - 1] : tapas[0]) + ".");
+        }
+      });
+    });
+    if (!lineas.length) return null;
+
+    return {
+      texto: "La tapa va por la boca del vaso, no por las onzas.\n" + lineas.join("\n"),
+      fuente: "Tapas por boca",
+      enlace: "tienda.html?q=" + encodeURIComponent(oz + " oz"),
+      enlaceTexto: "Ver vasos y tapas de " + oz + " oz"
+    };
+  }
+
+  /* ======================= precios =======================
+     "¿Cuánto cuesta el vaso de 12 oz?": si se dice la medida (onzas o boca),
+     el precio sale directo del catálogo, sin esperar a la IA. Si no se dice,
+     o no hay producto con esa medida, contesta la IA. */
+  var PIDE_PRECIO = /\b(precio|precios|cuesta|cuestan|costo|costos|cuanto sale|cuanto salen|vale|valen)\b/;
+
+  function respuestaPrecio(pregunta, hits) {
+    var n = norm(pregunta);
+    if (!PIDE_PRECIO.test(n)) return null;
+    var oz = (n.match(/(\d+)\s*oz/) || n.match(/(\d+)\s*onzas?/) || [])[1];
+    var boca = (n.match(/boca\s*(?:de\s*)?(\d+)/) || [])[1];
+    if (!oz && !boca) return precioSinMedida(hits);
+
+    var lineas = [];
+    hits.forEach(function (h) {
+      if (h.d.tipo !== "producto" || h.s < 4 || lineas.length >= 4) return;
+      var p = h.d.prod, tam = (p.venta && p.venta.tam) || [];
+      p.v.forEach(function (v, k) {
+        if (lineas.length >= 4) return;
+        var t = tam[k] || {};
+        var pega = oz ? new RegExp("(^|· )" + oz + " oz\\b").test(v) : String(t.boca) === boca;
+        if (!pega) return;
+        var partes = [];
+        if (t.paq && t.pPaq != null) partes.push("paquete de " + t.paq.toLocaleString("es-MX") + " pzs " + pesos(t.pPaq));
+        if (t.caja && t.pCaja != null) partes.push("caja de " + t.caja.toLocaleString("es-MX") + " pzs " + pesos(t.pCaja));
+        lineas.push(p.nombre + " (" + v + "): " + (partes.length ? partes.join(" · ") : "se cotiza") + ".");
+      });
+    });
+    if (!lineas.length) return null;
+
+    return {
+      texto: lineas.join("\n") + "\nPrecios con IVA incluido. ¿De cuál necesitas y cuántos?",
+      fuente: "Precios del catálogo",
+      enlace: "tienda.html?q=" + encodeURIComponent((oz ? oz + " oz" : "boca " + boca)),
+      enlaceTexto: "Verlos en la tienda"
+    };
+  }
+
+  /* Sin medida: si el producto se cotiza, se dice; si no, el rango de precios
+     de sus medidas y la pregunta de cuál necesita. */
+  function precioSinMedida(hits) {
+    var top = hits.filter(function (h) { return h.d.tipo === "producto" && h.s >= 4.5; });
+    if (!top.length) return null;
+    var p = top[0].d.prod;
+    if (!tienePrecio(p)) {
+      var familia = top.filter(function (h) { return h.d.prod.cat === p.cat && !tienePrecio(h.d.prod); })
+        .map(function (h) { return minus(h.d.prod.nombre); });
+      var quienes = familia.length > 1 ? familia.slice(0, -1).join(", ") + " y " + familia[familia.length - 1] : minus(p.nombre);
+      return {
+        texto: quienes.charAt(0).toUpperCase() + quienes.slice(1) +
+               " no tienen precio en línea: se cotizan. En su ficha está el botón «Pedir cotización»; dinos cuántas cajas " +
+               "necesitas y ventas te manda precio y tiempo de entrega. También al " + TEL + ".",
+        fuente: "Se cotiza",
+        enlace: "producto.html?id=" + encodeURIComponent(p.id),
+        enlaceTexto: "Pedir cotización"
+      };
+    }
+    var tam = p.venta.tam, filas = [];
+    p.v.forEach(function (v, k) {
+      var t = tam[k] || {};
+      if (t.paq && t.pPaq != null) filas.push({ v: v.split(" · ")[0], paq: t.pPaq, caja: t.caja && t.pCaja != null ? t.pCaja : null });
+    });
+    if (!filas.length) return null;
+    if (filas.length === 1) {
+      return {
+        texto: p.nombre + " (" + filas[0].v + "): paquete " + pesos(filas[0].paq) +
+               (filas[0].caja != null ? " · caja " + pesos(filas[0].caja) : "") + ". Precios con IVA incluido.",
+        fuente: "Precios del catálogo",
+        enlace: "producto.html?id=" + encodeURIComponent(p.id),
+        enlaceTexto: "Verlo en la tienda"
+      };
+    }
+    var paqs = filas.map(function (f) { return f.paq; });
+    var cajas = filas.map(function (f) { return f.caja; }).filter(function (c) { return c != null; });
+    function rango(xs) {
+      var lo = Math.min.apply(null, xs), hi = Math.max.apply(null, xs);
+      return lo === hi ? "cuesta " + pesos(lo) : "va de " + pesos(lo) + " a " + pesos(hi);
+    }
+    var cuales = medida(p);
+    if (/medidas$/.test(cuales) && p.v.length <= 3) cuales = p.v.map(function (v) { return v.split(" · ")[0]; }).join(" o ");
+    return {
+      texto: "El paquete de " + minus(p.nombre) + " " + rango(paqs) +
+             (cajas.length ? " y la caja " + rango(cajas) : "") + ", según la medida (" + cuales + ")." +
+             " Precios con IVA incluido. ¿De qué medida lo necesitas?",
+      fuente: "Precios del catálogo",
+      enlace: "producto.html?id=" + encodeURIComponent(p.id),
+      enlaceTexto: "Ver todas las medidas"
     };
   }
 
@@ -375,7 +554,7 @@
 
     var lista = prods.map(function (h) {
       var p = h.d.prod;
-      return p.nombre.toLowerCase() + (medida(p) ? " (" + medida(p) + ")" : "");
+      return minus(p.nombre) + (medida(p) ? " (" + medida(p) + ")" : "");
     });
 
     return {
@@ -505,10 +684,33 @@
     burbuja("yo", texto);
     historial.push({ role: "user", content: texto });
 
+    /* De aquí en adelante se trabaja con la pregunta ya corregida; a la IA
+       le llega la original y, aparte, cómo se entendió. */
+    var original = texto;
+    texto = corrige(texto);
+
     var pedido = respuestaPedido(texto);
     if (pedido) {
       burbuja("bot", pedido.texto, pedido);
       historial.push({ role: "assistant", content: pedido.texto });
+      return;
+    }
+
+    /* Primero lo concreto (qué tapa, cuánto cuesta, con onzas): una pregunta
+       así no se contesta con la lista de un giro aunque diga "café". */
+    var hits = buscar(texto, 6);
+
+    var tapa = respuestaTapa(texto);
+    if (tapa) {
+      burbuja("bot", tapa.texto, tapa);
+      historial.push({ role: "assistant", content: tapa.texto });
+      return;
+    }
+
+    var precio = respuestaPrecio(texto, hits);
+    if (precio) {
+      burbuja("bot", precio.texto, precio);
+      historial.push({ role: "assistant", content: precio.texto });
       return;
     }
 
@@ -519,7 +721,6 @@
       return;
     }
 
-    var hits = buscar(texto, 5);
     var local = respuestaLocal(texto, hits);
 
     if (local) {
@@ -534,10 +735,10 @@
       return;
     }
 
-    consultarIA(texto, hits);
+    consultarIA(original, hits, texto);
   }
 
-  function consultarIA(texto, hits) {
+  function consultarIA(texto, hits, entendida) {
     pensando = true;
     var el = burbuja("bot", "");
     el.parentElement.dataset.cargando = "true";
@@ -549,6 +750,10 @@
 
     /* Lo que la persona ya eligió en la tienda, para que la IA lo retome en
        vez de preguntar otra vez qué quiere. */
+    if (entendida && entendida !== norm(texto)) {
+      contexto += "\n\n## LA PREGUNTA, SIN FALTAS DE ORTOGRAFÍA\n" + entendida;
+    }
+
     var lineas = carrito();
     if (lineas.length) {
       contexto += "\n\n## CARRITO DEL VISITANTE\n" + carritoTexto(lineas) +

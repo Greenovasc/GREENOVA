@@ -3361,3 +3361,13 @@ div.cat--info { cursor: default; }
   .ag-rec, .uso__item, .pcard__amb, .ficha__amb { transition: none !important; }
   .ag-rec:hover { transform: none; }
 }
+
+/* ---------- 2026-10-03: lo que se cotiza (popotes, portavasos, servilletas, papel) ---------- */
+.tag.tag--cotiza { background: var(--tint-accent); color: var(--heading); border-color: transparent; }
+.ficha__cotizar { display: none !important; }
+.ficha__compra--cotiza .ficha__cotizar { display: flex !important; }
+.ficha__compra--cotiza .ficha__bloque--comprar,
+.ficha__compra--cotiza [data-role="add"],
+.ficha__compra--cotiza #btn-comprar,
+.ficha__compra--cotiza .ficha__openpay { display: none !important; }
+.precios__nada b { color: var(--heading); }

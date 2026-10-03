@@ -25,6 +25,7 @@ window.GREENOVA_AGENTE = (function () {
     "Eres el asistente de GreeNova SC, empresa mexicana de empaque desechable para el sector alimenticio, con sede en la Ciudad de México.",
     "Hablas español de México, de tú, directo y breve. Dos o tres frases cuando alcance. Nada de relleno ni de lenguaje publicitario.",
     "Solo puedes afirmar datos que aparezcan en el CATÁLOGO o en los HECHOS que se te pasan. Si te preguntan algo que no está ahí, dilo con claridad y ofrece el contacto de ventas. Nunca inventes medidas, materiales, certificaciones ni tiempos.",
+    "Menciona el IVA una sola vez por conversación, y solo si hablas de precios.",
     "En la tienda se compra por paquete o por caja, y los precios ya incluyen IVA. Si preguntan cuánto cuesta, da el precio tal como viene en el CATÁLOGO para esa medida y presentación. Si la medida no está en el contexto, di que el precio está en la tienda. NUNCA inventes descuentos ni precios por pieza.",
     "El pedido mínimo es un paquete (o una caja, cuando ese producto solo se vende por caja). NUNCA prometas tiempos de entrega: ventas los confirma con el pedido.",
     "Cuando alguien busque un producto, di la medida exacta y cuántas piezas trae el paquete y la caja, tal como vienen en el catálogo.",
@@ -32,7 +33,7 @@ window.GREENOVA_AGENTE = (function () {
     "Si la persona quiere su logo impreso, explica que hay serigrafía sobre vasos de papel, vasos PET, fajillas y tapas de papel, y que también se hacen contenedores y bolsas a medida. Las tapas de plástico no se pueden imprimir.",
     "Si la persona quiere comprar, dile que agregue sus productos al carrito de la tienda y envíe su pedido, o que escriba a ventas@greenovasc.com.mx / 55 2260 1113.",
     "La gente no pide las cosas como se llaman en el catálogo. Traduce siempre: \"vaso para café\" o \"vaso para bebida caliente\" es el VASO DE PAPEL; \"vaso para bebida fría\", \"vaso para frappé\" o \"vaso transparente\" es el VASO PET. Usa la lista de EQUIVALENCIAS que se te pasa en el contexto y responde con el nombre del catálogo, no con el que usó la persona.",
-    "Contenedores para alimentos, bowls y ensaladeras, bolsas y complementos (platos, cubiertos, servilletas, popotes) no se venden en la tienda en línea: se cotizan. Pídele que mande su lista en \"Envía tu lista\" o que escriba a ventas.",
+    "Popotes, portavasos, servilletas y papel grado alimenticio sí están en la tienda, pero no tienen precio en línea: se cotizan con el botón \"Pedir cotización\" de su ficha. Contenedores, cajas, ensaladeras, soufflés, conos para crepa, charolas y bolsas no están en la tienda: se cotizan con \"Envía tu lista\" o escribiendo a ventas.",
     "SÍ ENVIAMOS A TODO MÉXICO. Si preguntan por cualquier estado, ciudad o pueblo del país, la respuesta es sí: GreeNova envía a nivel nacional desde la Ciudad de México. Lo único que no sabes es el costo y el tiempo del envío: eso lo confirma ventas.",
     "Eres un vendedor, no un buscador. Si alguien describe su negocio o lo que va a servir en vez de pedir un producto por nombre (\"tengo una heladería\", \"vasos para helado\", \"vendo frappés\"), recomiéndale de una vez los productos que le sirven, con la medida exacta y para qué le sirve cada uno. Usa la GUÍA DE USOS que se te pasa; si su caso no está ahí, razona con el catálogo: bebida caliente en vaso de papel, bebida fría o postre en vaso PET, y la tapa según la boca del vaso.",
     "NUNCA escribas nombres de archivo ni rutas (tienda.html, producto.html, .php). Habla como persona: \"en la tienda\". El enlace se lo pone el sitio solo.",
@@ -50,6 +51,9 @@ window.GREENOVA_AGENTE = (function () {
     { t: "Contacto y horario de ventas",
       c: "Correo: ventas@greenovasc.com.mx. Teléfonos: 55 2260 1113 y 55 7051 1149. Sitio: www.greenovasc.com.mx. GreeNova SC está en Cacamatzin 21, Arenal 1ra Secc., Venustiano Carranza, 15600, Ciudad de México." },
 
+    { t: "Dónde estamos: dirección y ubicación",
+      c: "GreeNova SC está en Cacamatzin 21, Arenal 1ra Secc., Venustiano Carranza, 15600, Ciudad de México. Desde ahí enviamos a todo México; tú eliges la paquetería al pagar." },
+
     { t: "Cómo se compra: paquete o caja",
       c: "En la tienda cada producto se compra por paquete o por caja. Cada medida dice cuántas piezas trae el paquete y cuántas la caja, y su precio con IVA incluido. El pedido mínimo es un paquete." },
 
@@ -66,10 +70,10 @@ window.GREENOVA_AGENTE = (function () {
       c: "La tapa se elige por el diámetro de boca del vaso, no por las onzas. Vasos de papel: boca 62 mm (4 oz), 80 mm (8 oz) y 90 mm (10 a 20 oz). Vasos PET: bocas de 78, 90, 92, 95, 98 y 107 mm. En la tienda, al ver un vaso, salen las tapas de su misma boca." },
 
     { t: "Productos que se cotizan",
-      c: "Además de la tienda en línea, GreeNova cotiza contenedores para alimentos (papel, bagazo de caña de azúcar, fécula de maíz, paja de trigo y PET), bowls y ensaladeras (kraft, PET y PLA), bolsas (papel y bond) y complementos (platos, cucharas, tenedores, cuchillos, servilletas y popotes). Se piden con \"Envía tu lista\" o escribiendo a ventas." },
+      c: "Además de la tienda en línea, GreeNova cotiza contenedores para alimentos (papel, bagazo de caña de azúcar, fécula de maíz, paja de trigo y PET), bowls y ensaladeras (kraft, PET y PLA), bolsas (papel y bond) y complementos (platos, cucharas, tenedores y cuchillos). Del catálogo: contenedor de papel blanco de 4, 6, 8, 12, 16 y 32 oz; caja kraft de 26, 45, 49, 66 y 96 oz; ensaladera PET con tapa de 18, 32, 48 y 64 oz; contenedor PET para rebanada de pastel; cono para crepa; soufflé PP de 2 oz con su tapa; charola kraft para papas y bolsa semikraft con fuelle chica, mediana y grande. Se piden con \"Envía tu lista\" o escribiendo a ventas." },
 
-    { t: "Accesorios que se cotizan: portavasos, servilletas, papel y popotes",
-      c: "Del catálogo 2026, estos se piden con \"Envía tu lista\" o escribiendo a ventas: portavasos charola de 2 espacios (caja de 600) y de 4 espacios (caja de 300); portavasos con asa de 2 espacios (caja de 250) y de 4 espacios (caja de 200); servilleta larga de 39.0 x 37.5 cm (caja de 1,200); papel grado alimenticio RH y papel grado alimenticio encerado, para envolver alimentos (caja de 1,000); popote de tapioca biodegradable de 21 cm (caja de 5 kg); popote de tapioca estuchado de 21 cm, individual (caja de 2,000) y popote cuchara biodegradable de 26 cm (caja de 5 kg)." },
+    { t: "Popotes, portavasos, servilletas y papel: están en la tienda y se cotizan",
+      c: "Del catálogo 2026, estos salen en la tienda pero no tienen precio en línea: se cotizan con el botón \"Pedir cotización\" de su ficha. Portavasos charola de 2 espacios (caja de 600) y de 4 espacios (caja de 300); portavasos con asa de 2 espacios (caja de 250) y de 4 espacios (caja de 200); servilleta larga de 39.0 x 37.5 cm (caja de 1,200); papel grado alimenticio RH y papel grado alimenticio encerado, para envolver alimentos (caja de 1,000); popote de tapioca biodegradable de 21 cm (caja de 5 kg); popote de tapioca estuchado de 21 cm, individual (caja de 2,000) y popote cuchara biodegradable de 26 cm (caja de 5 kg)." },
 
     { t: "Cómo hacer un pedido",
       c: "Agrega a tu carrito lo que necesitas, por paquete o por caja, y envía tu pedido desde la tienda. Si prefieres, escribe directo a ventas@greenovasc.com.mx o al 55 2260 1113." }
@@ -124,10 +128,33 @@ window.GREENOVA_AGENTE = (function () {
       busca: [] },
 
     { dice: ["contenedor", "contenedores", "bowl", "bowls", "ensaladera", "bolsa", "bolsas",
-             "plato", "platos", "cubiertos", "cuchara", "tenedor", "cuchillo", "servilleta",
-             "servilletas", "popote", "popotes", "para llevar", "comida"],
+             "plato", "platos", "cubiertos", "cuchara", "tenedor", "cuchillo", "souffle", "salsero",
+             "salseros", "cono", "conos", "comida"],
       es: "productos que se cotizan contenedores bowls bolsas complementos",
-      busca: [] }
+      busca: [] },
+
+    { dice: ["donde estan", "donde se ubican", "ubicacion", "ubicados", "direccion", "domicilio",
+             "sucursal", "tienda fisica", "como llego", "donde quedan", "su oficina", "sus oficinas"],
+      es: "donde estamos direccion ubicacion Cacamatzin Ciudad de Mexico",
+      busca: [] },
+
+    /* Los que ya están en la tienda aunque se coticen. */
+    { dice: ["popote", "pajilla", "pajita", "sorbete", "carrizo", "straw"],
+      es: "popote",
+      busca: ["popote"] },
+
+    { dice: ["servilleta", "napkin"],
+      es: "servilleta",
+      busca: ["servilleta"] },
+
+    { dice: ["portavasos", "porta vasos", "portavaso", "cargador de vasos", "charola para vasos"],
+      es: "portavasos",
+      busca: ["portavasos"] },
+
+    { dice: ["papel encerado", "papel para envolver", "papel antigrasa", "papel para hamburguesa",
+             "papel para tortas", "envolver"],
+      es: "papel grado alimenticio",
+      busca: ["papel grado alimenticio"] }
   ];
 
   /* ---------------------------------------------------------------------
@@ -153,26 +180,105 @@ window.GREENOVA_AGENTE = (function () {
      los jugos van antes que la fruta en vaso ("jugo de fruta" es jugo).
      Para agregar un uso nuevo basta con una entrada más.
      --------------------------------------------------------------------- */
+  /* EL ORDEN IMPORTA: gana el primer uso que coincida. Por eso van primero
+     los lugares cuyas frases traen palabras de otros usos ("cafetería
+     escolar" es escuela, "cafetería del hospital" es oficina, "café frío" es
+     frappé, "café de olla" es atole), luego lo específico (pizzería, sushi) y
+     al final lo genérico (bar, eventos, restaurante): "restaurante de sushi"
+     es sushi y "bar de mariscos" es marisquería. */
   var GIROS = [
+    { nombre: "Escuelas y cooperativas",
+      dice: ["escuela", "colegio", "primaria", "secundaria", "prepa", "preparatoria", "universidad",
+             "cooperativa", "cooperativa escolar", "cafeteria escolar", "guarderia", "kinder"],
+      intro: "Para escuelas y cooperativas:",
+      recs: [
+        { id: "vaso-pet-78", v: "9 oz", por: "Fruta picada, gelatina o yogurt." },
+        { id: "tapa-pet-plana-sin-ranura", v: "Boca 78 mm", por: "Cierra parejo, sin hoyo: no se sale nada." },
+        { id: "vaso-pet-95", v: "12 oz", por: "Agua fresca o jugo." },
+        { id: "tapa-pet-plana-ranura", v: "Boca 95 mm", por: "Para ese vaso, con ranura para popote." },
+        { id: "popote-tapioca-estuchado", v: "21 cm", por: "Popote en sobre individual, más higiénico." },
+        { id: "papel-encerado", v: "Caja", por: "Para envolver tortas y sándwiches." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
+      ] },
+
+    { nombre: "Oficinas, consultorios y hospitales",
+      /* "oficina" sola no: "¿dónde está su oficina?" es pregunta por GreeNova. */
+      dice: ["para oficina", "para la oficina", "para mi oficina", "en la oficina", "oficinas corporativas",
+             "corporativo", "comedor de empleados", "consultorio", "clinica", "hospital", "cafeteria del hospital",
+             "garrafon", "dispensador de agua", "enfriador de agua", "sala de espera", "recepcion",
+             "coworking", "despacho"],
+      intro: "Para oficinas, consultorios y salas de espera:",
+      recs: [
+        { id: "vaso-papel-blanco", v: "4 oz", por: "Agua del garrafón." },
+        { id: "vaso-pet-78", v: "7 oz", por: "Agua o refresco." },
+        { id: "vaso-papel-blanco", v: "8 oz", por: "El café de la oficina." },
+        { id: "tapa-cafetera-80", v: "Blanca · poliestireno", por: "La tapa de ese vaso." },
+        { id: "removedor-madera", v: "14 cm", por: "Para el azúcar y la leche." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
+      ] },
+
+    { nombre: "Hoteles",
+      dice: ["hotel", "motel", "hostal", "airbnb", "room service", "buffet", "desayuno buffet",
+             "amenidades", "habitacion", "spa"],
+      intro: "Para hoteles:",
+      recs: [
+        { id: "vaso-papel-blanco", v: "8 oz", por: "Café de la habitación o del buffet." },
+        { id: "tapa-cafetera-80", v: "Blanca · poliestireno", por: "La tapa de ese vaso." },
+        { id: "vaso-papel-doble-pared", v: "Blanco · 12 oz", por: "Café para llevar del lobby." },
+        { id: "removedor-madera", v: "14 cm", por: "Para el azúcar y la leche." },
+        { id: "vaso-pet-95", v: "9 oz", por: "El jugo del desayuno." },
+        { id: "portavaso-charola", v: "2 espacios", por: "Room service de dos bebidas." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
+      ] },
+
+    { nombre: "Frappés y café frío",
+      dice: ["frappe", "frapuccino", "frappuccino", "cafe frio", "iced coffee", "iced latte", "cold brew",
+             "moka frio", "cafe helado"],
+      intro: "Para frappés y café frío:",
+      recs: [
+        { id: "vaso-pet-98", v: "16 oz", por: "El tamaño clásico del frappé." },
+        { id: "tapa-pet-domo", v: "Boca 98 mm", por: "Para ese vaso; deja espacio a la crema batida." },
+        { id: "vaso-pet-92", v: "12 oz", por: "Frappé chico o iced latte." },
+        { id: "tapa-pet-sorbe", v: "Boca 98 mm", por: "Café frío para tomar sin popote." },
+        { id: "popote-tapioca", v: "21 cm", por: "Popote biodegradable." },
+        { id: "portavaso-asa", v: "4 espacios", por: "Para llevar cuatro bebidas." }
+      ] },
+
+    { nombre: "Tamales, atole y desayunos",
+      dice: ["tamal", "tamales", "tamaleria", "atole", "atoleria", "champurrado", "cafe de olla",
+             "chocolate caliente", "guajolota", "chilaquiles"],
+      intro: "Para tamales, atole y desayunos:",
+      recs: [
+        { id: "vaso-papel-kraft", v: "12 oz", por: "Atole, champurrado o café de olla." },
+        { id: "vaso-papel-kraft", v: "8 oz", por: "La medida chica." },
+        { id: "tapa-cafetera-90", v: "Blanca 3 óvalos · poliestireno", por: "La tapa del vaso de 12 oz." },
+        { id: "tapa-cafetera-80", v: "Blanca · poliestireno", por: "La tapa del vaso de 8 oz." },
+        { id: "papel-encerado", v: "Caja", por: "Para envolver tamales y guajolotas." },
+        { cotiza: "bolsas", por: "Para llevar el pedido." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
+      ] },
+
     { nombre: "Helado y nieve",
-      dice: ["helado", "heladeria", "heladería", "nieve", "neveria", "nevería", "paleteria", "paletería",
-             "gelato", "yogurt helado", "frozen yogurt", "malteada", "sundae", "raspado", "granizado",
-             "chamoyada", "mangonada"],
+      dice: ["helado", "heladeria", "nieve", "neveria", "paleteria", "michoacana", "gelato", "gelateria",
+             "yogurt helado", "frozen yogurt", "malteada", "sundae", "banana split", "raspado", "granizado",
+             "chamoyada", "mangonada", "nieve de garrafa"],
       intro: "Para helado y nieve, esto es lo que mejor funciona:",
       recs: [
         { id: "vaso-papel-blanco", v: "4 oz", por: "Una bola, probaditas o porción para niños." },
         { id: "vaso-papel-blanco", v: "8 oz", por: "Dos bolas o una copa con toppings." },
         { id: "vaso-papel-negro", v: "8 oz", por: "El mismo tamaño en negro: se ve más gourmet." },
         { id: "vaso-papel-blanco", v: "12 oz", por: "Tres bolas, o helado para compartir." },
+        { cotiza: "contenedor-papel", por: "Helado para llevar, de 4 oz hasta 32 oz." },
         { id: "vaso-pet-95", v: "12 oz", por: "Malteadas, nieves y raspados: se luce el color." },
         { id: "tapa-pet-domo", v: "Boca 95 mm", por: "Para ese vaso; deja espacio a la crema y los toppings." },
-        { cotiza: "popote-cuchara", por: "Para nieves, raspados y chamoyadas: es popote y cuchara." }
+        { id: "popote-cuchara", v: "26 cm", por: "Para nieves, raspados y chamoyadas: es popote y cuchara." }
       ] },
 
     { nombre: "Cafetería",
-      dice: ["cafeteria", "cafetería", "coffee shop", "barista", "barra de cafe", "barra de café",
-             "negocio de cafe", "negocio de café", "vendo cafe", "vendo café", "cafe para llevar",
-             "café para llevar", "cafe de especialidad", "café de especialidad", "torrefactora"],
+      dice: ["cafeteria", "coffee shop", "barista", "barra de cafe", "negocio de cafe", "vendo cafe",
+             "cafe para llevar", "cafe de especialidad", "torrefactora", "teteria", "espresso bar",
+             "carrito de cafe", "cafe movil", "cafe", "capuchino", "cappuccino", "latte", "americano",
+             "espresso", "expreso", "te chai", "desayuno", "almuerzo"],
       intro: "Para cafetería, el arranque típico es:",
       recs: [
         { id: "vaso-papel-blanco", v: "12 oz", por: "Latte, capuchino y americano." },
@@ -183,24 +289,12 @@ window.GREENOVA_AGENTE = (function () {
         { id: "tapa-cafetera-90", v: "Negra · poliestireno", por: "La tapa de los vasos de 10 a 20 oz." },
         { id: "fajilla-kraft", v: "Ajustable", por: "Para que el vaso de 10 a 16 oz no queme." },
         { id: "removedor-madera", v: "14 cm", por: "Para el azúcar y la leche." },
-        { cotiza: "portavaso-charola", por: "Pedidos de 2 o 4 bebidas para llevar." }
-      ] },
-
-    { nombre: "Frappés y café frío",
-      dice: ["frappe", "frappé", "frapuccino", "frappuccino", "cafe frio", "café frío", "iced coffee",
-             "iced latte", "cold brew", "moka frio", "moka frío"],
-      intro: "Para frappés y café frío:",
-      recs: [
-        { id: "vaso-pet-98", v: "16 oz", por: "El tamaño clásico del frappé." },
-        { id: "tapa-pet-domo", v: "Boca 98 mm", por: "Para ese vaso; deja espacio a la crema batida." },
-        { id: "vaso-pet-92", v: "12 oz", por: "Frappé chico o iced latte." },
-        { id: "tapa-pet-sorbe", v: "Boca 98 mm", por: "Café frío para tomar sin popote." },
-        { cotiza: "popote-tapioca", por: "Popote biodegradable." }
+        { id: "portavaso-charola", v: "4 espacios", por: "Pedidos de cuatro bebidas para llevar." }
       ] },
 
     { nombre: "Jugos, licuados y smoothies",
-      dice: ["jugueria", "juguería", "jugo", "licuado", "smoothie", "batido", "proteina", "proteína",
-             "jugo verde", "jugos naturales"],
+      dice: ["jugueria", "jugo", "licuado", "smoothie", "batido", "proteina", "gimnasio", "gym",
+             "crossfit", "nutricion", "club de nutricion", "jugo verde", "jugos naturales"],
       intro: "Para jugos, licuados y smoothies:",
       recs: [
         { id: "vaso-pet-95", v: "16 oz", por: "Jugo o licuado mediano." },
@@ -208,12 +302,13 @@ window.GREENOVA_AGENTE = (function () {
         { id: "vaso-pet-u", v: "16 oz", por: "Smoothie: la forma en U se ve más premium." },
         { id: "tapa-pet-plana-ranura", v: "Boca 95 mm", por: "Para el vaso de boca 95, con ranura para popote." },
         { id: "tapa-pet-domo", v: "Boca 95 mm", por: "Si lleva fruta o granola encima." },
-        { cotiza: "popote-tapioca-estuchado", por: "Popote en sobre individual, para llevar." }
+        { id: "popote-tapioca-estuchado", v: "21 cm", por: "Popote en sobre individual, para llevar." },
+        { id: "portavaso-asa", v: "4 espacios", por: "Para llevar cuatro bebidas." }
       ] },
 
     { nombre: "Bubble tea",
-      dice: ["bubble tea", "bubble", "boba", "te de tapioca", "té de tapioca", "bebida de tapioca",
-             "bebidas de tapioca", "milk tea", "matcha", "taro"],
+      dice: ["bubble tea", "bubble", "boba", "te de tapioca", "bebida de tapioca", "milk tea", "matcha",
+             "taro", "te de burbujas"],
       intro: "Para bubble tea y bebidas con tapioca:",
       recs: [
         { id: "vaso-pet-u", v: "16 oz", por: "La forma en U de las barras de bubble tea." },
@@ -221,12 +316,12 @@ window.GREENOVA_AGENTE = (function () {
         { id: "vaso-pp", v: "En U · 16 oz", por: "Para el milk tea caliente." },
         { id: "tapa-pet-domo-oso", v: "Boca 90 mm", por: "Domo con orejas de oso: la foto que todos suben." },
         { id: "tapa-pet-plana-ranura", v: "Boca 90 mm", por: "Tapa plana para popote." },
-        { cotiza: "popote-tapioca", por: "Popote biodegradable de 21 cm." }
+        { id: "popote-tapioca", v: "21 cm", por: "Popote biodegradable de 21 cm." }
       ] },
 
     { nombre: "Aguas frescas y limonadas",
-      dice: ["agua fresca", "aguas frescas", "agua de jamaica", "horchata", "limonada", "naranjada",
-             "agua de sabor", "aguas de sabor", "te helado", "té helado"],
+      dice: ["agua fresca", "agua de jamaica", "horchata", "limonada", "naranjada", "agua de sabor",
+             "te helado", "tepache", "tejuino"],
       intro: "Para aguas frescas y limonadas:",
       recs: [
         { id: "vaso-pet-95", v: "16 oz", por: "Agua mediana." },
@@ -234,25 +329,27 @@ window.GREENOVA_AGENTE = (function () {
         { id: "vaso-pet-107", v: "32 oz", por: "La de casi un litro." },
         { id: "tapa-pet-plana-ranura", v: "Boca 95 mm", por: "Para el vaso de boca 95, con ranura para popote." },
         { id: "tapa-pet-sorbe-tapon", v: "Boca 98 mm", por: "Se toma sin popote y el tapón la cierra para llevar." },
-        { cotiza: "popote-tapioca", por: "Popote biodegradable." }
+        { id: "popote-tapioca", v: "21 cm", por: "Popote biodegradable." }
       ] },
 
-    { nombre: "Micheladas y bar",
-      dice: ["michelada", "chela", "cerveza", "cerveceria", "cervecería", "bar", "clamato",
-             "cocteleria", "coctelería", "coctel", "cóctel", "mezcaleria", "mezcalería", "pulqueria", "pulquería"],
-      intro: "Para micheladas y barra:",
+    { nombre: "Mariscos",
+      dice: ["marisqueria", "mariscos", "coctel de camaron", "coctel de mariscos", "campechana", "aguachile",
+             "ceviche", "ostiones", "ostioneria", "vuelve a la vida", "mariscada"],
+      intro: "Para marisquería:",
       recs: [
-        { id: "vaso-pet-107", v: "32 oz", por: "La michelada grande." },
-        { id: "vaso-pet-98", v: "24 oz", por: "Michelada mediana o cerveza de barril." },
-        { id: "vaso-pet-98", v: "16 oz", por: "Cerveza o coctel." },
-        { id: "tapa-pet-plana-ranura", v: "Boca 107 mm", por: "Para la de 32 oz, si se va para llevar." },
-        { cotiza: "popote-tapioca", por: "Popote biodegradable." }
+        { id: "vaso-pet-78", v: "10 oz", por: "Coctel chico." },
+        { id: "tapa-pet-plana-sin-ranura", v: "Boca 78 mm", por: "Cierra sin hoyo: no se sale el caldo." },
+        { id: "vaso-pet-95", v: "16 oz", por: "Coctel grande o campechana." },
+        { id: "tapa-pet-domo", v: "Boca 95 mm", por: "Para ese vaso, si va para llevar." },
+        { id: "vaso-pet-107", v: "32 oz", por: "La michelada de la casa." },
+        { cotiza: "souffle", por: "Para la salsa y el limón." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
       ] },
 
     { nombre: "Fruta, esquites y postres en vaso",
-      dice: ["fruta picada", "fruta", "coctel de frutas", "esquite", "elote", "elote en vaso",
+      dice: ["fruteria", "fruta picada", "fruta", "coctel de frutas", "esquite", "elote", "elote en vaso",
              "fresas con crema", "gelatina", "postre", "postre en vaso", "yogurt", "yogur", "parfait",
-             "dulceria mexicana", "snack", "botana"],
+             "botana", "snack", "trolelote"],
       intro: "Para fruta, esquites y postres en vaso:",
       recs: [
         { id: "vaso-pet-78", v: "9 oz", por: "Fruta picada, gelatina o postre individual." },
@@ -263,92 +360,203 @@ window.GREENOVA_AGENTE = (function () {
         { id: "vaso-papel-blanco", v: "12 oz", por: "Esquite grande." }
       ] },
 
-    { nombre: "Cine, refrescos y palomitas",
-      dice: ["cine", "palomitas", "refresco", "soda", "fuente de sodas", "dulceria", "dulcería",
-             "comida rapida", "comida rápida", "hot dog", "hamburguesa", "hamburgueseria",
-             "hamburguesería", "feria", "estadio", "kermes", "kermés"],
-      intro: "Para refresco grande, palomitas y comida rápida:",
+    { nombre: "Pizzería",
+      dice: ["pizza", "pizzeria", "calzone", "comida italiana", "pasta"],
+      intro: "Para pizzería, lo que acompaña a la pizza:",
+      recs: [
+        { id: "vaso-pet-95", v: "16 oz", por: "Refresco o agua, en mesa o para llevar." },
+        { id: "tapa-pet-plana-ranura", v: "Boca 95 mm", por: "Para ese vaso, con ranura para popote." },
+        { id: "vaso-papel-color-44", v: "Rojo", por: "Refresco grande para compartir." },
+        { cotiza: "souffle", por: "Aderezo, chile de aceite o salsa aparte." },
+        { id: "papel-rh", v: "Caja", por: "Para servir la rebanada o forrar la charola." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." },
+        { id: "portavaso-asa", v: "4 espacios", por: "Para que el repartidor lleve las bebidas." }
+      ] },
+
+    { nombre: "Hamburguesas, alitas y comida rápida",
+      dice: ["hamburguesa", "hamburgueseria", "hot dog", "hotdog", "alitas", "boneless", "papas a la francesa",
+             "papas fritas", "pollo frito", "comida rapida", "food truck", "snack bar", "food court",
+             "plaza comercial"],
+      intro: "Para hamburguesas, alitas y comida rápida:",
+      recs: [
+        { id: "papel-encerado", v: "Caja", por: "Para envolver hamburguesas y hot dogs." },
+        { cotiza: "charola-papas", por: "Para papas, alitas y boneless." },
+        { cotiza: "souffle", por: "Para cátsup, aderezos y salsas." },
+        { id: "vaso-papel-color-44", v: "Rojo", por: "Refresco grande; también en azul y en gris." },
+        { id: "vaso-papel-blanco", v: "32 oz", por: "Refresco mediano." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." },
+        { id: "portavaso-asa", v: "4 espacios", por: "Para llevar cuatro bebidas." }
+      ] },
+
+    { nombre: "Tacos, tortas y antojitos",
+      dice: ["taco", "taqueria", "torta", "torteria", "quesadilla", "gordita", "sope", "tlacoyo", "burrito",
+             "garnacha", "antojito", "carnitas", "barbacoa", "birria", "consome", "tostada", "flauta",
+             "pambazo", "huarache", "taquiza"],
+      intro: "Para tacos, tortas y antojitos:",
+      recs: [
+        { id: "papel-encerado", v: "Caja", por: "Para envolver tacos, tortas y burritos." },
+        { id: "papel-rh", v: "Caja", por: "Para forrar el plato o la charola." },
+        { cotiza: "souffle", por: "Para las salsas." },
+        { id: "vaso-papel-blanco", v: "12 oz", por: "Consomé de barbacoa o de birria." },
+        { id: "tapa-cafetera-90", v: "Blanca 3 óvalos · poliestireno", por: "La tapa de ese vaso." },
+        { id: "vaso-pet-95", v: "16 oz", por: "El agua fresca." },
+        { id: "tapa-pet-sorbe-tapon", v: "Boca 95 mm", por: "Con tapón: el agua no se tira en el camino." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
+      ] },
+
+    { nombre: "Ensaladas y comida saludable",
+      dice: ["ensalada", "poke", "bowl", "comida saludable", "saludable", "fit", "vegana", "vegano",
+             "vegetariana", "healthy", "acai"],
+      intro: "Para ensaladas y comida saludable:",
+      recs: [
+        { cotiza: "ensaladera", por: "Ensaladas y pokes, con tapa." },
+        { cotiza: "souffle", por: "El aderezo aparte." },
+        { id: "vaso-pet-u", v: "16 oz", por: "Smoothie o jugo verde." },
+        { id: "tapa-pet-domo", v: "Boca 90 mm", por: "Para ese vaso, si lleva fruta o granola encima." },
+        { id: "vaso-pet-78", v: "9 oz", por: "Fruta o yogurt con granola." },
+        { id: "tapa-pet-plana-sin-ranura", v: "Boca 78 mm", por: "La tapa de ese vaso, sin hoyo." },
+        { id: "popote-tapioca-estuchado", v: "21 cm", por: "Popote en sobre individual." }
+      ] },
+
+    { nombre: "Sushi y comida asiática",
+      dice: ["sushi", "comida japonesa", "comida china", "ramen", "wok", "comida thai", "asiatica",
+             "oriental", "teriyaki", "dumplings", "gyozas", "chop suey"],
+      intro: "Para sushi y comida asiática:",
+      recs: [
+        { cotiza: "caja-kraft", por: "Arroz, wok o rollos." },
+        { cotiza: "souffle", por: "Soya, salsa de anguila o chipotle." },
+        { cotiza: "contenedor-papel", por: "Sopa o ramen para llevar." },
+        { id: "vaso-pet-95", v: "16 oz", por: "Té helado." },
+        { id: "tapa-pet-plana-ranura", v: "Boca 95 mm", por: "Para ese vaso, con ranura para popote." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
+      ] },
+
+    { nombre: "Panadería y pastelería",
+      dice: ["panaderia", "pan dulce", "pasteleria", "reposteria", "pastel", "cupcake", "galleta", "dona",
+             "churro", "churreria", "bizcocheria"],
+      intro: "Para panadería y pastelería:",
+      recs: [
+        { cotiza: "bolsas", por: "Bolsas de papel para el pan." },
+        { cotiza: "contenedor-pastel", por: "Rebanada de pastel para llevar." },
+        { id: "vaso-papel-kraft", v: "12 oz", por: "Café o chocolate para acompañar." },
+        { id: "tapa-cafetera-90", v: "Blanca 3 óvalos · poliestireno", por: "La tapa de ese vaso." },
+        { id: "tapa-papel-90", v: "Blanca", por: "La misma medida en tapa de papel, si quieres menos plástico." },
+        { id: "papel-encerado", v: "Caja", por: "Para envolver pan y sándwiches." }
+      ] },
+
+    { nombre: "Crepas y waffles",
+      dice: ["crepa", "creperia", "waffle", "wafle", "hot cakes", "hotcakes"],
+      intro: "Para crepas y waffles:",
+      recs: [
+        { cotiza: "cono-crepa", por: "Para servir la crepa en la mano." },
+        { id: "papel-encerado", v: "Caja", por: "Para envolver el waffle." },
+        { id: "vaso-papel-kraft", v: "12 oz", por: "Café o chocolate caliente." },
+        { id: "tapa-cafetera-90", v: "Negra · poliestireno", por: "La tapa de ese vaso." },
+        { id: "vaso-pet-98", v: "16 oz", por: "Frappé para acompañar." },
+        { id: "tapa-pet-domo", v: "Boca 98 mm", por: "Para ese vaso, con crema batida." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
+      ] },
+
+    { nombre: "Cine, palomitas y eventos masivos",
+      dice: ["cine", "palomitas", "dulceria", "feria", "estadio", "kermes", "concierto", "festival",
+             "arena", "autocinema", "refresco"],
+      intro: "Para cine, palomitas y eventos masivos:",
       recs: [
         { id: "vaso-papel-color-44", v: "Rojo", por: "Refresco grande; también en azul y en gris." },
         { id: "vaso-papel-blanco", v: "44 oz", por: "Refresco grande o palomitas." },
         { id: "vaso-papel-blanco", v: "32 oz", por: "Refresco mediano." },
-        { cotiza: "papel-encerado", por: "Para envolver hamburguesas y hot dogs." },
-        { cotiza: "servilleta-larga", por: "Servilleta de 39 x 37.5 cm." }
+        { id: "vaso-pet-107", v: "32 oz", por: "Michelada o refresco de casi un litro." },
+        { id: "tapa-pet-plana-ranura", v: "Boca 107 mm", por: "Para ese vaso, con ranura para popote." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
       ] },
 
-    { nombre: "Comida para llevar",
-      dice: ["torta", "torteria", "tortería", "taco", "taqueria", "taquería", "burrito", "quesadilla",
-             "fonda", "cocina economica", "cocina económica", "restaurante", "comida para llevar",
-             "para llevar", "delivery", "rappi", "uber eats", "didi food", "sandwich", "sándwich",
-             "baguette", "dark kitchen"],
-      intro: "Para tortas, tacos y comida para llevar:",
+    { nombre: "Micheladas y bar",
+      dice: ["michelada", "chela", "cerveza", "cerveceria", "cerveza artesanal", "bar", "cantina", "antro",
+             "club", "discoteca", "karaoke", "billar", "clamato", "cocteleria", "coctel", "mezcaleria",
+             "pulqueria", "terraza", "beach club"],
+      intro: "Para micheladas y barra:",
       recs: [
-        { cotiza: "papel-encerado", por: "Para envolver tortas, tacos y burritos." },
-        { cotiza: "papel-rh", por: "Papel blanco para envolver o forrar charolas." },
-        { cotiza: "contenedores", por: "Contenedores para la comida." },
-        { cotiza: "servilleta-larga", por: "Servilleta de 39 x 37.5 cm." },
-        { id: "vaso-pet-95", v: "16 oz", por: "El agua fresca del combo." },
-        { id: "tapa-pet-sorbe-tapon", v: "Boca 95 mm", por: "Con tapón: no se tira en el camino." },
-        { cotiza: "portavaso-asa", por: "Para que el repartidor lleve 2 o 4 bebidas." }
+        { id: "vaso-pet-107", v: "32 oz", por: "La michelada grande." },
+        { id: "vaso-pet-98", v: "24 oz", por: "Michelada mediana o cerveza de barril." },
+        { id: "vaso-pet-98", v: "16 oz", por: "Cerveza o coctel." },
+        { id: "tapa-pet-plana-ranura", v: "Boca 107 mm", por: "Para la de 32 oz, si se va para llevar." },
+        { id: "popote-tapioca", v: "21 cm", por: "Popote biodegradable." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
       ] },
 
-    { nombre: "Panadería y desayunos",
-      dice: ["panaderia", "panadería", "pan dulce", "pasteleria", "pastelería", "desayuno",
-             "tamal", "tamales", "atole", "champurrado", "cafe de olla", "café de olla",
-             "chocolate caliente", "churro", "churreria", "churrería"],
-      intro: "Para panadería, desayunos y bebidas calientes tradicionales:",
-      recs: [
-        { id: "vaso-papel-kraft", v: "12 oz", por: "Café de olla, atole o champurrado: el kraft se ve artesanal." },
-        { id: "vaso-papel-kraft", v: "8 oz", por: "La medida chica." },
-        { id: "tapa-cafetera-90", v: "Blanca 3 óvalos · poliestireno", por: "La tapa del vaso de 12 oz." },
-        { id: "tapa-papel-90", v: "Blanca", por: "La misma medida en tapa de papel, si quieres menos plástico." },
-        { cotiza: "bolsas", por: "Bolsas de papel kraft para el pan." },
-        { cotiza: "papel-encerado", por: "Para envolver pan y sándwiches." }
-      ] },
-
-    { nombre: "Eventos y coffee break",
-      dice: ["evento", "fiesta", "catering", "banquete", "coffee break", "boda", "posada",
-             "graduacion", "graduación", "bautizo", "xv años", "oficina", "junta", "congreso"],
+    { nombre: "Eventos y catering",
+      dice: ["evento", "fiesta", "catering", "banquete", "boda", "xv anos", "quince anos", "bautizo",
+             "primera comunion", "posada", "graduacion", "coffee break", "congreso", "convencion", "expo",
+             "cumpleanos", "baby shower"],
       intro: "Para eventos, catering y coffee break:",
       recs: [
-        { id: "vaso-papel-blanco", v: "8 oz", por: "Café y té del coffee break." },
+        { id: "vaso-papel-blanco", v: "8 oz", por: "Café y té." },
         { id: "tapa-cafetera-80", v: "Blanca · poliestireno", por: "La tapa de ese vaso." },
         { id: "removedor-madera", v: "14 cm", por: "Para el azúcar y la leche." },
         { id: "vaso-pet-95", v: "9 oz", por: "Agua, refresco o jugo." },
         { id: "vaso-pet-78", v: "7 oz", por: "Shots, degustaciones o postres mini." },
-        { cotiza: "servilleta-larga", por: "Servilleta de 39 x 37.5 cm." }
+        { cotiza: "souffle", por: "Salsas y aderezos de la mesa." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." },
+        { id: "portavaso-charola", v: "4 espacios", por: "Para repartir bebidas en charola." }
+      ] },
+
+    { nombre: "Tiendas de conveniencia y gasolineras",
+      dice: ["tienda de conveniencia", "abarrotes", "miscelanea", "minisuper", "tiendita", "gasolinera",
+             "cafe de maquina", "maquina de cafe", "autoservicio"],
+      intro: "Para tiendas de conveniencia y gasolineras:",
+      recs: [
+        { id: "vaso-papel-blanco", v: "12 oz", por: "Café de máquina." },
+        { id: "vaso-papel-blanco", v: "16 oz", por: "Café grande." },
+        { id: "tapa-cafetera-90", v: "Negra · poliestireno", por: "La tapa de esos vasos." },
+        { id: "fajilla-kraft", v: "Pegada", por: "Para que el vaso no queme." },
+        { id: "removedor-madera", v: "14 cm", por: "Para el azúcar y la leche." },
+        { id: "vaso-papel-color-44", v: "Rojo", por: "Refresco de máquina grande." }
+      ] },
+
+    { nombre: "Restaurantes y comida para llevar",
+      dice: ["restaurante", "fonda", "cocina economica", "comida corrida", "comedor", "comida para llevar",
+             "para llevar", "delivery", "rappi", "uber eats", "didi food", "dark kitchen", "menu del dia"],
+      intro: "Para restaurantes y comida para llevar:",
+      recs: [
+        { cotiza: "caja-kraft", por: "El guisado o el plato fuerte." },
+        { cotiza: "contenedor-papel", por: "Sopa, arroz o frijoles." },
+        { cotiza: "souffle", por: "Salsas y aderezos." },
+        { id: "vaso-pet-95", v: "16 oz", por: "El agua del día." },
+        { id: "tapa-pet-sorbe-tapon", v: "Boca 95 mm", por: "Con tapón: no se tira en el camino." },
+        { cotiza: "bolsas", por: "Para entregar el pedido." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." },
+        { id: "portavaso-asa", v: "4 espacios", por: "Para que el repartidor lleve las bebidas." }
       ] },
 
     { nombre: "Negocio nuevo",
       dice: ["abrir un negocio", "voy a abrir", "empezando", "emprender", "negocio nuevo",
-             "que me recomiendas", "qué me recomiendas", "no se que necesito", "no sé qué necesito",
-             "asesorame", "asesórame"],
+             "que me recomiendas", "no se que necesito", "asesorame"],
       intro: "Depende del giro, pero para bebidas lo que casi nadie deja fuera es:",
       recs: [
         { id: "vaso-papel-blanco", v: "12 oz", por: "Bebida caliente." },
         { id: "tapa-cafetera-90", v: "Negra · poliestireno", por: "Su tapa." },
         { id: "vaso-pet-98", v: "16 oz", por: "Bebida fría." },
-        { id: "tapa-pet-domo", v: "Boca 98 mm", por: "Su tapa." }
+        { id: "tapa-pet-domo", v: "Boca 98 mm", por: "Su tapa." },
+        { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
       ] }
   ];
 
   /* ---------------------------------------------------------------------
-     COTIZA — lo del catálogo que no se compra en la tienda en línea: se pide
-     con "Envía tu lista". El asistente lo recomienda igual que lo demás.
-     `img` es la foto de assets/prod/; `pide` abre la tienda con el aviso
-     de cotización.
+     COTIZA — lo de la hoja de Excel que no está en la tienda: se pide con
+     "Envía tu lista". El asistente lo recomienda igual que lo demás.
+     (Popotes, portavasos, servilletas y papel ya están en la tienda: se
+     cotizan desde su ficha.) `img` es la foto de assets/prod/; `pide` abre
+     la tienda con el aviso de cotización.
      --------------------------------------------------------------------- */
   var COTIZA = {
-    "portavaso-charola":        { nombre: "Portavasos charola", v: "2 o 4 espacios", img: "portavaso-charola-4", pide: "Portavasos" },
-    "portavaso-asa":            { nombre: "Portavasos con asa", v: "2 o 4 espacios", img: "portavaso-caja-kraft", pide: "Portavasos" },
-    "servilleta-larga":         { nombre: "Servilleta larga", v: "39.0 x 37.5 cm", img: "servilleta-larga", pide: "Servilletas" },
-    "papel-encerado":           { nombre: "Papel grado alimenticio encerado", v: "Para envolver alimentos", img: "papel-encerado", pide: "Papel grado alimenticio" },
-    "papel-rh":                 { nombre: "Papel grado alimenticio RH", v: "Para envolver alimentos", img: "papel-rh", pide: "Papel grado alimenticio" },
-    "popote-tapioca":           { nombre: "Popote de tapioca biodegradable", v: "21 cm", img: "popote-tapioca", pide: "Popotes" },
-    "popote-tapioca-estuchado": { nombre: "Popote de tapioca estuchado", v: "21 cm, individual", img: "popote-tapioca-estuchado", pide: "Popotes" },
-    "popote-cuchara":           { nombre: "Popote cuchara biodegradable", v: "26 cm", img: "mega-popotes", pide: "Popotes" },
-    "contenedores":             { nombre: "Contenedores para alimentos", v: "Kraft, papel, bagazo y PET", img: "contenedor-kraft-rect", pide: "Contenedores kraft" },
-    "bolsas":                   { nombre: "Bolsas de papel kraft", v: "Con o sin asa", img: "srv-bolsa-kraft", pide: "Bolsas kraft" }
+    "contenedor-papel":  { nombre: "Contenedor de papel blanco", v: "4 a 32 oz", img: "contenedor-helado", pide: "Contenedores de papel" },
+    "caja-kraft":        { nombre: "Caja kraft para comida", v: "26 a 96 oz", img: "contenedor-kraft-rect", pide: "Contenedores kraft" },
+    "ensaladera":        { nombre: "Ensaladera PET con tapa", v: "18, 32, 48 y 64 oz", img: "ensaladera-transparente", pide: "Ensaladeras" },
+    "contenedor-pastel": { nombre: "Contenedor PET para rebanada de pastel", v: "Triangular", img: "contenedor-rebanada-pastel", pide: "Charolas y cajas" },
+    "cono-crepa":        { nombre: "Cono para crepa", v: "Para servir en la mano", img: "cono-crepa", pide: "Conos para crepa" },
+    "souffle":           { nombre: "Soufflé de 2 oz con tapa", v: "Para salsas y aderezos", img: "souffle-fecula", pide: "Soufflés" },
+    "charola-papas":     { nombre: "Charola kraft para papas", v: "Kraft", img: "charola-kraft", pide: "Charolas y cajas" },
+    "bolsas":            { nombre: "Bolsa semikraft con fuelle", v: "Chica, mediana y grande", img: "srv-bolsa-kraft", pide: "Bolsas kraft" }
   };
 
   /* ---------------------------------------------------------------------
@@ -384,22 +592,121 @@ window.GREENOVA_AGENTE = (function () {
       .replace(/[^a-z0-9]+/g, " ").trim();
   }
 
+  /* ---------- faltas de ortografía ----------
+     Gabriel (2026-10-03): el asistente tiene que entender aunque escriban mal
+     ("vachos" -> vasos, "eladeria" -> heladería, "pisseria" -> pizzería). Es
+     la misma regla del buscador de la tienda: se compara cómo SUENAN las
+     palabras (b = v, s = z = c(e, i), y = ll, k = c = qu, sin h muda y sin
+     plural) y se toleran 1 letra de diferencia en palabras de 4 letras, 2 de
+     5 a 8 y 3 en las más largas (de más, de menos, cambiada o volteada). */
+  function suena(w) {
+    w = w.replace(/ll/g, "y").replace(/qu/g, "k").replace(/c([ei])/g, "s$1").replace(/z/g, "s")
+         .replace(/c(?!h)/g, "k").replace(/v/g, "b").replace(/w/g, "u").replace(/(^|[^c])h/g, "$1")
+         .replace(/(.)\1+/g, "$1");
+    if (w.length > 4 && /[^aeiou]es$/.test(w)) w = w.slice(0, -2);
+    else if (w.length > 3 && /s$/.test(w)) w = w.slice(0, -1);
+    return w;
+  }
+  function distancia(a, b, tope) {
+    if (Math.abs(a.length - b.length) > tope) return tope + 1;
+    var d = [], i, j;
+    for (i = 0; i <= a.length; i++) d[i] = [i];
+    for (j = 1; j <= b.length; j++) d[0][j] = j;
+    for (i = 1; i <= a.length; i++) {
+      var minFila = tope + 1;
+      for (j = 1; j <= b.length; j++) {
+        var c = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + c);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        if (d[i][j] < minFila) minFila = d[i][j];
+      }
+      if (minFila > tope) return tope + 1;
+    }
+    return d[a.length][b.length];
+  }
+  function tolerancia(n) { return n <= 3 ? 0 : n === 4 ? 1 : n <= 8 ? 2 : 3; }
+
+  /* Palabras de todos los días que nunca se "corrigen", aunque se parezcan a
+     una del catálogo ("tengo" no es "tango", "vendo" no es "vaso"). */
+  var COMUNES = {};
+  ("para tengo tienes tiene tienen quiero quisiera necesito necesita necesitamos vendo vende venden " +
+   "vendemos busco buscando negocio abri abrir abrimos nuevo nueva como cuanto cuantos cuanta cuantas " +
+   "cuesta cuestan precio precios donde cuando hacen hace pueden puedo puede favor gracias hola buenas " +
+   "buenos tardes dias noches mucho muchos poco pocos grande grandes chico chicos chica chicas mediano " +
+   "mediana medida medidas onzas litro litros caja cajas paquete paquetes pieza piezas envio envios envian " +
+   "mandan llega llegan pedido pedidos comprar compra cotizar cotizacion logo imprimir impresion tambien " +
+   "algo alguna alguno algun este esta estos estas ese esos esas bien sirve sirven usar tipo tipos sobre " +
+   "entre desde hasta cual cuales porque pero todo todos toda todas otra otro otros mejor barato barata " +
+   "caro cara tienda pagina asistente ustedes usted mismo misma menos solo sola local puesto cosas cosa " +
+   "vender servir sirvo llevar mano casa calle semana mensual diario diaria cliente clientes gente " +
+   "personas tienen tenemos manejan venta ventas mayoreo menudeo").split(" ").forEach(function (w) { COMUNES[w] = 1; });
+
+  /* Arma un corrector: cada palabra que no conoce la cambia por la que más se
+     le parece de `fuertes` (las que importan: productos, usos). Las de
+     `conocidas` ya están bien escritas y no se tocan. */
+  function corrector(fuertes, conocidas) {
+    var conocida = {}, lista = [], vista = {}, memo = {};
+    (conocidas || []).forEach(function (t) {
+      norm(t).split(" ").forEach(function (w) { if (w) conocida[w] = 1; });
+    });
+    fuertes.forEach(function (t) {
+      norm(t).split(" ").forEach(function (w) {
+        if (w.length < 3 || /\d/.test(w)) return;
+        conocida[w] = 1;
+        if (!vista[w]) { vista[w] = 1; lista.push({ w: w, s: suena(w) }); }
+      });
+    });
+    function una(t) {
+      if (t.length < 4 || /\d/.test(t) || conocida[t] || COMUNES[t]) return t;
+      if (Object.prototype.hasOwnProperty.call(memo, t)) return memo[t];
+      var st = suena(t), max = tolerancia(st.length), mejor = null, dm = max + 1;
+      lista.forEach(function (v) {
+        var d = v.s === st ? 0 : distancia(st, v.s, max);
+        if (d < dm || (d === dm && mejor && v.w.length < mejor.length)) { dm = d; mejor = v.w; }
+      });
+      return (memo[t] = mejor && dm <= max ? mejor : t);
+    }
+    return function (texto) { return norm(texto || "").split(" ").map(una).join(" "); };
+  }
+
   /* Palabra completa, con el plural tolerado: "helado" pega en "helados" y
      en "vasos para helado", pero "bar" no pega dentro de "barra". */
   var REG_GIROS = GIROS.map(function (g) {
     return g.dice.map(function (t) { return new RegExp("(^| )" + norm(t) + "(e?s)?( |$)"); });
   });
 
-  /* El uso que describe un texto, o null. Gana el primero de la tabla. */
-  function usoDe(texto) {
-    var n = norm(texto || "");
-    if (!n) return null;
+  function usoExacto(n) {
     for (var i = 0; i < GIROS.length; i++) {
       for (var j = 0; j < REG_GIROS[i].length; j++) {
         if (REG_GIROS[i][j].test(n)) return GIROS[i];
       }
     }
     return null;
+  }
+
+  /* Para los usos, el corrector solo conoce las palabras de la tabla; las del
+     catálogo (vaso, tapa, papel…) se dejan como están. */
+  var corrigeUso = null;
+  /* `yaCorregido`: el asistente ya pasó la pregunta por su propio corrector
+     (que conoce todo el catálogo); no se corrige dos veces. */
+  function usoDe(texto, yaCorregido) {
+    var n = norm(texto || "");
+    if (!n) return null;
+    var exacto = usoExacto(n);
+    if (exacto || yaCorregido) return exacto;
+    if (!corrigeUso) {
+      var fuertes = [];
+      GIROS.forEach(function (g) { fuertes = fuertes.concat(g.dice); });
+      var G = window.GREENOVA || {};
+      /* Lo que ya está bien escrito y no es un uso: el catálogo, los
+         sinónimos (ciudades incluidas: "Mérida" no es "feria") y los hechos. */
+      var catalogo = (G.PRODUCTOS || []).map(function (p) { return p.nombre + " " + p.desc + " " + p.v.join(" "); })
+        .concat((G.CATEGORIAS || []).map(function (c) { return c.nombre; }))
+        .concat(SINONIMOS.map(function (x) { return x.dice.join(" ") + " " + x.es; }))
+        .concat(HECHOS.map(function (h) { return h.t + " " + h.c; }));
+      corrigeUso = corrector(fuertes, catalogo);
+    }
+    return usoExacto(corrigeUso(n));
   }
 
   /* Índice de la medida de un producto que empieza con `v` ("4 oz"), o 0. */
@@ -443,6 +750,7 @@ window.GREENOVA_AGENTE = (function () {
     SUGERENCIAS: SUGERENCIAS,
     SALIDA: SALIDA,
     usoDe: usoDe,
+    corrector: corrector,
     medidaDe: medidaDe,
     fotoUso: fotoUso,
     usosDe: usosDe,
