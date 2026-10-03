@@ -268,3 +268,7 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
     - 64 → `img` de las medidas "Negro" de vaso-papel-doble-pared
   - Al instalarlas hay que darles nombre nuevo para que el navegador no muestre la foto vieja.
   - Se le mandaron todas a Gabriel con la 00 de referencia, para hacerlas con el PROMPT 1 y el PROMPT 2 del LEEME.
+- (2026-10-03) Gabriel, sobre la foto del helado en el vaso de papel blanco: "esos no van ahí, están muy chicos los vasos". Los vasitos de la foto son chaparros y anchos, como el contenedor de papel blanco.
+  - La foto pasó a `contenedor-papel` (`assets/uso/contenedor-papel-helado.webp`) y ya no se hace aparte la 34.
+  - El vaso blanco se queda solo con el capuchino.
+  - En "Helado y nieve", los vasos de papel salen con su foto de estudio y el contenedor sale con el helado.

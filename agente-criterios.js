@@ -596,9 +596,13 @@ window.GREENOVA_AGENTE = (function () {
   var FOTOS_USO = {
     /* Las definitivas de Gabriel (2026-10-03). El número es el de su carpeta
        "Fotos con comida (tienda y asistente)". Faltan la 04 (vaso kraft) y la 19 (vaso PP). */
-    /* 01 y 02 · vaso de papel blanco: capuchino; el de 4 oz, con helado */
+    /* 01 · vaso de papel blanco: capuchino */
     "vaso-papel-blanco": { f: "vaso-papel-blanco-capuchino", alt: "Capuchino con arte latte en vaso de papel blanco, junto a un croissant.", giros: CAFE },
-    "vaso-papel-blanco|4 oz": { f: "vaso-papel-blanco-helado", alt: "Helado de pistache y de fresa en vasos de papel blanco de 4 oz.", giros: ["Helado"] },
+    /* 02 · el helado: se hizo para el vaso de 4 oz, pero los vasitos son
+       chaparros y anchos, como el contenedor de papel (Gabriel, 2026-10-03:
+       "esos no van en vaso de papel blanco, están muy chicos"). Hace las
+       veces de la 34. */
+    "contenedor-papel": { f: "contenedor-papel-helado", alt: "Helado de pistache y de fresa en contenedores de papel blanco.", giros: ["Helado"] },
     /* 03 · vaso de papel negro: americano */
     "vaso-papel-negro": { f: "vaso-papel-negro-americano", alt: "Café americano recién servido en vaso de papel negro, con galletas.", giros: CAFE },
     /* 05 · doble pared: los tres colores con latte */
