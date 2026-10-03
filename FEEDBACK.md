@@ -231,3 +231,6 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
   - La 03 y la 08 se regresaron porque no son iguales a la tapa real. La 03 tiene las letras mal escritas ("CNPION CONTENTS HOI", "LOSK TURH") y la 08 no tiene la palanca de la solapa. Quedaron en la carpeta como "REHACER (intento 1)".
   - La 10 y la 15 tienen el panel verde en otro ángulo, pero sí se pusieron. Se le sugirió rehacerlas para que la tienda quede pareja.
   - Las originales están en `Fotos Greenova para Gemini/Listas` y sus referencias se marcaron "YA ESTÁ".
+- (2026-10-03) Primera foto con comida, la 05 (doble pared con latte). Gemini la entregó como 3 paneles verticales. Se separaron y se recortaron en cuadrado de cerca (vapor, arte latte y la parte de arriba del vaso). Extender los lados del vaso completo dejaba marcas falsas.
+  - Quedó en `assets/uso/vaso-papel-doble-pared-{blanco,negro,generico}.webp`, con una foto por color en `FOTOS_USO` (claves "id|Negro" e "id|Genérico").
+  - Si otra foto llega en paneles, se hace igual.
