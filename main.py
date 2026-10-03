@@ -598,7 +598,7 @@ LINEAS_VENTA = (
     "papel", "kraft", "madera", "pet", "pp", "ps",
     # Popotes y portavasos (catálogo 2026): hoy se cotizan, pero si algún día
     # se les pone precio en el panel, su venta no se descarta al guardar.
-    "tapioca", "carton",
+    "tapioca", "carton", "pla", "otro",
 )
 
 

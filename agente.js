@@ -126,6 +126,8 @@
      no escribir "pet" o "rh". */
   function minus(s) { return s.charAt(0).toLowerCase() + s.slice(1); }
 
+  function pzs(n) { return n === 1 ? "1 pz" : n.toLocaleString("es-MX") + " pzs"; }
+
   function pesos(n) {
     return "$" + n.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
@@ -135,8 +137,8 @@
     var tam = (p.venta && p.venta.tam) || [];
     return p.v.map(function (v, k) {
       var t = tam[k] || {}, partes = [];
-      if (t.paq && t.pPaq != null) partes.push("paquete de " + t.paq.toLocaleString("es-MX") + " pzs " + pesos(t.pPaq));
-      if (t.caja && t.pCaja != null) partes.push("caja de " + t.caja.toLocaleString("es-MX") + " pzs " + pesos(t.pCaja));
+      if (t.paq && t.pPaq != null) partes.push("paquete de " + pzs(t.paq) + " " + pesos(t.pPaq));
+      if (t.caja && t.pCaja != null) partes.push("caja de " + pzs(t.caja) + " " + pesos(t.pCaja));
       return v + (t.esp ? " (" + t.esp + ")" : "") + (partes.length ? ": " + partes.join(", ") : ": se cotiza");
     }).join("; ");
   }
@@ -464,8 +466,8 @@
         var pega = oz ? new RegExp("(^|· )" + oz + " oz\\b").test(v) : String(t.boca) === boca;
         if (!pega) return;
         var partes = [];
-        if (t.paq && t.pPaq != null) partes.push("paquete de " + t.paq.toLocaleString("es-MX") + " pzs " + pesos(t.pPaq));
-        if (t.caja && t.pCaja != null) partes.push("caja de " + t.caja.toLocaleString("es-MX") + " pzs " + pesos(t.pCaja));
+        if (t.paq && t.pPaq != null) partes.push("paquete de " + pzs(t.paq) + " " + pesos(t.pPaq));
+        if (t.caja && t.pCaja != null) partes.push("caja de " + pzs(t.caja) + " " + pesos(t.pCaja));
         lineas.push(p.nombre + " (" + v + "): " + (partes.length ? partes.join(" · ") : "se cotiza") + ".");
       });
     });
@@ -549,7 +551,10 @@
     /* Solo la familia del primer resultado: si alguien pregunta por vasos de
        café, mezclarle tapas y vasos fríos confunde en vez de ayudar. */
     var familia = prods[0].d.prod.cat;
-    prods = prods.filter(function (h) { return h.d.prod.cat === familia; }).slice(0, 4);
+    var mismos = prods.filter(function (h) { return h.d.prod.cat === familia; });
+    /* Si la familia tiene un solo producto (contenedores), se enseñan los
+       más cercanos aunque sean de otra (cajas, tapas para contenedor). */
+    prods = (mismos.length >= 2 ? mismos : prods).slice(0, 4);
     if (prods.length < 2) return null;
 
     var lista = prods.map(function (h) {

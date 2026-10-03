@@ -188,3 +188,26 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
   - Llevan la etiqueta "Se cotiza". En su ficha, en lugar de carrito y pago, sale "Pedir cotización", que abre el formulario con el producto y la medida ya escritos (`tienda.html?cotiza=<id>&v=<medida>`).
   - Los enlaces viejos `?pide=Popotes` y `?pide=Portavasos` abren su categoría.
   - `main.py` acepta las líneas `tapioca` y `carton`, por si un día se les pone precio en el panel.
+
+## Ronda 16 (2026-10-03): tienda por secciones y precios revisados
+
+- Gabriel: "que salga todo prácticamente, pero no todo de golpe… por secciones… que haya un botón en medio que diga mostrar más… ordenado: vasos (todos los vasos), tapas (todas las tapas)… si no tiene precio, 'Pedir cotización'; si sí, 'Comprar ahora'. Es lo más importante de la página."
+- **Tienda:**
+  - Barra lateral con 5 secciones (`SECCIONES` en `tienda.js`): Vasos, Tapas, Comida para llevar, Accesorios para bebida y Bolsas, servilletas y envoltura. La sección elegida se abre y enseña sus categorías.
+  - En "Todos los productos" la rejilla va en ese orden, con un título por sección.
+  - Se ven 12 productos y el botón "Mostrar más", en medio, trae 12 más. Cualquier filtro o búsqueda vuelve a los primeros 12.
+  - Tarjeta con precio: "Comprar ahora" (lleva a la ficha para elegir medida). Sin precio: "Pedir cotización", que llena el formulario con el producto ahí mismo, sin recargar.
+- **Precios revisados:**
+  - Las 89 medidas que ya estaban en la tienda coinciden al centavo con la hoja Precios del Excel. Se comprobó con un script.
+  - Se agregaron 15 productos de la Hoja1 con su precio GREENOVA SC (columnas J y K): tapa de 32 oz, vaso PP fiestero, contenedor de papel blanco de 4 a 32 oz y sus tapas, caja kraft de 26 a 96 oz, charola para papas, contenedor PET, contenedor para rebanada de pastel, ensaladera PET de 18 a 64 oz, soufflé PP de 2 oz y su tapa, cono para crepa, popote PLA estuchado, bolsa semikraft con fuelle (3 tamaños) y bobina Egapack.
+  - También se les puso precio al portavasos charola y al popote de tapioca estuchado.
+- **Sin precio en ningún documento (Pedir cotización):**
+  - portavasos con asa (2 y 4), servilleta larga, papel encerado, papel RH y popote cuchara: solo vienen en el PDF, con "Cotizar";
+  - tapa PS negra de 8 oz (Fuling): en blanco en la hoja Precios y "Cotizar" en el PDF;
+  - popote de tapioca a granel: el Excel solo da $1,098.28 por la caja de 5 kg, sin precio por paquete;
+  - Sanitas: el Excel solo da $250.23 por la caja de 20 paquetes.
+- **Diferencias que Gabriel debe confirmar:**
+  - El PDF dice "Cotizar" en el portavasos charola y en el popote estuchado, pero la Hoja1 sí tiene precio, y se usó ese.
+  - El PDF trae piezas por caja distintas al Excel en 8 tapas de vaso de papel. Se dejaron las del Excel; el precio por pieza sí coincide.
+  - La página 22 del PDF (tapas PET de 107 y 90 mm) trae $1.39 y $1.25 en todas, que parece de relleno.
+- `main.py` acepta las líneas `pla` y `otro`. El viaje de ida y vuelta por `render_catalogo` conserva los 48 productos sin cambios.

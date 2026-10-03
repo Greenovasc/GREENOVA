@@ -11,14 +11,20 @@ window.GREENOVA = (function () {
   /* Categorías del catálogo. */
   var CATEGORIAS = [
     { id: "vasos-papel", nombre: "Vasos de papel", icono: "i-coffee" },
+    { id: "vasos-pet", nombre: "Vasos PET y PP", icono: "i-cup-cold" },
     { id: "tapas-papel", nombre: "Tapas para vaso de papel", icono: "i-circle-half" },
+    { id: "tapas-pet", nombre: "Tapas para vaso PET", icono: "i-circle-half" },
+    { id: "tapas-contenedor", nombre: "Tapas para contenedor y soufflé", icono: "i-circle-half" },
+    { id: "contenedores", nombre: "Contenedores de papel", icono: "i-bowl-food" },
+    { id: "cajas-charolas", nombre: "Cajas, charolas y contenedores PET", icono: "i-package" },
+    { id: "ensaladeras", nombre: "Ensaladeras", icono: "i-bowl-food" },
+    { id: "souffles", nombre: "Soufflés y conos", icono: "i-bowl-food" },
     { id: "fajillas", nombre: "Fajillas", icono: "i-package" },
     { id: "removedores", nombre: "Removedores", icono: "i-fork-knife" },
-    { id: "vasos-pet", nombre: "Vasos PET y PP", icono: "i-cup-cold" },
-    { id: "tapas-pet", nombre: "Tapas para vaso PET", icono: "i-circle-half" },
     { id: "popotes", nombre: "Popotes", icono: "i-cup-cold" },
     { id: "portavasos", nombre: "Portavasos", icono: "i-coffee" },
-    { id: "servilletas-papel", nombre: "Servilletas y papel", icono: "i-leaf" }
+    { id: "bolsas", nombre: "Bolsas", icono: "i-shopping-bag" },
+    { id: "servilletas-papel", nombre: "Servilletas y envoltura", icono: "i-leaf" }
   ];
 
   /* Materiales -> etiqueta visible. */
@@ -30,7 +36,9 @@ window.GREENOVA = (function () {
     "pp": "Polipropileno",
     "ps": "Poliestireno",
     "tapioca": "Tapioca",
-    "carton": "Cartón"
+    "carton": "Cartón",
+    "pla": "PLA",
+    "otro": "Otro material"
   };
 
   /* v = medidas u opciones | venta.tam = una entrada por medida:
@@ -265,14 +273,21 @@ window.GREENOVA = (function () {
       desc: "Popote biodegradable de tapioca, de 21 cm. Se cotiza por caja.",
       v: ["21 cm · caja de 5 kg"] },
     { id: "popote-tapioca-estuchado", nombre: "Popote de tapioca estuchado", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca-estuchado", uso: "Popote para bebida fría",
-      desc: "Popote biodegradable de tapioca, de 21 cm, en sobre individual. Se cotiza por caja.",
-      v: ["21 cm · caja de 2,000 pzs"] },
+      desc: "Popote biodegradable de tapioca, de 21 cm, en sobre individual.",
+      v: ["21 cm · diámetro 11 mm"],
+      venta: { linea: "tapioca", tam: [
+        { paq: 100, caja: 2000, pPaq: 148.03, pCaja: 2680.69, boca: null, esp: "Largo 21 cm · Diámetro 11 mm", sku: "GN-POPOTE-TAPIOCA-ESTUCHADO-01", img: null }
+      ] } },
     { id: "popote-cuchara", nombre: "Popote cuchara biodegradable", cat: "popotes", mat: [], img: "foto-pendiente", uso: "Popote para raspados, nieves y frappés",
       desc: "Popote biodegradable de 26 cm con punta de cuchara. Se cotiza por caja.",
       v: ["26 cm · caja de 5 kg"] },
     { id: "portavaso-charola", nombre: "Portavasos charola", cat: "portavasos", mat: ["carton"], img: "portavaso-charola-4", uso: "Para llevar 2 o 4 bebidas", fotoPropia: true,
-      desc: "Charola portavasos para llevar 2 o 4 bebidas. Se cotiza por caja.",
-      v: ["2 espacios · caja de 600 pzs", "4 espacios · caja de 300 pzs"] },
+      desc: "Charola portavasos para llevar 2 o 4 bebidas.",
+      v: ["2 espacios", "4 espacios"],
+      venta: { linea: "carton", tam: [
+        { paq: 100, caja: 600, pPaq: 221.62, pCaja: 1245.70, boca: null, esp: null, sku: "GN-PORTAVASO-CHAROLA-01", img: null },
+        { paq: 1, caja: 300, pPaq: 2.47, pCaja: 699.11, boca: null, esp: null, sku: "GN-PORTAVASO-CHAROLA-02", img: null }
+      ] } },
     { id: "portavaso-asa", nombre: "Portavasos con asa", cat: "portavasos", mat: ["carton"], img: "portavaso-caja-kraft", uso: "Para llevar 2 o 4 bebidas", fotoPropia: true,
       desc: "Portavasos de cartón con asa, para llevar 2 o 4 bebidas. Se cotiza por caja.",
       v: ["2 espacios · caja de 250 pzs", "4 espacios · caja de 200 pzs"] },
@@ -285,6 +300,120 @@ window.GREENOVA = (function () {
     { id: "papel-rh", nombre: "Papel grado alimenticio RH", cat: "servilletas-papel", mat: ["papel"], img: "papel-rh", uso: "Para envolver alimentos",
       desc: "Papel grado alimenticio RH, para envolver alimentos. Se cotiza por caja.",
       v: ["Caja de 1,000 pzs"] },
+
+    /* ---------------- de la Hoja1 del Excel (con sus precios) ---------------- */
+    { id: "tapa-papel-105", nombre: "Tapa para vaso de papel de 32 oz", cat: "tapas-papel", mat: ["ps"], img: "foto-pendiente", uso: "Tapa para vaso de papel de 32 oz",
+      desc: "Tapa plana de poliestireno con orificio para vaso de papel de 32 oz (boca 105 mm).",
+      v: ["Plana con orificio · boca 105 mm"],
+      venta: { linea: "ps", tam: [
+        { paq: 120, caja: 960, pPaq: 120.17, pCaja: 826.95, boca: 105, esp: "Boca 105 mm · Material: Poliestireno", sku: "GN-TAPA-PAPEL-105-01", img: null }
+      ] } },
+    { id: "vaso-pp-fiestero", nombre: "Vaso PP fiestero 9 oz", cat: "vasos-pet", mat: ["pp"], img: "foto-pendiente", uso: "Bebida fría",
+      desc: "Vaso de polipropileno de 9 oz para fiestas y eventos.",
+      v: ["9 oz"],
+      venta: { linea: "pp", tam: [
+        { paq: 100, caja: 2500, pPaq: 68.69, pCaja: 1367.13, boca: null, esp: "9 oz · Material: Polipropileno", sku: "GN-VASO-PP-FIESTERO-01", img: null }
+      ] } },
+    { id: "contenedor-papel", nombre: "Contenedor de papel blanco", cat: "contenedores", mat: ["papel"], img: "contenedor-helado", uso: "Helado, sopa y comida para llevar", fotoPropia: true,
+      desc: "Contenedor de papel blanco para alimentos, de 4 a 32 oz.",
+      v: ["4 oz · boca 75 mm", "6 oz · boca 95 mm", "8 oz · boca 95 mm", "12 oz · boca 101 mm", "16 oz · boca 115 mm", "32 oz · boca 115 mm"],
+      venta: { linea: "papel", tam: [
+        { paq: 50, caja: 1000, pPaq: 52.71, pCaja: 914.28, boca: 75, esp: "Boca 75 mm", sku: "GN-CONTENEDOR-PAPEL-01", img: null },
+        { paq: 50, caja: 1000, pPaq: 69.27, pCaja: 1245.41, boca: 95, esp: "Boca 95 mm", sku: "GN-CONTENEDOR-PAPEL-02", img: null },
+        { paq: 50, caja: 1000, pPaq: 71.4, pCaja: 1287.91, boca: 95, esp: "Boca 95 mm", sku: "GN-CONTENEDOR-PAPEL-03", img: null },
+        { paq: 50, caja: 1000, pPaq: 80.54, pCaja: 1470.84, boca: 101, esp: "Boca 101 mm", sku: "GN-CONTENEDOR-PAPEL-04", img: null },
+        { paq: 25, caja: 500, pPaq: 59.48, pCaja: 1119.59, boca: 115, esp: "Boca 115 mm", sku: "GN-CONTENEDOR-PAPEL-05", img: null },
+        { paq: 25, caja: 500, pPaq: 74.83, pCaja: 1426.55, boca: 115, esp: "Boca 115 mm", sku: "GN-CONTENEDOR-PAPEL-06", img: null }
+      ] } },
+    { id: "tapa-contenedor", nombre: "Tapa para contenedor de papel", cat: "tapas-contenedor", mat: ["pet", "papel"], img: "bowl-domo", uso: "Tapa para contenedor de papel", fotoPropia: true,
+      desc: "Tapas para el contenedor de papel blanco: domo de PET con orificio, de papel o plana de PET, según la boca.",
+      v: ["Domo PET con orificio · boca 75 mm", "Domo PET con orificio · boca 95 mm", "Domo PET con orificio · boca 101 mm", "De papel · boca 115 mm", "Plana PET · boca 115 mm"],
+      venta: { linea: "pet", tam: [
+        { paq: 50, caja: 1000, pPaq: 58.56, pCaja: 1031.27, boca: 75, esp: "Boca 75 mm · Material: PET", sku: "GN-TAPA-CONTENEDOR-01", img: null },
+        { paq: 50, caja: 1000, pPaq: 90.07, pCaja: 1661.44, boca: 95, esp: "Boca 95 mm · Material: PET", sku: "GN-TAPA-CONTENEDOR-02", img: null },
+        { paq: 50, caja: 1000, pPaq: 174.78, pCaja: 3355.5, boca: 101, esp: "Boca 101 mm · Material: PET", sku: "GN-TAPA-CONTENEDOR-03", img: null },
+        { paq: 25, caja: 500, pPaq: 76.14, pCaja: 1452.74, boca: 115, esp: "Boca 115 mm · Material: Papel", sku: "GN-TAPA-CONTENEDOR-04", img: null },
+        { paq: 25, caja: 500, pPaq: 34.32, pCaja: 616.4, boca: 115, esp: "Boca 115 mm · Material: PET", sku: "GN-TAPA-CONTENEDOR-05", img: null }
+      ] } },
+    { id: "caja-kraft", nombre: "Caja kraft para comida", cat: "cajas-charolas", mat: ["kraft"], img: "contenedor-kraft-rect", uso: "Comida para llevar", fotoPropia: true,
+      desc: "Caja kraft para comida para llevar, de 26 a 96 oz.",
+      v: ["26 oz · 11 x 9 x 6.5 cm", "45 oz · 15 x 12 x 6.5 cm", "49 oz · 20 x 14 x 5 cm", "66 oz · 20 x 14 x 6.5 cm", "96 oz · 20 x 14 x 9 cm"],
+      venta: { linea: "kraft", tam: [
+        { paq: 50, caja: 450, pPaq: 129.28, pCaja: 1100.48, boca: null, esp: "11 x 9 x 6.5 cm", sku: "GN-CAJA-KRAFT-01", img: null },
+        { paq: 50, caja: 300, pPaq: 180.01, pCaja: 1038.08, boca: null, esp: "15 x 12 x 6.5 cm", sku: "GN-CAJA-KRAFT-02", img: null },
+        { paq: 50, caja: 200, pPaq: 203.92, pCaja: 787.7, boca: null, esp: "20 x 14 x 5 cm", sku: "GN-CAJA-KRAFT-03", img: null },
+        { paq: 50, caja: 200, pPaq: 223.72, pCaja: 866.88, boca: null, esp: "20 x 14 x 6.5 cm", sku: "GN-CAJA-KRAFT-04", img: null },
+        { paq: 40, caja: 160, pPaq: 223.49, pCaja: 871.55, boca: null, esp: "20 x 14 x 9 cm", sku: "GN-CAJA-KRAFT-05", img: null }
+      ] } },
+    { id: "charola-papas", nombre: "Charola kraft para papas", cat: "cajas-charolas", mat: ["kraft"], img: "charola-kraft", uso: "Papas, alitas y botanas", fotoPropia: true,
+      desc: "Charola kraft para papas, alitas y botanas.",
+      v: ["Estándar"],
+      venta: { linea: "kraft", tam: [
+        { paq: 50, caja: 300, pPaq: 33.02, pCaja: 156.11, boca: null, esp: null, sku: "GN-CHAROLA-PAPAS-01", img: null }
+      ] } },
+    { id: "contenedor-pet", nombre: "Contenedor PET", cat: "cajas-charolas", mat: ["pet"], img: "almeja-transparente", uso: "Comida para llevar", fotoPropia: true,
+      desc: "Contenedor transparente de PET para alimentos.",
+      v: ["11.5 x 12.5 x 8 cm", "14.5 x 13.3 x 6 cm"],
+      venta: { linea: "pet", tam: [
+        { paq: 1, caja: 250, pPaq: 2.61, pCaja: 617.54, boca: null, esp: "11.5 x 12.5 x 8 cm", sku: "GN-CONTENEDOR-PET-01", img: null },
+        { paq: 1, caja: 250, pPaq: 3.57, pCaja: 858.22, boca: null, esp: "14.5 x 13.3 x 6 cm", sku: "GN-CONTENEDOR-PET-02", img: null }
+      ] } },
+    { id: "contenedor-pet-pastel", nombre: "Contenedor PET para rebanada de pastel", cat: "cajas-charolas", mat: ["pet"], img: "contenedor-rebanada-pastel", uso: "Rebanada de pastel", fotoPropia: true,
+      desc: "Contenedor triangular de PET para una rebanada de pastel.",
+      v: ["Triangular"],
+      venta: { linea: "pet", tam: [
+        { paq: 1, caja: 250, pPaq: 2.62, pCaja: 620.3, boca: null, esp: null, sku: "GN-CONTENEDOR-PET-PASTEL-01", img: null }
+      ] } },
+    { id: "ensaladera-pet", nombre: "Ensaladera PET con tapa", cat: "ensaladeras", mat: ["pet"], img: "ensaladera-transparente", uso: "Ensaladas y bowls", fotoPropia: true,
+      desc: "Ensaladera de PET transparente con tapa, de 18 a 64 oz.",
+      v: ["18 oz", "32 oz", "48 oz", "64 oz"],
+      venta: { linea: "pet", tam: [
+        { paq: 1, caja: 150, pPaq: 6.71, pCaja: 985.24, boca: null, esp: null, sku: "GN-ENSALADERA-PET-01", img: null },
+        { paq: 1, caja: 150, pPaq: 7.62, pCaja: 1121.74, boca: null, esp: null, sku: "GN-ENSALADERA-PET-02", img: null },
+        { paq: 1, caja: 150, pPaq: 8.63, pCaja: 1274.22, boca: null, esp: null, sku: "GN-ENSALADERA-PET-03", img: null },
+        { paq: 1, caja: 100, pPaq: 13.63, pCaja: 1349.11, boca: null, esp: null, sku: "GN-ENSALADERA-PET-04", img: null }
+      ] } },
+    { id: "souffle", nombre: "Soufflé PP de 2 oz", cat: "souffles", mat: ["pp"], img: "souffle-fecula", uso: "Salsas y aderezos", fotoPropia: true,
+      desc: "Vaso soufflé de polipropileno de 2 oz para salsas y aderezos. Su tapa se vende aparte.",
+      v: ["2 oz"],
+      venta: { linea: "pp", tam: [
+        { paq: 100, caja: 2500, pPaq: 42.69, pCaja: 717.33, boca: null, esp: null, sku: "GN-SOUFFLE-01", img: null }
+      ] } },
+    { id: "tapa-souffle", nombre: "Tapa PET para soufflé de 2 oz", cat: "tapas-contenedor", mat: ["pet"], img: "foto-pendiente", uso: "Tapa para soufflé",
+      desc: "Tapa de PET para el soufflé de 2 oz.",
+      v: ["2 oz"],
+      venta: { linea: "pet", tam: [
+        { paq: 100, caja: 2500, pPaq: 39.56, pCaja: 638.91, boca: null, esp: null, sku: "GN-TAPA-SOUFFLE-01", img: null }
+      ] } },
+    { id: "cono-crepa", nombre: "Cono para crepa", cat: "souffles", mat: [], img: "cono-crepa", uso: "Crepas", fotoPropia: true,
+      desc: "Cono porta crepa para servir en la mano.",
+      v: ["Estándar"],
+      venta: { linea: "otro", tam: [
+        { paq: 1, caja: 1000, pPaq: 1.77, pCaja: 1625, boca: null, esp: null, sku: "GN-CONO-CREPA-01", img: null }
+      ] } },
+    { id: "popote-pla-estuchado", nombre: "Popote PLA estuchado", cat: "popotes", mat: ["pla"], img: "popote-tapioca-estuchado", uso: "Popote para bebida fría",
+      desc: "Popote de PLA de 25 cm en sobre individual.",
+      v: ["25 cm"],
+      venta: { linea: "pla", tam: [
+        { paq: 100, caja: 2000, pPaq: 54.24, pCaja: 804.76, boca: null, esp: "Largo 25 cm", sku: "GN-POPOTE-PLA-ESTUCHADO-01", img: null }
+      ] } },
+    { id: "bolsa-semikraft", nombre: "Bolsa semikraft con fuelle", cat: "bolsas", mat: ["kraft"], img: "srv-bolsa-kraft", uso: "Para llevar", fotoPropia: true,
+      desc: "Bolsa de papel semikraft con fuelle, en tres tamaños.",
+      v: ["Chica · 25 x 30 x 12 cm", "Mediana · 28 x 35 x 15 cm", "Grande · 30 x 39 x 17 cm"],
+      venta: { linea: "kraft", tam: [
+        { paq: 50, caja: 250, pPaq: 107.6, pCaja: 502.98, boca: null, esp: "25 x 30 x 12 cm", sku: "GN-BOLSA-SEMIKRAFT-01", img: null },
+        { paq: 50, caja: 250, pPaq: 132.02, pCaja: 625.12, boca: null, esp: "28 x 35 x 15 cm", sku: "GN-BOLSA-SEMIKRAFT-02", img: null },
+        { paq: 50, caja: 250, pPaq: 151.27, pCaja: 721.35, boca: null, esp: "30 x 39 x 17 cm", sku: "GN-BOLSA-SEMIKRAFT-03", img: null }
+      ] } },
+    { id: "bobina-egapack", nombre: "Bobina Egapack 600 m", cat: "servilletas-papel", mat: [], img: "foto-pendiente", uso: "Para envolver alimentos",
+      desc: "Bobina Egapack de 600 m de largo.",
+      v: ["600 m"],
+      venta: { linea: "otro", tam: [
+        { paq: 1, caja: 6, pPaq: 151.43, pCaja: 907.76, boca: null, esp: "Largo 600 m", sku: "GN-BOBINA-EGAPACK-01", img: null }
+      ] } },
+    { id: "sanitas", nombre: "Sanitas 24 x 21 cm", cat: "servilletas-papel", mat: ["papel"], img: "foto-pendiente", uso: "Para secar y limpiar",
+      desc: "Sanitas de Kimberly-Clark, 24 x 21 cm. Se cotiza por caja.",
+      v: ["24 x 21 cm · caja de 20 paquetes"] },
 
   ];
 

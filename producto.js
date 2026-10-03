@@ -340,7 +340,7 @@
     var t = TAM[selIndex()] || {};
     box.hidden = !tapas.length;
     box.innerHTML = tapas.length ?
-      '<p class="tapas-rel__label">Tapas para este vaso (boca ' + t.boca + " mm)</p>" +
+      '<p class="tapas-rel__label">Tapas para este ' + (p.cat === "contenedores" ? "contenedor" : "vaso") + " (boca " + t.boca + " mm)</p>" +
       '<div class="tapas-rel__list">' +
         tapas.map(function (x) {
           return '<a class="tapas-rel__chip" href="producto.html?id=' + x.id + "&boca=" + t.boca + '">' +

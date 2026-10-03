@@ -3371,3 +3371,27 @@ div.cat--info { cursor: default; }
 .ficha__compra--cotiza #btn-comprar,
 .ficha__compra--cotiza .ficha__openpay { display: none !important; }
 .precios__nada b { color: var(--heading); }
+
+/* ---------- 2026-10-03: tienda por secciones y "Mostrar más" ---------- */
+/* Barra lateral: secciones; la elegida se abre con sus categorías. */
+.chips__sec { display: flex; flex-direction: column; gap: 6px; }
+.chips__sub { display: none; flex-direction: column; gap: 5px; padding: 2px 0 6px 14px; border-left: 2px solid var(--line); margin-left: 12px; }
+.chips__sec--abierta .chips__sub { display: flex; }
+.chips__sub .chip { justify-content: flex-start; text-align: left; }
+.chip--sec { font-weight: 600; }
+
+/* Títulos de sección dentro de la rejilla: "Vasos", "Tapas"… */
+.grid-sec {
+  grid-column: 1 / -1; margin: 18px 0 -4px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-display); font-size: clamp(1.25rem, 2vw, 1.55rem);
+  color: var(--heading); letter-spacing: -.01em;
+}
+.grid-sec:first-child { margin-top: 0; }
+
+/* "Mostrar más", en medio, debajo de la rejilla. */
+.mas { display: flex; justify-content: center; margin: 32px 0 8px; }
+.mas[hidden] { display: none; }
+.mas .btn { min-width: 220px; justify-content: center; }
+.chips__sub .chip { white-space: normal; line-height: 1.3; }
+.chips__sec--abierta > .chip--sec[aria-pressed="false"] { border-color: var(--green); color: var(--heading); }

@@ -25,7 +25,31 @@
   var KEY = "greenova.carrito.v2";
 
   /* Qué tapas le quedan a qué vasos: misma boca, familia correspondiente. */
-  var FAMILIA_TAPAS = { "vasos-papel": "tapas-papel", "vasos-pet": "tapas-pet" };
+  var FAMILIA_TAPAS = { "vasos-papel": "tapas-papel", "vasos-pet": "tapas-pet", "contenedores": "tapas-contenedor" };
+
+  /* Secciones de la tienda (Gabriel, 2026-10-03): "que venga ordenado: vasos
+     (todos los vasos), tapas (todas las tapas), etc." Cada sección junta
+     categorías del catálogo; el orden de aquí es el orden de la tienda. Una
+     categoría nueva que no esté en ninguna sale al final, en "Más productos". */
+  var SECCIONES = [
+    { id: "vasos", nombre: "Vasos", cats: ["vasos-papel", "vasos-pet"] },
+    { id: "tapas", nombre: "Tapas", cats: ["tapas-papel", "tapas-pet", "tapas-contenedor"] },
+    { id: "comida", nombre: "Comida para llevar", cats: ["contenedores", "cajas-charolas", "ensaladeras", "souffles"] },
+    { id: "accesorios", nombre: "Accesorios para bebida", cats: ["fajillas", "removedores", "popotes", "portavasos"] },
+    { id: "bolsas", nombre: "Bolsas, servilletas y envoltura", cats: ["bolsas", "servilletas-papel"] }
+  ];
+  (function () {
+    var usadas = [];
+    SECCIONES.forEach(function (s) { usadas = usadas.concat(s.cats); });
+    var resto = CATS.map(function (c) { return c.id; }).filter(function (id) { return usadas.indexOf(id) === -1; });
+    if (resto.length) SECCIONES.push({ id: "mas", nombre: "Más productos", cats: resto });
+  })();
+  function seccionDe(cat) {
+    return SECCIONES.filter(function (s) { return s.cats.indexOf(cat) > -1; })[0] || null;
+  }
+  /* Orden de la tienda: el de las secciones y, dentro, el de sus categorías. */
+  var ORDEN_CATS = [];
+  SECCIONES.forEach(function (s) { ORDEN_CATS = ORDEN_CATS.concat(s.cats); });
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -97,7 +121,7 @@
       var base = u === "paq" ? t.pPaq : t.pCaja;
       var final = precioDe(p, t, u);
       return '<p class="precios__fila" data-u="' + u + '"' + (u === uSel ? ' data-sel="true"' : "") + ">" +
-        "<span>" + (u === "paq" ? "Paquete" : "Caja") + " · " + fmt(piezasDe(t, u)) + " pzs</span>" +
+        "<span>" + (u === "paq" ? "Paquete" : "Caja") + " · " + fmt(piezasDe(t, u)) + (piezasDe(t, u) === 1 ? " pz" : " pzs") + "</span>" +
         "<b>" + (promo && promo.desc ? "<s>" + money(base) + "</s> " : "") + money(final) + "</b></p>";
     }).join("") + '<p class="precios__iva">IVA incluido</p>';
   }
@@ -130,7 +154,12 @@
   }
 
   /* ============================ estado ============================ */
-  var state = { cat: "todo", oz: [], q: "", sort: "todos" };
+  var state = { sec: "todo", cat: "todo", oz: [], q: "", sort: "todos" };
+
+  /* "Mostrar más" (Gabriel, 2026-10-03): no todo de golpe. Se ven PASO
+     productos y el botón de en medio trae los siguientes. */
+  var PASO = 12;
+  var ver = PASO, firmaAntes = "";
   /* "Más vendidos": ids ordenados por cuántos pedidos los llevan (/api/populares). */
   var POPULARES = null;
   /* "Nuestros mejores precios": el precio por pieza más bajo de sus medidas. */
@@ -201,8 +230,17 @@
     return p._oz;
   }
 
+  function enSeleccion(p) {
+    if (state.cat !== "todo") return p.cat === state.cat;
+    if (state.sec !== "todo") {
+      var s = SECCIONES.filter(function (x) { return x.id === state.sec; })[0];
+      return !!s && s.cats.indexOf(p.cat) > -1;
+    }
+    return true;
+  }
+
   function pasaFiltros(p) {
-    if (state.cat !== "todo" && p.cat !== state.cat) return false;
+    if (!enSeleccion(p)) return false;
     if (state.oz.length && !ozDe(p).some(function (o) { return state.oz.indexOf(o) > -1; })) return false;
     return true;
   }
@@ -224,7 +262,8 @@
     termico: "doble pared", termicos: "doble pared", agitador: "removedor", agitadores: "removedor",
     mezclador: "removedor", mezcladores: "removedor", palito: "removedor", palitos: "removedor",
     manga: "fajilla", mangas: "fajilla", funda: "fajilla", fundas: "fajilla", cinturon: "fajilla",
-    transparente: "pet", desechable: "", desechables: "", biodegradable: "", biodegradables: ""
+    transparente: "pet", desechable: "", desechables: "", biodegradable: "", biodegradables: "",
+    bowl: "ensaladera", bowls: "ensaladera", salsero: "souffle", salseros: "souffle", sufle: "souffle"
   };
   function suena(w) {
     w = w.replace(/ll/g, "y").replace(/qu/g, "k").replace(/c([ei])/g, "s$1").replace(/z/g, "s")
@@ -254,9 +293,8 @@
   /* Lo que se cotiza pero no está en la tienda: si lo buscan (aunque sea mal
      escrito) no se confunde con otra palabra; sale "Sin resultados" con el
      botón para pedirlo. */
-  var FUERA = ["bolsa", "contenedor", "charola", "caja", "ensaladera",
-               "bowl", "plato", "cuchara", "tenedor", "cuchillo", "cubierto", "almeja", "bisagra",
-               "domo pastel", "cono", "crepa", "souffle", "bagazo", "helado", "pizza"]
+  var FUERA = ["plato", "cuchara", "tenedor", "cuchillo", "cubierto", "almeja", "bisagra",
+               "domo pastel", "bagazo", "helado", "pizza"]
     .map(function (w) { return { w: w, s: suena(w) }; });
   var VOCAB = null;
   function vocab() {
@@ -366,7 +404,7 @@
   /* El orden que eligió la persona. En "todos", la búsqueda por uso respeta
      el orden de la recomendación (lo más útil primero). */
   function ordena(out, porUso, porNombre) {
-    var order = CATS.map(function (c) { return c.id; });
+    var order = ORDEN_CATS;
     var base = out.slice();
     function relevancia(a, b) {
       if (porUso) return base.indexOf(a) - base.indexOf(b);
@@ -405,12 +443,18 @@
      hay en la categoría elegida, para no ofrecer onzas que no existen ahí. */
   function buildChips() {
     var cats = $("cats");
-    var html = ['<button class="chip" data-cat="todo" aria-pressed="true">Todos los productos</button>'];
-    CATS.forEach(function (c) {
-      if (!BASE.some(function (p) { return p.cat === c.id; })) return;
-      html.push('<button class="chip" data-cat="' + c.id + '" aria-pressed="false">' +
-                '<svg class="ico" aria-hidden="true"><use href="#' + c.icono + '"></use></svg>' +
-                esc(c.nombre) + "</button>");
+    var html = ['<button class="chip" data-sec="todo" aria-pressed="true">Todos los productos</button>'];
+    SECCIONES.forEach(function (sec) {
+      var suyas = CATS.filter(function (c) {
+        return sec.cats.indexOf(c.id) > -1 && BASE.some(function (p) { return p.cat === c.id; });
+      });
+      if (!suyas.length) return;
+      html.push('<div class="chips__sec" data-grupo="' + sec.id + '">' +
+        '<button class="chip chip--sec" data-sec="' + sec.id + '" aria-pressed="false">' + esc(sec.nombre) + "</button>" +
+        (suyas.length > 1 ? '<div class="chips__sub">' + suyas.map(function (c) {
+          return '<button class="chip chip--sm" data-cat="' + c.id + '" aria-pressed="false">' + esc(c.nombre) + "</button>";
+        }).join("") + "</div>" : "") +
+        "</div>");
     });
     cats.innerHTML = html.join("");
     buildCaps();
@@ -421,7 +465,7 @@
     if (!bloque) return;
     var usados = {};
     BASE.forEach(function (p) {
-      if (state.cat !== "todo" && p.cat !== state.cat) return;
+      if (!enSeleccion(p)) return;
       ozDe(p).forEach(function (o) { usados[o] = true; });
     });
     var ozs = Object.keys(usados).sort(function (a, b) { return Number(a) - Number(b); });
@@ -435,7 +479,16 @@
 
   function syncChips() {
     if (!$("cats")) return;
-    Array.prototype.forEach.call($("cats").children, function (b) {
+    /* La sección elegida se abre y enseña sus categorías; las demás, cerradas. */
+    /* La sección se marca cuando se ve completa; si se eligió una categoría
+       suya, se marca la categoría y la sección queda abierta. */
+    Array.prototype.forEach.call($("cats").querySelectorAll("[data-sec]"), function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.sec === state.sec && state.cat === "todo"));
+    });
+    Array.prototype.forEach.call($("cats").querySelectorAll(".chips__sec"), function (g) {
+      g.classList.toggle("chips__sec--abierta", g.dataset.grupo === state.sec);
+    });
+    Array.prototype.forEach.call($("cats").querySelectorAll("[data-cat]"), function (b) {
       b.setAttribute("aria-pressed", String(b.dataset.cat === state.cat));
     });
     if ($("caps")) {
@@ -444,7 +497,7 @@
       });
     }
     var dot = $("filter-dot");
-    if (dot) dot.hidden = state.cat === "todo" && state.oz.length === 0;
+    if (dot) dot.hidden = state.sec === "todo" && state.cat === "todo" && state.oz.length === 0;
   }
 
   /* ============================ tarjetas ============================
@@ -453,7 +506,9 @@
      especificaciones. Paquete, caja y precio van dentro, en la ficha. */
   var TIPO = { "vasos-papel": "Vasos", "vasos-pet": "Vasos", "tapas-papel": "Tapas",
                "tapas-pet": "Tapas", "fajillas": "Accesorios", "removedores": "Accesorios",
-               "popotes": "Accesorios", "portavasos": "Accesorios", "servilletas-papel": "Accesorios" };
+               "popotes": "Accesorios", "portavasos": "Accesorios", "servilletas-papel": "Accesorios",
+               "tapas-contenedor": "Tapas", "contenedores": "Contenedores", "cajas-charolas": "Contenedores",
+               "ensaladeras": "Contenedores", "souffles": "Contenedores", "bolsas": "Bolsas" };
 
   /* Lo que no tiene ningún precio en la lista se cotiza (Gabriel, 2026-10-03:
      los popotes tienen que salir en la tienda aunque no tengan precio). */
@@ -506,10 +561,16 @@
             return "<div><dt>" + x[0] + "</dt><dd>" + esc(x[1]) + "</dd></div>";
           }).join("") + "</dl>" +
         "</div>" +
+        /* Con precio en la lista: "Comprar ahora" (elige medida y cantidad en
+           su ficha). Sin precio: "Pedir cotización" (Gabriel, 2026-10-03). */
         '<div class="pcard__buy">' +
-          '<a class="btn btn--ghost btn--sm btn--block" href="' + url + '">' +
-            '<span class="btn__label">Ver producto</span>' +
-            '<svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg></a>' +
+          (seCotiza(p)
+            ? '<a class="btn btn--ghost btn--sm btn--block" href="tienda.html?cotiza=' + p.id + '#cotizar-tienda" data-cotiza="' + p.id + '">' +
+                '<span class="btn__label">Pedir cotización</span>' +
+                '<svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg></a>'
+            : '<a class="btn btn--primary btn--sm btn--block" href="' + url + '">' +
+                '<span class="btn__label">Comprar ahora</span>' +
+                '<svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg></a>') +
         "</div>" +
       "</article>";
   }
@@ -628,12 +689,61 @@
     }).join("");
   }
 
-  function render() {
+  /* El título de cada grupo en la rejilla: sección en "Todos los productos",
+     categoría dentro de una sección. Solo en el orden de la tienda y sin
+     búsqueda: con otro orden o con texto buscado, los grupos no aplican. */
+  function grupoDe(p) {
+    if (state.sort !== "todos" || state.q.trim() || state.cat !== "todo") return null;
+    if (state.sec === "todo") {
+      var sec = seccionDe(p.cat);
+      return sec ? { id: "s-" + sec.id, t: sec.nombre } : null;
+    }
+    var c = CATS.filter(function (x) { return x.id === p.cat; })[0];
+    return c ? { id: "c-" + c.id, t: c.nombre } : null;
+  }
+
+  function botonMas() {
+    var box = $("mas");
+    if (!box) {
+      box = document.createElement("div");
+      box.className = "mas";
+      box.id = "mas";
+      box.innerHTML = '<button class="btn btn--ghost" type="button" id="mas-btn">' +
+        '<span class="btn__label">Mostrar más</span>' +
+        '<svg class="ico" aria-hidden="true"><use href="#i-caret-down"></use></svg></button>';
+      $("grid").insertAdjacentElement("afterend", box);
+      $("mas-btn").addEventListener("click", function () {
+        var desde = ver;
+        ver += PASO;
+        render(desde);
+      });
+    }
+    return box;
+  }
+
+  function render(desde) {
     var grid = $("grid");
     if (!grid) return;
     var list = filtered();
     var uso = usoActual();
-    grid.innerHTML = list.map(card).join("");
+
+    /* Cualquier cambio de filtro, búsqueda u orden vuelve a los primeros. */
+    var firma = [state.sec, state.cat, state.oz.join(","), state.q, state.sort].join("|");
+    if (firma !== firmaAntes) { ver = PASO; firmaAntes = firma; desde = 0; }
+
+    var visibles = list.slice(0, ver);
+    var html = [], ultimo = null;
+    visibles.forEach(function (p, i) {
+      var g = grupoDe(p);
+      if (g && (!ultimo || g.id !== ultimo)) {
+        html.push('<h3 class="grid-sec">' + esc(g.t) + "</h3>");
+      }
+      if (g) ultimo = g.id;
+      html.push(card(p, i));
+    });
+    grid.innerHTML = html.join("");
+    var mas = botonMas();
+    mas.hidden = list.length <= ver;
     pintaUso(uso);
     /* Un uso sin nada en la tienda (tortas, tacos) no es "sin resultados":
        la lista de arriba trae lo que se cotiza. */
@@ -641,21 +751,27 @@
     renderTapasRel(list);
 
     /* Sin cuántos productos hay (Feedback final): solo qué se está viendo. */
+    var secNombre = state.sec === "todo" ? "" : ((SECCIONES.filter(function (x) { return x.id === state.sec; })[0] || {}).nombre || "");
     $("result-line").textContent = list.length === 0 ? "" :
-      (state.cat === "todo" ? "" : (CATS.filter(function (c) { return c.id === state.cat; })[0] || {}).nombre) +
+      (state.cat === "todo" ? secNombre : (CATS.filter(function (c) { return c.id === state.cat; })[0] || {}).nombre) +
       (state.oz.length ? (state.cat === "todo" ? "" : " · ") + state.oz.map(function (o) { return o + " oz"; }).join(", ") : "") +
       (state.q.trim() ? ((state.cat === "todo" && !state.oz.length) ? "Resultados" : "") +
         (ultimaCorreccion ? ' para "' + ultimaCorreccion + '" (escribiste "' + state.q.trim() + '")'
                           : ' para "' + state.q.trim() + '"') : "");
 
-    if (reduce) {
-      grid.querySelectorAll(".rv").forEach(function (el) { el.classList.add("in"); });
-    } else if (window.GN && window.GN.observe) {
-      window.GN.observe(grid.querySelectorAll(".rv"));
+    /* Al "Mostrar más", lo que ya se veía no vuelve a animarse. */
+    var cards = grid.querySelectorAll(".rv");
+    if (reduce || desde) {
+      Array.prototype.forEach.call(cards, function (el, i) {
+        if (reduce || i < desde) el.classList.add("in");
+      });
+    }
+    if (!reduce && window.GN && window.GN.observe) {
+      window.GN.observe(Array.prototype.filter.call(cards, function (el) { return !el.classList.contains("in"); }));
     }
     syncChips();
     var quitar = $("filtros-quitar");
-    if (quitar) quitar.hidden = !(state.cat !== "todo" || state.oz.length || state.q.trim());
+    if (quitar) quitar.hidden = !(state.sec !== "todo" || state.cat !== "todo" || state.oz.length || state.q.trim());
   }
 
   /* ============================ carrito (cajón) ============================ */
@@ -778,12 +894,14 @@
     /* Del menú Productos llegan con ?pide= los que no se venden en línea
        (Gabriel, 2026-10-03): aviso arriba de la rejilla y el formulario
        "Envía tu lista" ya trae el producto escrito. */
-    var PIDE = ["Contenedores kraft", "Contenedores de papel", "Charolas y cajas", "Ensaladeras", "Bolsas kraft",
-                "Conos para crepa", "Soufflés"];
-    /* Popotes, portavasos, servilletas y papel ya están en la tienda (se
-       cotizan desde su ficha): los enlaces viejos abren su categoría. */
+    var PIDE = [];
+    /* Todo lo del catálogo ya está en la tienda (Gabriel, 2026-10-03): los
+       enlaces viejos de "cotiza ya" abren su categoría. */
     var YA_EN_TIENDA = { "Popotes": "popotes", "Portavasos": "portavasos",
-                         "Servilletas": "servilletas-papel", "Papel grado alimenticio": "servilletas-papel" };
+                         "Servilletas": "servilletas-papel", "Papel grado alimenticio": "servilletas-papel",
+                         "Contenedores kraft": "cajas-charolas", "Contenedores de papel": "contenedores",
+                         "Charolas y cajas": "cajas-charolas", "Ensaladeras": "ensaladeras", "Bolsas kraft": "bolsas",
+                         "Conos para crepa": "souffles", "Soufflés": "souffles" };
     var pide = qs.get("pide");
     if (pide && YA_EN_TIENDA[pide] && !cat) cat = YA_EN_TIENDA[pide];
     /* ?cotiza=<id>&v=<medida>: viene del botón "Pedir cotización" de la ficha.
@@ -811,7 +929,12 @@
         if (c) c.scrollIntoView({ block: "start" });
       });
     }
-    if (cat && CATS.some(function (c) { return c.id === cat; })) state.cat = cat;
+    if (cat && CATS.some(function (c) { return c.id === cat; })) {
+      state.cat = cat;
+      state.sec = (seccionDe(cat) || { id: "todo" }).id;
+    }
+    var sec = qs.get("sec");
+    if (!cat && sec && SECCIONES.some(function (x) { return x.id === sec; })) state.sec = sec;
     if (oz && /^\d+$/.test(oz)) state.oz = [oz];
     if (q) {
       state.q = q; $("q").value = q; $("q-clear").hidden = false;
@@ -825,8 +948,14 @@
   render();
 
   $("cats").addEventListener("click", function (e) {
-    var b = e.target.closest("[data-cat]"); if (!b) return;
-    state.cat = b.dataset.cat;
+    var b = e.target.closest("[data-sec], [data-cat]"); if (!b) return;
+    if (b.dataset.sec) {
+      state.sec = b.dataset.sec;
+      state.cat = "todo";
+    } else {
+      state.cat = b.dataset.cat;
+      state.sec = (seccionDe(state.cat) || { id: "todo" }).id;
+    }
     buildCaps();
     render();
     document.getElementById("catalogo").scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
@@ -844,7 +973,7 @@
   var clearBtn = $("facets-clear");
   if (clearBtn) {
     clearBtn.addEventListener("click", function () {
-      state.oz = []; state.cat = "todo"; state.q = "";
+      state.oz = []; state.sec = "todo"; state.cat = "todo"; state.q = "";
       $("q").value = ""; $("q-clear").hidden = true;
       buildCaps();
       render();
@@ -941,6 +1070,22 @@
   }
 
   }   /* fin del bloque de catálogo */
+
+  /* "Pedir cotización" de una tarjeta: en la misma página, el formulario
+     "Envía tu lista" se llena con el producto y se baja a él. */
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-cotiza]");
+    var nota = $("s-mensaje");
+    if (!a || !nota) return;
+    var p = prodDe(a.dataset.cotiza);
+    if (!p) return;
+    e.preventDefault();
+    var linea = "Me interesa: " + p.nombre + (p.v.length === 1 ? " (" + p.v[0] + ")" : "") + ". Necesito: ";
+    if (nota.value.indexOf(p.nombre) === -1) nota.value = (nota.value ? nota.value.replace(/\s*$/, "\n") : "") + linea;
+    var form = $("cotizar-tienda");
+    if (form) form.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
+    setTimeout(function () { try { nota.focus({ preventScroll: true }); } catch (err) { nota.focus(); } }, reduce ? 0 : 500);
+  });
 
   /* La caja de compra: una tarjeta de la rejilla o la columna de la ficha. */
   function cajaDe(el) { return el.closest(".pcard, .ficha__compra"); }
