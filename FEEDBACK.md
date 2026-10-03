@@ -255,3 +255,7 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
     - Al quitar el cursor regresa a la portada. Un clic abre la ficha y ya no cambia la foto.
     - En el celular no hay cursor, así que tocar la tarjeta abre la ficha.
     - Con "reducir movimiento" sale solo la primera foto, sin que cambien solas.
+- (2026-10-03) Llegaron 9 fotos con comida más: la 18 y de la 20 a la 27. Son el vaso PET en U, las seis tapas PET y los dos portavasos.
+  - Vinieron en 1024 px y se bajaron a 900.
+  - Quedan pendientes la 04 (vaso kraft), la 19 (vaso PP con milk tea) y de la 28 a la 42.
+  - Sus `giros` se revisaron negocio por negocio. Por ejemplo, la tapa domo sale con frappé en "Frappés", "Helado" y "Crepas", pero no en "Mariscos" ni "Fruta", porque ahí va con coctel o con fruta.

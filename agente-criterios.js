@@ -595,7 +595,7 @@ window.GREENOVA_AGENTE = (function () {
 
   var FOTOS_USO = {
     /* Las definitivas de Gabriel (2026-10-03). El número es el de su carpeta
-       "Fotos con comida (tienda y asistente)". Falta la 04 (vaso kraft). */
+       "Fotos con comida (tienda y asistente)". Faltan la 04 (vaso kraft) y la 19 (vaso PP). */
     /* 01 y 02 · vaso de papel blanco: capuchino; el de 4 oz, con helado */
     "vaso-papel-blanco": { f: "vaso-papel-blanco-capuchino", alt: "Capuchino con arte latte en vaso de papel blanco, junto a un croissant.", giros: CAFE },
     "vaso-papel-blanco|4 oz": { f: "vaso-papel-blanco-helado", alt: "Helado de pistache y de fresa en vasos de papel blanco de 4 oz.", giros: ["Helado"] },
@@ -618,7 +618,19 @@ window.GREENOVA_AGENTE = (function () {
     "vaso-pet-92": { f: "vaso-pet-92-iced-latte", alt: "Iced latte en vaso PET transparente.", giros: ["Frappés", "Cafetería", "Negocio nuevo"] },
     "vaso-pet-95": { f: "vaso-pet-95-limonadas", alt: "Agua de pepino con hierbabuena y limonada en vasos PET.", giros: ["Aguas", "Jugos", "Escuelas", "Hoteles", "Pizzería", "Tacos", "Restaurantes", "Eventos", "Sushi", "Negocio nuevo"] },
     "vaso-pet-98": { f: "vaso-pet-98-licuado", alt: "Licuado de fresa con plátano en vaso PET.", giros: ["Jugos", "Frappés", "Crepas", "Negocio nuevo"] },
-    "vaso-pet-107": { f: "vaso-pet-107-michelada", alt: "Michelada escarchada con chile y limón en vaso PET de 32 oz.", giros: ["Micheladas", "Mariscos", "Cine"] }
+    "vaso-pet-107": { f: "vaso-pet-107-michelada", alt: "Michelada escarchada con chile y limón en vaso PET de 32 oz.", giros: ["Micheladas", "Mariscos", "Cine"] },
+    /* 18 · vaso PET en U: bubble tea (la 19, vaso PP con milk tea, falta) */
+    "vaso-pet-u": { f: "vaso-pet-u-bubble-tea", alt: "Bubble tea de taro y de matcha con perlas de tapioca en vasos PET en U.", giros: ["Bubble tea", "Frappés", "Jugos"] },
+    /* 20 a 25 · tapas PET */
+    "tapa-pet-plana-ranura": { f: "tapa-pet-plana-ranura-horchata", alt: "Horchata con canela en vaso PET con tapa plana con ranura y popote de papel.", giros: ["Aguas", "Tacos", "Restaurantes", "Escuelas", "Pizzería", "Hamburguesas", "Sushi", "Eventos", "Hoteles", "Jugos", "Negocio nuevo"] },
+    "tapa-pet-plana-sin-ranura": { f: "tapa-pet-plana-sin-ranura-postres", alt: "Fresas con crema y gelatina de colores en vasos PET con tapa plana sin ranura.", giros: ["Fruta", "Escuelas", "Ensaladas", "Eventos", "Panadería", "Helado"] },
+    "tapa-pet-domo": { f: "tapa-pet-domo-frappe", alt: "Frappé de caramelo con crema batida en vaso PET con tapa domo.", giros: ["Frappés", "Cafetería", "Crepas", "Helado", "Negocio nuevo"] },
+    "tapa-pet-domo-oso": { f: "tapa-pet-domo-oso-bubble-tea", alt: "Bubble tea de fresa en vaso PET en U con tapa domo de oso.", giros: ["Bubble tea", "Frappés", "Jugos"] },
+    "tapa-pet-sorbe": { f: "tapa-pet-sorbe-cold-brew", alt: "Cold brew con leche en vaso PET con tapa para sorber.", giros: ["Frappés", "Cafetería", "Negocio nuevo"] },
+    "tapa-pet-sorbe-tapon": { f: "tapa-pet-sorbe-tapon-limonada", alt: "Limonada con hielo en vaso PET con tapa para sorber con tapón.", giros: ["Aguas", "Jugos", "Restaurantes", "Tacos", "Pizzería", "Sushi", "Escuelas", "Eventos", "Hoteles", "Negocio nuevo"] },
+    /* 26 y 27 · portavasos */
+    "portavaso-charola": { f: "portavaso-charola-cafes", alt: "Cuatro cafés para llevar en un portavasos charola.", giros: CAFE_TAPADO },
+    "portavaso-asa": { f: "portavaso-asa-bebidas-frias", alt: "Licuados y jugos para llevar en un portavasos kraft con asa.", giros: ["Jugos", "Aguas", "Frappés", "Bubble tea", "Eventos", "Restaurantes", "Pizzería", "Hamburguesas", "Negocio nuevo"] }
   };
 
   /* Preguntas sugeridas que aparecen al abrir el chat. */
