@@ -304,3 +304,14 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
 
 **Lo que no es bug**
 - El 404 de `php/checkout.php`: en local no hay PHP. Por eso pagar.html dice "El pago en línea llega muy pronto".
+
+## Ronda 19: tres fotos de estudio más (2026-10-03)
+
+- Gabriel mandó tres fotos de Gemini con el fondo de estudio y las guardó encima de sus referencias en "PARA GEMINI". Se igualaron al tamaño del vaso blanco y llevan nombre nuevo para que el navegador no muestre la vieja:
+  - 61 → `vaso-papel-negro-estudio`, la foto del vaso de papel negro.
+  - 44 → `tapa-pet-plana-sin-ranura-estudio`, la foto de la tapa PET plana sin ranura. Ahora lleva `fotoPropia: true`.
+  - 40 → `vaso-pp-u-estudio`, la foto de la medida "En U · boca 89 mm" del vaso PP.
+- La 40 ya venía grande (raíz de alto × ancho = 0.76), así que quedó sin recortar.
+- El vaso PP todavía no lleva `fotoPropia`: su foto principal y la de boca 92 siguen siendo `tienda-42` y `tienda-41`. Hay que ponérsela cuando lleguen la 41 y la 42.
+- Las originales quedaron en `Listas/` y en "Faltan por hacer" se marcaron "- YA ESTÁ".
+- Faltan 14 de estudio (03, 08, 41, 42, 49, 50, 52 a 56, 60, 63 y 64) y 15 con comida.

@@ -60,7 +60,7 @@ window.GREENOVA = (function () {
         { paq: 25, caja: 500, pPaq: 65.93, pCaja: 1248.68, boca: 105, esp: "Boca 105 mm", sku: "GN-VASO-PAPEL-BLANCO-07", img: null },
         { paq: 25, caja: 500, pPaq: 76.15, pCaja: 1453.04, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-BLANCO-08", img: null }
       ] } },
-    { id: "vaso-papel-negro", nombre: "Vaso de papel negro", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-negro", uso: "Bebida fría o caliente", fotoPropia: true, personalizable: true,
+    { id: "vaso-papel-negro", nombre: "Vaso de papel negro", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-negro-estudio", uso: "Bebida fría o caliente", fotoPropia: true, personalizable: true,
       desc: "Vaso de papel negro con recubrimiento interior de polietileno, para bebida fría o caliente.",
       v: ["4 oz · boca 62 mm", "8 oz · boca 80 mm", "10 oz · boca 90 mm", "12 oz · boca 90 mm", "16 oz · boca 90 mm", "20 oz · boca 90 mm", "44 oz · boca 115 mm"],
       venta: { linea: "papel", tam: [
@@ -208,7 +208,7 @@ window.GREENOVA = (function () {
       desc: "Vaso de polipropileno de 16 oz para bebida caliente.",
       v: ["En U · 16 oz · boca 89 mm", "16 oz · boca 92 mm", "16 oz · boca 95 mm"],
       venta: { linea: "pp", tam: [
-        { paq: 50, caja: 1000, pPaq: 105.6, pCaja: 1971.94, boca: 89, esp: "Boca 89 mm", sku: "GN-VASO-PP-01", img: "tienda-40" },
+        { paq: 50, caja: 1000, pPaq: 105.6, pCaja: 1971.94, boca: 89, esp: "Boca 89 mm", sku: "GN-VASO-PP-01", img: "vaso-pp-u-estudio" },
         { paq: 25, caja: 1000, pPaq: 40.02, pCaja: 1460.71, boca: 92, esp: "Boca 92 mm", sku: "GN-VASO-PP-02", img: "tienda-41" },
         { paq: 25, caja: 1000, pPaq: 44.94, pCaja: 1657.5, boca: 95, esp: "Boca 95 mm", sku: "GN-VASO-PP-03", img: "tienda-42" }
       ] } },
@@ -225,11 +225,11 @@ window.GREENOVA = (function () {
         { paq: 100, caja: 1000, pPaq: 76.57, pCaja: 625.66, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-PLANA-RANURA-05", img: "tapa-fria-plana" },
         { paq: 50, caja: 500, pPaq: 50.26, pCaja: 432.61, boca: 107, esp: "Boca 107 mm", sku: "GN-TAPA-PET-PLANA-RANURA-06", img: "tapa-fria-plana" }
       ] } },
-    { id: "tapa-pet-plana-sin-ranura", nombre: "Tapa PET plana sin ranura", cat: "tapas-pet", mat: ["pet"], img: "tienda-44", uso: "Tapa para vaso PET",
+    { id: "tapa-pet-plana-sin-ranura", nombre: "Tapa PET plana sin ranura", cat: "tapas-pet", mat: ["pet"], img: "tapa-pet-plana-sin-ranura-estudio", uso: "Tapa para vaso PET", fotoPropia: true,
       desc: "Tapa plana de PET, sin ranura.",
       v: ["Boca 78 mm"],
       venta: { linea: "pet", tam: [
-        { paq: 100, caja: 1000, pPaq: 61.32, pCaja: 473.17, boca: 78, esp: "Boca 78 mm", sku: "GN-TAPA-PET-PLANA-SIN-RANURA-01", img: "tienda-44" }
+        { paq: 100, caja: 1000, pPaq: 61.32, pCaja: 473.17, boca: 78, esp: "Boca 78 mm", sku: "GN-TAPA-PET-PLANA-SIN-RANURA-01", img: "tapa-pet-plana-sin-ranura-estudio" }
       ] } },
     { id: "tapa-pet-domo", nombre: "Tapa PET domo con orificio", cat: "tapas-pet", mat: ["pet"], img: "tapa-fria-domo", uso: "Tapa para vaso PET", fotoPropia: true,
       desc: "Tapa domo de PET con orificio, para bebidas con crema o frappé.",
