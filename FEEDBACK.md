@@ -355,3 +355,10 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
   - Salió con mandado en vez de pan dulce. En Panadería, Restaurantes y Tamales sale la de estudio, y en la tienda y la ficha sale siempre.
 - `agente-criterios.js` pasó a `?v=20261003x`.
 - Faltan 6 fotos con comida: 30, 36, 37, 38, 39 y 42. La 33 necesita una foto real.
+
+## Ronda 24: pastel y ensaladera (2026-10-03)
+
+- 38 → `contenedor-pet-pastel-rebanada`: rebanada de pastel de vainilla con frambuesas en el contenedor triangular. Sale en Panadería, Cafetería, Eventos y Negocio nuevo.
+- 39 → `ensaladera-pet-quinoa`: ensalada de quinoa en la ensaladera transparente, que ahora sí es PET. Sale en Ensaladas, Restaurantes, Eventos, Oficinas y Negocio nuevo.
+- `agente-criterios.js` pasó a `?v=20261003y`.
+- Faltan 4 fotos con comida: 30, 36, 37 y 42. La 33 necesita una foto real.

@@ -651,6 +651,9 @@ window.GREENOVA_AGENTE = (function () {
     "popote-tapioca-estuchado": { f: "popote-tapioca-estuchado-te-verde", alt: "Té verde de manzana con perlas, con popote de tapioca y más popotes en el mostrador.", giros: ["Jugos", "Ensaladas", "Escuelas", "Bubble tea", "Negocio nuevo"] },
     /* 35 · caja kraft: plato fuerte */
     "caja-kraft": { f: "caja-kraft-salmon", alt: "Salmón con verduras rostizadas y quinoa en caja kraft, con su tapa al lado.", giros: ["Restaurantes", "Ensaladas", "Sushi", "Eventos", "Negocio nuevo"] },
+    /* 38 y 39 · PET transparente: pastel y ensalada */
+    "contenedor-pet-pastel": { f: "contenedor-pet-pastel-rebanada", alt: "Rebanada de pastel de vainilla con frambuesas en contenedor PET triangular.", giros: ["Panadería", "Cafetería", "Eventos", "Negocio nuevo"] },
+    "ensaladera-pet": { f: "ensaladera-pet-quinoa", alt: "Ensalada de quinoa con camote, aguacate y frijol negro en ensaladera PET transparente.", giros: ["Ensaladas", "Restaurantes", "Eventos", "Oficinas", "Negocio nuevo"] },
     /* 40 · cono para crepa: crepa de fresa con avellana. El cono traía
        impreso el nombre de otro negocio y se borró. */
     "cono-crepa": { f: "cono-crepa-fresas", alt: "Crepa con fresas, crema y avellana en cono de papel blanco.", giros: ["Crepas", "Eventos", "Negocio nuevo"] },
