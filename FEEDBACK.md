@@ -344,3 +344,14 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
   - La de la ensalada no se instaló. Era para la 39, pero el tazón salió blanco y opaco, y la ensaladera que se vende es de PET transparente con tapa. Pasaría lo mismo que con el helado en el vaso blanco. Quedó en la carpeta 39 como "Intento 1 - REHACER".
 - `agente-criterios.js` pasó a `?v=20261003w`.
 - Faltan 8 fotos con comida: 30 y de la 36 a la 42. La 33 necesita una foto real.
+
+## Ronda 23: cono para crepa y bolsa (2026-10-03)
+
+- 40 → `cono-crepa-fresas`: crepa de fresa con avellana en el cono blanco.
+  - El cono traía impreso "CRÊPE CO.", el nombre de otro negocio, y se borró con el papel de alrededor.
+  - La foto venía horizontal y se recortó cuadrada.
+  - Sale en Crepas, Eventos y Negocio nuevo.
+- 41 → `bolsa-semikraft-mandado`: bolsa semikraft con uvas, aguacate, jitomates, zanahorias y queso.
+  - Salió con mandado en vez de pan dulce. En Panadería, Restaurantes y Tamales sale la de estudio, y en la tienda y la ficha sale siempre.
+- `agente-criterios.js` pasó a `?v=20261003x`.
+- Faltan 6 fotos con comida: 30, 36, 37, 38, 39 y 42. La 33 necesita una foto real.

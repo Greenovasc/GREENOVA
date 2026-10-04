@@ -650,7 +650,13 @@ window.GREENOVA_AGENTE = (function () {
     "popote-tapioca": { f: "popote-tapioca-bubble-tea", alt: "Bubble tea de taro con fresa, con tapa domo y popote de tapioca.", giros: ["Bubble tea", "Frappés"] },
     "popote-tapioca-estuchado": { f: "popote-tapioca-estuchado-te-verde", alt: "Té verde de manzana con perlas, con popote de tapioca y más popotes en el mostrador.", giros: ["Jugos", "Ensaladas", "Escuelas", "Bubble tea", "Negocio nuevo"] },
     /* 35 · caja kraft: plato fuerte */
-    "caja-kraft": { f: "caja-kraft-salmon", alt: "Salmón con verduras rostizadas y quinoa en caja kraft, con su tapa al lado.", giros: ["Restaurantes", "Ensaladas", "Sushi", "Eventos", "Negocio nuevo"] }
+    "caja-kraft": { f: "caja-kraft-salmon", alt: "Salmón con verduras rostizadas y quinoa en caja kraft, con su tapa al lado.", giros: ["Restaurantes", "Ensaladas", "Sushi", "Eventos", "Negocio nuevo"] },
+    /* 40 · cono para crepa: crepa de fresa con avellana. El cono traía
+       impreso el nombre de otro negocio y se borró. */
+    "cono-crepa": { f: "cono-crepa-fresas", alt: "Crepa con fresas, crema y avellana en cono de papel blanco.", giros: ["Crepas", "Eventos", "Negocio nuevo"] },
+    /* 41 · bolsa semikraft: salió con mandado (fruta, verdura y queso) en vez
+       de pan dulce, así que en Panadería, Restaurantes y Tamales va la de estudio. */
+    "bolsa-semikraft": { f: "bolsa-semikraft-mandado", alt: "Bolsa semikraft con fuelle llena de uvas, aguacate, jitomates, zanahorias y queso.", giros: ["Tiendas de conveniencia", "Fruta", "Negocio nuevo"] }
   };
 
   /* Preguntas sugeridas que aparecen al abrir el chat. */
