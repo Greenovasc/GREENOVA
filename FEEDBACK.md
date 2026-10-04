@@ -336,3 +336,11 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
 - Las dos de popote las hizo Gemini con popotes blancos. El de tapioca suelto es kraft en su foto de estudio; se le avisó a Gabriel.
 - `agente-criterios.js` pasó a `?v=20261003v`.
 - Faltan 9 fotos con comida: 28, 30 y de la 36 a la 42. La 33 necesita una foto real.
+
+## Ronda 22: servilleta larga (2026-10-03)
+
+- "Ahí están más imágenes", con dos fotos:
+  - 28 → `servilleta-larga-restaurante`: servilletas en un servilletero, en una mesa de restaurante. Se recortó la luz de estudio de la esquina de arriba. No sale en Escuelas, Cine ni Tamales, porque no son de mesa puesta.
+  - La de la ensalada no se instaló. Era para la 39, pero el tazón salió blanco y opaco, y la ensaladera que se vende es de PET transparente con tapa. Pasaría lo mismo que con el helado en el vaso blanco. Quedó en la carpeta 39 como "Intento 1 - REHACER".
+- `agente-criterios.js` pasó a `?v=20261003w`.
+- Faltan 8 fotos con comida: 30 y de la 36 a la 42. La 33 necesita una foto real.

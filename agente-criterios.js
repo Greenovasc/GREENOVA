@@ -638,6 +638,10 @@ window.GREENOVA_AGENTE = (function () {
     /* 26 y 27 · portavasos */
     "portavaso-charola": { f: "portavaso-charola-cafes", alt: "Cuatro cafés para llevar en un portavasos charola.", giros: CAFE_TAPADO },
     "portavaso-asa": { f: "portavaso-asa-bebidas-frias", alt: "Licuados y jugos para llevar en un portavasos kraft con asa.", giros: ["Jugos", "Aguas", "Frappés", "Bubble tea", "Eventos", "Restaurantes", "Pizzería", "Hamburguesas", "Negocio nuevo"] },
+    /* 28 · servilleta larga: en el servilletero de una mesa. Se recortó la
+       luz de estudio de la esquina. No va en Escuelas, Cine ni Tamales,
+       que no son de mesa puesta. */
+    "servilleta-larga": { f: "servilleta-larga-restaurante", alt: "Servilletas de papel en un servilletero, en la mesa puesta de un restaurante.", giros: ["Restaurantes", "Hoteles", "Eventos", "Mariscos", "Sushi", "Crepas", "Micheladas", "Pizzería", "Hamburguesas", "Tacos", "Oficinas", "Negocio nuevo"] },
     /* 29 · papel encerado: croissant. Se recortaron las luces de estudio de
        las esquinas y se desenfocó el letrero de la panadería del fondo. */
     "papel-encerado": { f: "papel-encerado-croissant", alt: "Croissant de pistache envuelto en papel encerado kraft, sobre una tabla de madera.", giros: ["Panadería", "Cafetería", "Negocio nuevo"] },
