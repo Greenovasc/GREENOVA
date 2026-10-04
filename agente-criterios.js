@@ -638,6 +638,13 @@ window.GREENOVA_AGENTE = (function () {
     /* 26 y 27 · portavasos */
     "portavaso-charola": { f: "portavaso-charola-cafes", alt: "Cuatro cafés para llevar en un portavasos charola.", giros: CAFE_TAPADO },
     "portavaso-asa": { f: "portavaso-asa-bebidas-frias", alt: "Licuados y jugos para llevar en un portavasos kraft con asa.", giros: ["Jugos", "Aguas", "Frappés", "Bubble tea", "Eventos", "Restaurantes", "Pizzería", "Hamburguesas", "Negocio nuevo"] },
+    /* 29 · papel encerado: croissant. Se recortaron las luces de estudio de
+       las esquinas y se desenfocó el letrero de la panadería del fondo. */
+    "papel-encerado": { f: "papel-encerado-croissant", alt: "Croissant de pistache envuelto en papel encerado kraft, sobre una tabla de madera.", giros: ["Panadería", "Cafetería", "Negocio nuevo"] },
+    /* 31 y 32 · popotes de tapioca: los dos con bubble tea. Gemini los hizo
+       blancos; el de tapioca suelto, en la foto de estudio, es kraft. */
+    "popote-tapioca": { f: "popote-tapioca-bubble-tea", alt: "Bubble tea de taro con fresa, con tapa domo y popote de tapioca.", giros: ["Bubble tea", "Frappés"] },
+    "popote-tapioca-estuchado": { f: "popote-tapioca-estuchado-te-verde", alt: "Té verde de manzana con perlas, con popote de tapioca y más popotes en el mostrador.", giros: ["Jugos", "Ensaladas", "Escuelas", "Bubble tea", "Negocio nuevo"] },
     /* 35 · caja kraft: plato fuerte */
     "caja-kraft": { f: "caja-kraft-salmon", alt: "Salmón con verduras rostizadas y quinoa en caja kraft, con su tapa al lado.", giros: ["Restaurantes", "Ensaladas", "Sushi", "Eventos", "Negocio nuevo"] }
   };

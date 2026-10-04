@@ -326,3 +326,13 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
 - **Contacto:** botón "Escríbenos por WhatsApp" debajo de "Empaques responsables, negocios con propósito." Abre el chat del 55 2260 1113 con el mensaje "Hola, quiero información de GreeNova SC", igual que el botón de la portada.
 - `styles.css` y `agente-criterios.js` pasaron a `?v=20261003u` en todas las páginas.
 - Faltan 12 fotos con comida (28 a 32 y 36 a 42) y 14 de estudio. La 33 (popote cuchara) necesita una foto real.
+
+## Ronda 21: tres fotos con comida más (2026-10-03)
+
+- "Más imágenes": son las de las carpetas 29, 31 y 32.
+  - 29 → `papel-encerado-croissant`: croissant envuelto en papel kraft. Gemini dejó dos luces de estudio en las esquinas de arriba, y se recortaron. El letrero de la panadería se desenfocó. Sale en Panadería, Cafetería y Negocio nuevo. En Tacos, Hamburguesas y Escuelas sale la de estudio, porque ahí el papel es para tortas y tacos.
+  - 31 → `popote-tapioca-bubble-tea`: bubble tea de taro con fresa. Sale en Bubble tea y Frappés. En Micheladas y Aguas sale la de estudio.
+  - 32 → `popote-tapioca-estuchado-te-verde`: té verde de manzana con perlas. Sale en Jugos, Ensaladas, Escuelas, Bubble tea y Negocio nuevo.
+- Las dos de popote las hizo Gemini con popotes blancos. El de tapioca suelto es kraft en su foto de estudio; se le avisó a Gabriel.
+- `agente-criterios.js` pasó a `?v=20261003v`.
+- Faltan 9 fotos con comida: 28, 30 y de la 36 a la 42. La 33 necesita una foto real.
