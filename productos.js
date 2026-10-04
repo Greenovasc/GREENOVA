@@ -72,7 +72,7 @@ window.GREENOVA = (function () {
         { paq: 50, caja: 1000, pPaq: 94.98, pCaja: 1759.58, boca: 90, esp: "Boca 90 mm · Alto 163 mm · Base 60 mm", sku: "GN-VASO-PAPEL-NEGRO-06", img: null },
         { paq: 50, caja: 500, pPaq: 156.28, pCaja: 1492.83, boca: 115, esp: "Boca 115 mm", sku: "GN-VASO-PAPEL-NEGRO-07", img: null }
       ] } },
-    { id: "vaso-papel-kraft", nombre: "Vaso de papel kraft", cat: "vasos-papel", mat: ["papel", "kraft"], img: "vaso-papel-kraft", uso: "Bebida fría o caliente", fotoPropia: true, personalizable: true,
+    { id: "vaso-papel-kraft", nombre: "Vaso de papel kraft", cat: "vasos-papel", mat: ["papel", "kraft"], img: "vaso-papel-kraft-estudio", uso: "Bebida fría o caliente", fotoPropia: true, personalizable: true,
       desc: "Vaso de papel kraft con recubrimiento interior de polietileno, para bebida fría o caliente.",
       v: ["8 oz · boca 80 mm", "12 oz · boca 90 mm", "16 oz · boca 90 mm"],
       venta: { linea: "papel", tam: [

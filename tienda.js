@@ -469,7 +469,10 @@
       ozDe(p).forEach(function (o) { usados[o] = true; });
     });
     var ozs = Object.keys(usados).sort(function (a, b) { return Number(a) - Number(b); });
-    state.oz = state.oz.filter(function (o) { return usados[o]; });
+    /* Con una sola capacidad (en "Tapas" solo la tapa de soufflé dice
+       "2 oz") el filtro no sirve para nada: no se enseña. */
+    if (ozs.length < 2) ozs = [];
+    state.oz = state.oz.filter(function (o) { return ozs.indexOf(o) > -1; });
     bloque.hidden = ozs.length === 0;
     $("caps").innerHTML = ozs.map(function (o) {
       return '<button class="chip chip--sm" data-oz="' + o + '" aria-pressed="' + (state.oz.indexOf(o) > -1) + '">' +
@@ -927,10 +930,14 @@
       if (nota && !nota.value) nota.value = "Me interesa: " + cotiza.nombre + " (" + medida + "). Necesito: ";
       /* El #cotizar-tienda del enlace a veces llega antes de que la rejilla
          termine de pintarse; se baja al formulario ya con todo en su lugar. */
-      window.addEventListener("load", function () {
+      /* Sin animación: con el scroll suave del CSS la bajada se quedaba a
+         medio camino (se cortaba mientras cargaban las fotos). Se repite un
+         momento después por si algo de arriba cambió de alto. */
+      var alForm = function () {
         var form = document.getElementById("cotizar-tienda");
-        if (form) form.scrollIntoView({ block: "start" });
-      });
+        if (form) form.scrollIntoView({ block: "start", behavior: "instant" });
+      };
+      window.addEventListener("load", function () { alForm(); setTimeout(alForm, 400); });
     }
     if (pide && PIDE.indexOf(pide) > -1 && $("pide")) {
       $("pide-t").textContent = pide + ": cotiza ya";

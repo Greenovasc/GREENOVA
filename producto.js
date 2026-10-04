@@ -182,9 +182,6 @@
         (promo && promo.desc ? '<span class="pcard__flag pcard__flag--off">-' + promo.desc + "%</span>" : "") +
         '<img data-role="foto" src="' + src(imgDe(INI)) + '" alt="' + esc(p.nombre) + '" width="900" height="900" fetchpriority="high">' +
       "</div>" +
-      (GALERIA.length ? '<div class="ficha__galeria">' + GALERIA.map(function (f) {
-        return '<img src="' + f.src + '" alt="' + esc(f.alt) + '" width="900" height="900" loading="lazy" decoding="async">';
-      }).join("") + "</div>" : "") +
       '<p class="ficha__nota">Foto de referencia. El acabado puede variar según la medida.</p>' +
     "</div>" +
 
@@ -253,7 +250,15 @@
       "</div>" +
 
       '<ul class="ficha__cars" id="cars"></ul>' +
-    "</div>";
+    "</div>" +
+
+    /* Fotos con comida: en la computadora van abajo de la foto del producto
+       (como en WeCare); en el celular, después de la compra, para que el
+       precio y el botón no queden hasta abajo (styles.css, .ficha--galeria). */
+    (GALERIA.length ? '<div class="ficha__galeria">' + GALERIA.map(function (f) {
+      return '<img src="' + f.src + '" alt="' + esc(f.alt) + '" width="900" height="900" loading="lazy" decoding="async">';
+    }).join("") + "</div>" : "");
+  ficha.classList.toggle("ficha--galeria", GALERIA.length > 0);
 
   var caja = ficha.querySelector(".ficha__compra");
   var cantEl = document.getElementById("f-cant");

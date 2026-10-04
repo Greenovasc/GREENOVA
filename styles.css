@@ -816,7 +816,8 @@ p { margin: 0; }
   border-radius: 999px; background: var(--green);
   border: 2px solid var(--bg);
 }
-.sort { position: relative; display: inline-flex; align-items: center; }
+.sort { position: relative; display: inline-flex; align-items: center; gap: 8px; }
+.sort__t { font-size: .8rem; font-weight: 600; color: var(--ink-3); }
 .sort select {
   appearance: none; padding: 9px 34px 9px 14px;
   border: 1px solid var(--line); border-radius: var(--r-pill);
@@ -1783,9 +1784,11 @@ body[data-locked="true"] { overflow: hidden; }
    ========================================================================== */
 
 /* Fila de arriba de la ficha: botón "Volver" + migas. */
+/* El menú es sticky: ya ocupa su lugar, así que aquí no se le suma su alto
+   (antes quedaba un hueco vacío de ~100 px arriba de "Volver"). */
 .ficha-top {
   display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
-  padding-top: calc(var(--nav-h) + 26px); padding-bottom: 22px;
+  padding-top: 28px; padding-bottom: 22px;
 }
 /* Discreto pero visible (pedido de Gabriel, 2026-09-24): píldora chica con
    flecha, del mismo peso visual que las migas. */
@@ -1946,7 +1949,7 @@ a.pcard__media { cursor: pointer; }
 @media (max-width: 900px) {
   .ficha { grid-template-columns: 1fr; }
   .ficha__media { position: static; }
-  .ficha-top { padding-top: calc(var(--nav-h) + 16px); }
+  .ficha-top { padding-top: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ficha__foto:hover img { scale: none !important; }
@@ -3342,7 +3345,16 @@ div.cat--info { cursor: default; }
    otra, como en WeCare (Gabriel, 2026-10-03). Con ellas la columna ya no se
    queda fija: es más alta que la pantalla. */
 .ficha__media--galeria { position: static; }
-.ficha__galeria { display: grid; gap: 16px; margin-top: 16px; }
+.ficha__galeria { display: grid; gap: 16px; }
+/* En la computadora: la foto arriba a la izquierda, las de comida debajo y la
+   compra a la derecha a todo lo alto. La fila de abajo absorbe lo que sobre,
+   para que las fotos queden pegadas una a otra. */
+@media (min-width: 901px) {
+  .ficha--galeria { grid-template-rows: auto 1fr; row-gap: 16px; }
+  .ficha--galeria .ficha__media { grid-column: 1; grid-row: 1; }
+  .ficha--galeria .ficha__galeria { grid-column: 1; grid-row: 2; align-self: start; }
+  .ficha--galeria .ficha__compra { grid-column: 2; grid-row: 1 / span 2; }
+}
 .ficha__galeria img {
   display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover;
   border-radius: var(--r-card); background: var(--surface-2);
@@ -3395,3 +3407,22 @@ div.cat--info { cursor: default; }
 }
 .pcard__puntos i { width: 7px; height: 7px; border-radius: 50%; background: rgba(50, 98, 82, .28); transition: background .2s; }
 .pcard__puntos i.on { background: var(--forest); }
+
+/* ---------- 2026-10-03: revisión en celular ---------- */
+/* En la tarjeta angosta (2 columnas en el celular) "Comprar ahora →" no
+   cabía y el texto quedaba pegado a la orilla: menos aire y sin flecha. */
+@media (max-width: 520px) {
+  .pcard__buy .btn { padding-inline: 8px; gap: 4px; font-size: .82rem; }
+  .pcard__buy .btn .ico { display: none; }
+}
+/* Sin cursor (celular) las fotos no cambian solas: los puntitos no harían
+   nada, así que no se enseñan. Tocar la tarjeta abre la ficha. */
+@media (hover: none) {
+  .pcard__puntos { display: none; }
+}
+/* "Envía tu lista" es verde oscuro: los íconos del correo y los teléfonos
+   eran del mismo verde y no se veían. */
+.quote .quote__contact .ico { color: var(--accent); }
+/* Al llegar a una sección por enlace (#cotizar-tienda, etc.) el menú pegado
+   arriba ya no tapa el título. */
+section[id] { scroll-margin-top: var(--nav-h); }

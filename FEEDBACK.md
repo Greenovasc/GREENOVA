@@ -272,3 +272,35 @@ consulta con Gabriel antes de tocar el código. Estado: ✅ hecho · ⏳ en curs
   - La foto pasó a `contenedor-papel` (`assets/uso/contenedor-papel-helado.webp`) y ya no se hace aparte la 34.
   - El vaso blanco se queda solo con el capuchino.
   - En "Helado y nieve", los vasos de papel salen con su foto de estudio y el contenedor sale con el helado.
+
+## Ronda 18 (2026-10-03): revisión de bugs en todo el sitio
+
+Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se revisaron fotos rotas, cosas que se salen de la pantalla, errores de JS, enlaces a categorías, productos y anclas, el carrito, la cotización, los filtros y el asistente. Se arregló esto:
+
+**Tienda en celular**
+- "Comprar ahora →" no cabía en la tarjeta angosta y el texto quedaba pegado a la orilla. Ahora va con menos aire y sin flecha.
+- Los puntitos de las fotos se ocultan en el celular, porque sin cursor no hacen nada.
+
+**Tienda**
+- La lista de orden solo decía "Todos" y no se entendía para qué era. Ahora dice "Ordenar: Por sección".
+- El filtro de capacidad salía con una sola opción, como "2 oz" en Tapas. Ahora solo sale si hay al menos dos.
+- **Cotización:** al llegar desde "Pedir cotización", el formulario se llenaba pero la página no bajaba hasta él, porque el scroll suave se cortaba. Ahora baja directo y lo repite a los 400 ms.
+- El menú pegado arriba tapaba el título "Envía tu lista". Se arregló con `scroll-margin-top`.
+- Los íconos del correo y los teléfonos de "Envía tu lista" eran verde sobre verde y no se veían. Ahora son verde claro.
+
+**Ficha del producto**
+- Arriba de "Volver" quedaba un hueco de unos 100 px: el menú es sticky y además se le sumaba su alto.
+- En el celular, las fotos con comida salían antes del nombre y el precio. Ahora van después de la compra. En la computadora siguen abajo de la foto principal, con la compra a la derecha.
+
+**Portada**
+- Solo "Bebidas" llevaba a la tienda, porque venía de cuando lo demás no se vendía en línea. Ahora cada tarjeta lleva a su sección: Comida para llevar, Ensaladeras, Bolsas y Accesorios.
+- Los textos de "Complementos" y "Bolsas" se corrigieron para que digan lo que hay en esa sección.
+
+**Asistente**
+- Pedía las fotos de producto sin `?v=`, así que alguien que ya había entrado veía las fotos viejas de su caché.
+
+**Fotos**
+- Llegó la 62, el vaso kraft con el fondo de estudio. Se igualó al tamaño del vaso blanco y quedó como `vaso-papel-kraft-estudio`.
+
+**Lo que no es bug**
+- El 404 de `php/checkout.php`: en local no hay PHP. Por eso pagar.html dice "El pago en línea llega muy pronto".

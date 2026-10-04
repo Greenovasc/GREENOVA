@@ -312,6 +312,13 @@
      haría un vendedor, con foto, medida y para qué sirve cada cosa. La tabla
      se edita en agente-criterios.js (GIROS y COTIZA). */
 
+  /* Foto de estudio de un producto, con la misma versión que usa la tienda
+     (?v=): si no, quien ya visitó la página ve la foto vieja de su caché. */
+  function fotoProd(nombre) {
+    var path = "assets/prod/" + nombre + ".webp";
+    return (window.GN_ASSETS && window.GN_ASSETS[path]) || path + "?v=20261003n";
+  }
+
   function tarjetaDe(r, giro) {
     if (r.cotiza) {
       var c = (CFG.COTIZA || {})[r.cotiza];
@@ -319,7 +326,7 @@
       var fc = CFG.fotoUso(r.cotiza);
       return {
         titulo: c.nombre, medida: c.v, por: r.por, cotiza: true,
-        img: fc ? fc.src : "assets/prod/" + c.img + ".webp",
+        img: fc ? fc.src : fotoProd(c.img),
         enlace: "tienda.html?pide=" + encodeURIComponent(c.pide)
       };
     }
@@ -330,7 +337,7 @@
     var f = CFG.fotoUso(p.id, p.v[k], giro);
     return {
       titulo: p.nombre, medida: r.v, por: r.por, cotiza: !tienePrecio(p),
-      img: f ? f.src : "assets/prod/" + (t.img || p.img) + ".webp",
+      img: f ? f.src : fotoProd(t.img || p.img),
       enlace: "producto.html?id=" + encodeURIComponent(p.id) + "&v=" + k
     };
   }
