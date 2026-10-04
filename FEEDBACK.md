@@ -362,3 +362,10 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
 - 39 → `ensaladera-pet-quinoa`: ensalada de quinoa en la ensaladera transparente, que ahora sí es PET. Sale en Ensaladas, Restaurantes, Eventos, Oficinas y Negocio nuevo.
 - `agente-criterios.js` pasó a `?v=20261003y`.
 - Faltan 4 fotos con comida: 30, 36, 37 y 42. La 33 necesita una foto real.
+
+## Ronda 25: charola kraft y contenedor PET (2026-10-03)
+
+- 36 → `charola-papas-hamburguesa`: hamburguesa con papas en la charola kraft. El neón rojo del fondo era el nombre de una cadena de restaurantes real, y se desenfocó junto con el de "margarita". Sale en Hamburguesas, Restaurantes, Cine, Eventos, Micheladas y Negocio nuevo.
+- 37 → `contenedor-pet-fruta`: fruta picada en el contenedor PET tipo almeja. Sale en Fruta, Restaurantes, Ensaladas, Escuelas, Eventos, Hoteles y Negocio nuevo.
+- `agente-criterios.js` pasó a `?v=20261003z`.
+- Faltan 2 fotos con comida: la 30 (papel RH) y la 42 (souffle). La 33 necesita una foto real.

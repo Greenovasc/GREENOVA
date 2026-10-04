@@ -651,6 +651,11 @@ window.GREENOVA_AGENTE = (function () {
     "popote-tapioca-estuchado": { f: "popote-tapioca-estuchado-te-verde", alt: "Té verde de manzana con perlas, con popote de tapioca y más popotes en el mostrador.", giros: ["Jugos", "Ensaladas", "Escuelas", "Bubble tea", "Negocio nuevo"] },
     /* 35 · caja kraft: plato fuerte */
     "caja-kraft": { f: "caja-kraft-salmon", alt: "Salmón con verduras rostizadas y quinoa en caja kraft, con su tapa al lado.", giros: ["Restaurantes", "Ensaladas", "Sushi", "Eventos", "Negocio nuevo"] },
+    /* 36 · charola kraft: hamburguesa con papas. Los neones del fondo se
+       desenfocaron: el rojo era el nombre de una cadena real. */
+    "charola-papas": { f: "charola-papas-hamburguesa", alt: "Hamburguesa con tocino y papas a la francesa en charola kraft con papel a cuadros.", giros: ["Hamburguesas", "Restaurantes", "Cine", "Eventos", "Micheladas", "Negocio nuevo"] },
+    /* 37 · contenedor PET tipo almeja: fruta picada */
+    "contenedor-pet": { f: "contenedor-pet-fruta", alt: "Fruta picada con frutos rojos y menta en contenedor PET transparente con tapa de bisagra.", giros: ["Fruta", "Restaurantes", "Ensaladas", "Escuelas", "Eventos", "Hoteles", "Negocio nuevo"] },
     /* 38 y 39 · PET transparente: pastel y ensalada */
     "contenedor-pet-pastel": { f: "contenedor-pet-pastel-rebanada", alt: "Rebanada de pastel de vainilla con frambuesas en contenedor PET triangular.", giros: ["Panadería", "Cafetería", "Eventos", "Negocio nuevo"] },
     "ensaladera-pet": { f: "ensaladera-pet-quinoa", alt: "Ensalada de quinoa con camote, aguacate y frijol negro en ensaladera PET transparente.", giros: ["Ensaladas", "Restaurantes", "Eventos", "Oficinas", "Negocio nuevo"] },
