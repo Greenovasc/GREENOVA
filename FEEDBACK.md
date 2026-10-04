@@ -378,3 +378,11 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
     - Los dos vasos de doble pared, que tenían fondo liso, pasaron a `vaso-papel-negro-estudio` y `fajilla-kraft`.
     - La tapa negra, que tenía fondo negro, pasó a `tapa-viajera-negra`.
 - Las miniaturas del menú "Productos" (`mega-*`) son otro juego, ilustrado, con trazos amarillos y verdes, y se dejaron igual.
+
+## Ronda 27: el mapa de la portada, chiquito como en Contacto (2026-10-04)
+
+- "Cambia el mapa de la página de inicio a como está el de contacto. Así en chiquito, como en la ubicación de contacto, no así grandote."
+- Se quitó la sección a pantalla completa con medio mapa ("Desde la Ciudad de México, a todo el país"), que se había puesto el 2026-09-30.
+- El pie de la portada ahora es idéntico al de las demás páginas, con la columna "Ubicación" y el mapa chiquito que abre Google Maps.
+- Se borraron los estilos `.ubica*` y `.foot__grid--sin-mapa`, que ya no se usan. `styles.css` pasó a `?v=20261004a`.
+- Con la sección se fue su botón "Escríbenos por WhatsApp", que era el único de la portada.

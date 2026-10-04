@@ -3212,49 +3212,7 @@ div.cat--info { cursor: default; }
 @media (max-width: 760px) { .foot__grid { grid-template-columns: 1fr; } .foot__mapa-caja { max-width: 480px; height: 220px; } }
 .info-head, .pago-head { overflow: hidden; }
 
-/* ---------- 2026-09-30: ubicación al final de la landing ----------
-   Debajo de la cotización, a pantalla completa: mitad mapa de Google, mitad
-   frase (Gabriel, 2026-09-30). Fondo Porcelain entre el verde de la
-   cotización y el del pie. En la landing sustituye al mapa chiquito del pie. */
-.ubica {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  min-height: clamp(420px, 62vh, 580px); background: var(--bg);
-}
-.ubica__mapa { position: relative; min-height: 320px; background: var(--tint-sage); }
-.ubica__mapa iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: saturate(.8); }
-.ubica__txt {
-  display: flex; flex-direction: column; justify-content: center;
-  padding: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 6vw, 6rem);
-}
-.ubica__ceja {
-  display: inline-flex; align-items: center; gap: 8px; margin: 0 0 1rem;
-  font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--sage);
-}
-.ubica__ceja .ico { width: 18px; height: 18px; color: var(--forest); }
-.ubica__txt h2 {
-  margin: 0; max-width: 14ch; color: var(--heading); font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.04; letter-spacing: -.03em; text-wrap: balance;
-}
-.ubica__txt h2 span { display: block; color: var(--sage); }
-.ubica__txt > p:not(.ubica__ceja) { margin: 1.2rem 0 0; max-width: 42ch; font-size: clamp(1rem, 1.3vw, 1.12rem); line-height: 1.6; color: var(--ink); }
-.ubica__acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: clamp(1.6rem, 3vw, 2.2rem); }
-.ubica__wa .ico { color: var(--forest); }
-@media (max-width: 860px) {
-  .ubica { grid-template-columns: 1fr; min-height: 0; }
-  .ubica__mapa { min-height: 300px; }
-  .ubica__acciones .btn { flex: 1 1 100%; justify-content: center; }
-}
-/* El pie de la landing ya no lleva mapa: tres columnas. */
-.foot__grid.foot__grid--sin-mapa { grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr)); }
-@media (max-width: 760px) { .foot__grid.foot__grid--sin-mapa { grid-template-columns: 1fr; } }
-
-/* ---------- 2026-10-03: dirección y productos sobre pedido ---------- */
-.ubica__dir {
-  display: flex; gap: 10px; align-items: flex-start; margin: 1.1rem 0 0;
-  font-weight: 600; line-height: 1.5; color: var(--heading);
-}
-.ubica__dir .ico { flex: none; width: 20px; height: 20px; margin-top: 2px; color: var(--sage); }
-
+/* ---------- 2026-10-03: productos sobre pedido ---------- */
 /* Aviso en la tienda para lo que se pide por cotización (?pide=). */
 .pide {
   display: flex; align-items: center; gap: 18px; margin: 0 0 22px;
