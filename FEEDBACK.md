@@ -315,3 +315,14 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
 - El vaso PP todavía no lleva `fotoPropia`: su foto principal y la de boca 92 siguen siendo `tienda-42` y `tienda-41`. Hay que ponérsela cuando lleguen la 41 y la 42.
 - Las originales quedaron en `Listas/` y en "Faltan por hacer" se marcaron "- YA ESTÁ".
 - Faltan 14 de estudio (03, 08, 41, 42, 49, 50, 52 a 56, 60, 63 y 64) y 15 con comida.
+
+## Ronda 20: cuatro fotos con comida más y botón de WhatsApp en Contacto (2026-10-03)
+
+- "Ahí están más imágenes". Son las de las carpetas 04, 19, 34 y 35. Quedaron en `assets/uso/` con sus `giros`:
+  - 04 → `vaso-papel-kraft-guayaba`: bebida de guayaba en vaso kraft, sobre talavera. Sale en Tamales, Aguas, Jugos, Tacos, Restaurantes, Eventos y Negocio nuevo. En Cafetería sale la de estudio, porque ahí el vaso kraft es para café.
+  - 19 → `vaso-pp-frappe`: frappé de taro con fresa. Gemini dejó en primer plano una paleta de color y un disparador de flash, y se recortaron. Sale en Bubble tea y Frappés.
+  - 34 → `contenedor-papel-helado-vainilla`: ahora sí es el contenedor de papel. Sustituye a la foto del helado de la 02 (los vasitos chicos), que se borró. El letrero del fondo decía el nombre de una heladería real y se desenfocó.
+  - 35 → `caja-kraft-salmon`: salmón con verduras en la caja kraft rectangular. Sale en Restaurantes, Ensaladas, Sushi, Eventos y Negocio nuevo.
+- **Contacto:** botón "Escríbenos por WhatsApp" debajo de "Empaques responsables, negocios con propósito." Abre el chat del 55 2260 1113 con el mensaje "Hola, quiero información de GreeNova SC", igual que el botón de la portada.
+- `styles.css` y `agente-criterios.js` pasaron a `?v=20261003u` en todas las páginas.
+- Faltan 12 fotos con comida (28 a 32 y 36 a 42) y 14 de estudio. La 33 (popote cuchara) necesita una foto real.

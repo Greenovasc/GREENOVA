@@ -595,15 +595,15 @@ window.GREENOVA_AGENTE = (function () {
 
   var FOTOS_USO = {
     /* Las definitivas de Gabriel (2026-10-03). El número es el de su carpeta
-       "Fotos con comida (tienda y asistente)". Faltan la 04 (vaso kraft) y la 19 (vaso PP). */
+       "Fotos con comida (tienda y asistente)". */
     /* 01 · vaso de papel blanco: capuchino */
     "vaso-papel-blanco": { f: "vaso-papel-blanco-capuchino", alt: "Capuchino con arte latte en vaso de papel blanco, junto a un croissant.", giros: CAFE },
-    /* 02 · el helado: se hizo para el vaso de 4 oz, pero los vasitos son
-       chaparros y anchos, como el contenedor de papel (Gabriel, 2026-10-03:
-       "esos no van en vaso de papel blanco, están muy chicos"). Hace las
-       veces de la 34. */
-    "contenedor-papel": { f: "contenedor-papel-helado", alt: "Helado de pistache y de fresa en contenedores de papel blanco.", giros: ["Helado"] },
+    /* 34 · contenedor de papel blanco: helado. El letrero de la heladería
+       del fondo traía una marca real y se desenfocó. */
+    "contenedor-papel": { f: "contenedor-papel-helado-vainilla", alt: "Helado de vainilla en contenedor de papel blanco, con cuchara para servir.", giros: ["Helado"] },
     /* 03 · vaso de papel negro: americano */
+    /* 04 · vaso de papel kraft: bebida de guayaba */
+    "vaso-papel-kraft": { f: "vaso-papel-kraft-guayaba", alt: "Bebida de guayaba con canela en vaso de papel kraft, sobre azulejo de talavera.", giros: ["Tamales", "Aguas", "Jugos", "Tacos", "Restaurantes", "Eventos", "Negocio nuevo"] },
     "vaso-papel-negro": { f: "vaso-papel-negro-americano", alt: "Café americano recién servido en vaso de papel negro, con galletas.", giros: CAFE },
     /* 05 · doble pared: los tres colores con latte */
     "vaso-papel-doble-pared": { f: "vaso-papel-doble-pared-latte", alt: "Lattes en vasos de doble pared blanco, con estampado verde y negro.", giros: CAFE },
@@ -623,8 +623,11 @@ window.GREENOVA_AGENTE = (function () {
     "vaso-pet-95": { f: "vaso-pet-95-limonadas", alt: "Agua de pepino con hierbabuena y limonada en vasos PET.", giros: ["Aguas", "Jugos", "Escuelas", "Hoteles", "Pizzería", "Tacos", "Restaurantes", "Eventos", "Sushi", "Negocio nuevo"] },
     "vaso-pet-98": { f: "vaso-pet-98-licuado", alt: "Licuado de fresa con plátano en vaso PET.", giros: ["Jugos", "Frappés", "Crepas", "Negocio nuevo"] },
     "vaso-pet-107": { f: "vaso-pet-107-michelada", alt: "Michelada escarchada con chile y limón en vaso PET de 32 oz.", giros: ["Micheladas", "Mariscos", "Cine"] },
-    /* 18 · vaso PET en U: bubble tea (la 19, vaso PP con milk tea, falta) */
+    /* 18 · vaso PET en U: bubble tea */
     "vaso-pet-u": { f: "vaso-pet-u-bubble-tea", alt: "Bubble tea de taro y de matcha con perlas de tapioca en vasos PET en U.", giros: ["Bubble tea", "Frappés", "Jugos"] },
+    /* 19 · vaso PP: frappé de taro con fresa. Se recortó la paleta de color
+       y el disparador de flash que Gemini dejó en primer plano. */
+    "vaso-pp": { f: "vaso-pp-frappe", alt: "Frappé de taro con fresa y crema batida en vaso PP transparente.", giros: ["Bubble tea", "Frappés"] },
     /* 20 a 25 · tapas PET */
     "tapa-pet-plana-ranura": { f: "tapa-pet-plana-ranura-horchata", alt: "Horchata con canela en vaso PET con tapa plana con ranura y popote de papel.", giros: ["Aguas", "Tacos", "Restaurantes", "Escuelas", "Pizzería", "Hamburguesas", "Sushi", "Eventos", "Hoteles", "Jugos", "Negocio nuevo"] },
     "tapa-pet-plana-sin-ranura": { f: "tapa-pet-plana-sin-ranura-postres", alt: "Fresas con crema y gelatina de colores en vasos PET con tapa plana sin ranura.", giros: ["Fruta", "Escuelas", "Ensaladas", "Eventos", "Panadería", "Helado"] },
@@ -634,7 +637,9 @@ window.GREENOVA_AGENTE = (function () {
     "tapa-pet-sorbe-tapon": { f: "tapa-pet-sorbe-tapon-limonada", alt: "Limonada con hielo en vaso PET con tapa para sorber con tapón.", giros: ["Aguas", "Jugos", "Restaurantes", "Tacos", "Pizzería", "Sushi", "Escuelas", "Eventos", "Hoteles", "Negocio nuevo"] },
     /* 26 y 27 · portavasos */
     "portavaso-charola": { f: "portavaso-charola-cafes", alt: "Cuatro cafés para llevar en un portavasos charola.", giros: CAFE_TAPADO },
-    "portavaso-asa": { f: "portavaso-asa-bebidas-frias", alt: "Licuados y jugos para llevar en un portavasos kraft con asa.", giros: ["Jugos", "Aguas", "Frappés", "Bubble tea", "Eventos", "Restaurantes", "Pizzería", "Hamburguesas", "Negocio nuevo"] }
+    "portavaso-asa": { f: "portavaso-asa-bebidas-frias", alt: "Licuados y jugos para llevar en un portavasos kraft con asa.", giros: ["Jugos", "Aguas", "Frappés", "Bubble tea", "Eventos", "Restaurantes", "Pizzería", "Hamburguesas", "Negocio nuevo"] },
+    /* 35 · caja kraft: plato fuerte */
+    "caja-kraft": { f: "caja-kraft-salmon", alt: "Salmón con verduras rostizadas y quinoa en caja kraft, con su tapa al lado.", giros: ["Restaurantes", "Ensaladas", "Sushi", "Eventos", "Negocio nuevo"] }
   };
 
   /* Preguntas sugeridas que aparecen al abrir el chat. */
