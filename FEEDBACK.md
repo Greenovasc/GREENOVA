@@ -369,3 +369,12 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
 - 37 → `contenedor-pet-fruta`: fruta picada en el contenedor PET tipo almeja. Sale en Fruta, Restaurantes, Ensaladas, Escuelas, Eventos, Hoteles y Negocio nuevo.
 - `agente-criterios.js` pasó a `?v=20261003z`.
 - Faltan 2 fotos con comida: la 30 (papel RH) y la 42 (souffle). La 33 necesita una foto real.
+
+## Ronda 26: en la portada, solo fotos con el mismo fondo (2026-10-04)
+
+- "Hay que homologar conceptos, y aquí estás colocando fondos diferentes; usa solo los fondos iguales." En la portada había 4 fotos con otro fondo y se cambiaron por otras del mismo estudio (pared clara, panel verde en diagonal y mesa blanca):
+  - **Tarjeta "Complementos":** `vaso-popotes`, con el panel verde grande y oscuro, pasó a `portavaso-charola-4`.
+  - **Tira de fotos tipo Instagram:**
+    - Los dos vasos de doble pared, que tenían fondo liso, pasaron a `vaso-papel-negro-estudio` y `fajilla-kraft`.
+    - La tapa negra, que tenía fondo negro, pasó a `tapa-viajera-negra`.
+- Las miniaturas del menú "Productos" (`mega-*`) son otro juego, ilustrado, con trazos amarillos y verdes, y se dejaron igual.
