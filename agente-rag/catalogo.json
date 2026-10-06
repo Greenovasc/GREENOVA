@@ -2095,17 +2095,6 @@
       "cotizar": true,
       "precios": [],
       "notas": "Caja de 2000 pz. Envuelto de forma individual."
-    },
-    {
-      "id": "popote-cuchara-biodegradable",
-      "categoria": "Contenedores y accesorios (a cotizar)",
-      "nombre": "Popote cuchara biodegradable",
-      "material": "Fécula de maíz",
-      "boca_mm": null,
-      "medidas": "26 cm",
-      "cotizar": true,
-      "precios": [],
-      "notas": "Caja de 5 kg. Combina popote y cuchara en una pieza."
     }
   ]
 }

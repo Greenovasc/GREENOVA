@@ -407,3 +407,31 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
   - Quedaron en "Faltan por hacer" como "REHACER (intento 1, fondo distinto)".
 - **La 65 es nueva:** el vaso doble pared genérico (estampado) también tenía el fondo liso. Se agregó a PARA GEMINI y a "Faltan por hacer".
 - `productos.js` y `agente-criterios.js` pasaron a `?v=20261005a`.
+
+## Ronda 29: copy nuevo de la portada, lema, menú y productos sin foto (2026-10-05)
+
+**Copy nuevo ("usa estas copys").** "El futuro se sirve en GreeNova" se respeta donde ya estaba: el título de la portada y el de la cotización.
+- **Portada:** debajo del eslogan, "El vaso que usas hoy ya decidió si ese cliente vuelve." en lugar de "Empaque biodegradable para tu negocio de comida."
+- **Sección nueva después de la portada (`.porque`):** "Suena exagerado, pero no lo es…" y la excusa ("Y no, no es que no tengas tiempo…").
+- **Catálogo para descargar (`.catalogo`, #catalogo):**
+  - Es una tarjeta verde con la portada del PDF, el texto del lead magnet y "Descargar catálogo gratis".
+  - El PDF es "Catálogo GreeNova SC 2026 - Lead Magnet (Portada Oficial)" (Descargas, 16 de septiembre). Quedó en `assets/catalogo/catalogo-greenova-sc-2026.pdf`. Sus precios coinciden con los de la tienda.
+  - Al darle clic pide el registro (modo "catalogo" en greenova.js) y al terminar se descarga solo. También se puede bajar con "Descargar sin registrarme". Después ya no vuelve a preguntar.
+- **Antes de "¿Aún utilizas unicel?" (`.dudas`):** la objeción del vaso "eco" que se desbarataba y la oportunidad (CDMX ya prohibió el unicel).
+- **Cotización:** el título se queda. Abajo dice "Cotiza aquí — envíos a todo México" en lugar de "Si necesitas más información, háznosla saber."
+- **Oferta irresistible:** no se puso. El copy pide elegir una de tres: logo gratis en el primer pedido, cajita de muestras o sin pedido mínimo la primera vez. No se inventa sin que Gabriel elija.
+
+**Lema.** "Empaques responsables, negocios con propósito." cambió a "El futuro se sirve en GreeNova." Va en la ventana de registro, en el pie de las 8 páginas, en el encabezado de Contacto y en el correo de cada venta (`php/_ventas.php`).
+
+**Menú "Productos".** "Soufflés y conos" usaba el recorte de la foto de estudio del cono (se veía el panel verde). Ahora usa `mega-souffles-conos.webp`, con el mismo estilo que las demás: fondo crema y blanco, franja verde en diagonal, el soufflé y los conos.
+
+**Productos sin foto.** Se quitaron de la tienda los 7 que decían "Foto en proceso":
+- Popote cuchara
+- Tapa para vaso de papel de 32 oz
+- Vaso PP fiestero
+- Tapa para contenedor de papel
+- Tapa para soufflé
+- Bobina Egapack
+- Sanitas
+
+También se quitaron de las recomendaciones del asistente, de su texto sobre qué hay en la tienda y del catálogo del RAG (`agente-rag/catalogo.json`). La categoría "Tapas para contenedor y soufflé" ya no sale porque quedó vacía.

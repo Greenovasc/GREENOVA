@@ -278,9 +278,6 @@ window.GREENOVA = (function () {
       venta: { linea: "tapioca", tam: [
         { paq: 100, caja: 2000, pPaq: 148.03, pCaja: 2680.69, boca: null, esp: "Largo 21 cm · Diámetro 11 mm", sku: "GN-POPOTE-TAPIOCA-ESTUCHADO-01", img: null }
       ] } },
-    { id: "popote-cuchara", nombre: "Popote cuchara biodegradable", cat: "popotes", mat: [], img: "foto-pendiente", uso: "Popote para raspados, nieves y frappés",
-      desc: "Popote biodegradable de 26 cm con punta de cuchara. Se cotiza por caja.",
-      v: ["26 cm · caja de 5 kg"] },
     { id: "portavaso-charola", nombre: "Portavasos charola", cat: "portavasos", mat: ["carton"], img: "portavaso-charola-4", uso: "Para llevar 2 o 4 bebidas", fotoPropia: true,
       desc: "Charola portavasos para llevar 2 o 4 bebidas.",
       v: ["2 espacios", "4 espacios"],
@@ -302,18 +299,6 @@ window.GREENOVA = (function () {
       v: ["Caja de 1,000 pzs"] },
 
     /* ---------------- de la Hoja1 del Excel (con sus precios) ---------------- */
-    { id: "tapa-papel-105", nombre: "Tapa para vaso de papel de 32 oz", cat: "tapas-papel", mat: ["ps"], img: "foto-pendiente", uso: "Tapa para vaso de papel de 32 oz",
-      desc: "Tapa plana de poliestireno con orificio para vaso de papel de 32 oz (boca 105 mm).",
-      v: ["Plana con orificio · boca 105 mm"],
-      venta: { linea: "ps", tam: [
-        { paq: 120, caja: 960, pPaq: 120.17, pCaja: 826.95, boca: 105, esp: "Boca 105 mm · Material: Poliestireno", sku: "GN-TAPA-PAPEL-105-01", img: null }
-      ] } },
-    { id: "vaso-pp-fiestero", nombre: "Vaso PP fiestero 9 oz", cat: "vasos-pet", mat: ["pp"], img: "foto-pendiente", uso: "Bebida fría",
-      desc: "Vaso de polipropileno de 9 oz para fiestas y eventos.",
-      v: ["9 oz"],
-      venta: { linea: "pp", tam: [
-        { paq: 100, caja: 2500, pPaq: 68.69, pCaja: 1367.13, boca: null, esp: "9 oz · Material: Polipropileno", sku: "GN-VASO-PP-FIESTERO-01", img: null }
-      ] } },
     { id: "contenedor-papel", nombre: "Contenedor de papel blanco", cat: "contenedores", mat: ["papel"], img: "contenedor-helado", uso: "Helado, sopa y comida para llevar", fotoPropia: true,
       desc: "Contenedor de papel blanco para alimentos, de 4 a 32 oz.",
       v: ["4 oz · boca 75 mm", "6 oz · boca 95 mm", "8 oz · boca 95 mm", "12 oz · boca 101 mm", "16 oz · boca 115 mm", "32 oz · boca 115 mm"],
@@ -324,16 +309,6 @@ window.GREENOVA = (function () {
         { paq: 50, caja: 1000, pPaq: 80.54, pCaja: 1470.84, boca: 101, esp: "Boca 101 mm", sku: "GN-CONTENEDOR-PAPEL-04", img: null },
         { paq: 25, caja: 500, pPaq: 59.48, pCaja: 1119.59, boca: 115, esp: "Boca 115 mm", sku: "GN-CONTENEDOR-PAPEL-05", img: null },
         { paq: 25, caja: 500, pPaq: 74.83, pCaja: 1426.55, boca: 115, esp: "Boca 115 mm", sku: "GN-CONTENEDOR-PAPEL-06", img: null }
-      ] } },
-    { id: "tapa-contenedor", nombre: "Tapa para contenedor de papel", cat: "tapas-contenedor", mat: ["pet", "papel"], img: "foto-pendiente", uso: "Tapa para contenedor de papel",
-      desc: "Tapas para el contenedor de papel blanco: domo de PET con orificio, de papel o plana de PET, según la boca.",
-      v: ["Domo PET con orificio · boca 75 mm", "Domo PET con orificio · boca 95 mm", "Domo PET con orificio · boca 101 mm", "De papel · boca 115 mm", "Plana PET · boca 115 mm"],
-      venta: { linea: "pet", tam: [
-        { paq: 50, caja: 1000, pPaq: 58.56, pCaja: 1031.27, boca: 75, esp: "Boca 75 mm · Material: PET", sku: "GN-TAPA-CONTENEDOR-01", img: null },
-        { paq: 50, caja: 1000, pPaq: 90.07, pCaja: 1661.44, boca: 95, esp: "Boca 95 mm · Material: PET", sku: "GN-TAPA-CONTENEDOR-02", img: null },
-        { paq: 50, caja: 1000, pPaq: 174.78, pCaja: 3355.5, boca: 101, esp: "Boca 101 mm · Material: PET", sku: "GN-TAPA-CONTENEDOR-03", img: null },
-        { paq: 25, caja: 500, pPaq: 76.14, pCaja: 1452.74, boca: 115, esp: "Boca 115 mm · Material: Papel", sku: "GN-TAPA-CONTENEDOR-04", img: null },
-        { paq: 25, caja: 500, pPaq: 34.32, pCaja: 616.4, boca: 115, esp: "Boca 115 mm · Material: PET", sku: "GN-TAPA-CONTENEDOR-05", img: null }
       ] } },
     { id: "caja-kraft", nombre: "Caja kraft para comida", cat: "cajas-charolas", mat: ["kraft"], img: "contenedor-kraft-rect", uso: "Comida para llevar", fotoPropia: true,
       desc: "Caja kraft para comida para llevar, de 26 a 96 oz.",
@@ -379,12 +354,6 @@ window.GREENOVA = (function () {
       venta: { linea: "pp", tam: [
         { paq: 100, caja: 2500, pPaq: 42.69, pCaja: 717.33, boca: null, esp: null, sku: "GN-SOUFFLE-01", img: null }
       ] } },
-    { id: "tapa-souffle", nombre: "Tapa PET para soufflé de 2 oz", cat: "tapas-contenedor", mat: ["pet"], img: "foto-pendiente", uso: "Tapa para soufflé",
-      desc: "Tapa de PET para el soufflé de 2 oz.",
-      v: ["2 oz"],
-      venta: { linea: "pet", tam: [
-        { paq: 100, caja: 2500, pPaq: 39.56, pCaja: 638.91, boca: null, esp: null, sku: "GN-TAPA-SOUFFLE-01", img: null }
-      ] } },
     { id: "cono-crepa", nombre: "Cono para crepa", cat: "souffles", mat: [], img: "cono-crepa", uso: "Crepas", fotoPropia: true,
       desc: "Cono porta crepa para servir en la mano.",
       v: ["Estándar"],
@@ -405,15 +374,6 @@ window.GREENOVA = (function () {
         { paq: 50, caja: 250, pPaq: 132.02, pCaja: 625.12, boca: null, esp: "28 x 35 x 15 cm", sku: "GN-BOLSA-SEMIKRAFT-02", img: null },
         { paq: 50, caja: 250, pPaq: 151.27, pCaja: 721.35, boca: null, esp: "30 x 39 x 17 cm", sku: "GN-BOLSA-SEMIKRAFT-03", img: null }
       ] } },
-    { id: "bobina-egapack", nombre: "Bobina Egapack 600 m", cat: "servilletas-papel", mat: [], img: "foto-pendiente", uso: "Para envolver alimentos",
-      desc: "Bobina Egapack de 600 m de largo.",
-      v: ["600 m"],
-      venta: { linea: "otro", tam: [
-        { paq: 1, caja: 6, pPaq: 151.43, pCaja: 907.76, boca: null, esp: "Largo 600 m", sku: "GN-BOBINA-EGAPACK-01", img: null }
-      ] } },
-    { id: "sanitas", nombre: "Sanitas 24 x 21 cm", cat: "servilletas-papel", mat: ["papel"], img: "foto-pendiente", uso: "Para secar y limpiar",
-      desc: "Sanitas de Kimberly-Clark, 24 x 21 cm. Se cotiza por caja.",
-      v: ["24 x 21 cm · caja de 20 paquetes"] },
 
   ];
 

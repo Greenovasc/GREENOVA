@@ -3385,3 +3385,55 @@ div.cat--info { cursor: default; }
 /* Al llegar a una sección por enlace (#cotizar-tienda, etc.) el menú pegado
    arriba ya no tapa el título. */
 section[id] { scroll-margin-top: var(--nav-h); }
+
+/* ---------- 2026-10-05: copy nuevo de la portada ----------
+   Después de la portada: el porqué (texto grande) y el catálogo para
+   descargar; antes de "¿Aún utilizas unicel?": la duda y la oportunidad. */
+.porque { padding-block: clamp(3rem, 6vw, 5rem) clamp(1.2rem, 2.6vw, 2rem); }
+.porque__grid {
+  display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 5vw, 4.5rem); align-items: end;
+}
+.porque__grande {
+  margin: 0; color: var(--heading); font-family: var(--font-display); font-weight: 500;
+  font-size: clamp(1.45rem, 2.8vw, 2.3rem); line-height: 1.24; letter-spacing: -.02em; text-wrap: pretty;
+}
+.porque__grande strong { color: var(--sage); font-weight: 700; }
+.porque__sub {
+  margin: 0; padding-left: 1.2rem; border-left: 3px solid var(--accent);
+  color: var(--ink-2); font-size: clamp(1rem, 1.3vw, 1.12rem); line-height: 1.6;
+}
+@media (max-width: 860px) { .porque__grid { grid-template-columns: 1fr; } }
+
+.catalogo { padding-block: clamp(1.2rem, 2.6vw, 2rem) clamp(3rem, 6vw, 5rem); }
+.catalogo__caja {
+  --heading: currentColor;
+  display: grid; grid-template-columns: minmax(0, 210px) minmax(0, 1fr); align-items: center;
+  gap: clamp(1.5rem, 4.5vw, 4rem); overflow: hidden;
+  padding: clamp(1.8rem, 4vw, 3rem) clamp(1.4rem, 5vw, 4.5rem);
+  border-radius: clamp(18px, 2.2vw, 30px); color: var(--brand-ink);
+  background: linear-gradient(120deg, var(--forest-deep) 0%, var(--forest) 55%, var(--sage) 100%);
+}
+.catalogo__portada {
+  display: block; width: 100%; height: auto; border-radius: 10px; rotate: -4deg;
+  box-shadow: 0 24px 50px rgba(10, 30, 24, .35);
+}
+.catalogo__txt h2 { max-width: 19ch; color: #fff; }
+.catalogo__txt p {
+  margin: .9rem 0 1.6rem; max-width: 46ch;
+  color: rgba(245, 249, 244, .86); font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.55;
+}
+@media (max-width: 640px) {
+  .catalogo__caja { grid-template-columns: 1fr; }
+  .catalogo__portada { width: 140px; }
+  .catalogo__txt .btn { width: 100%; justify-content: center; }
+}
+
+.dudas { padding-block: 0 clamp(3rem, 6vw, 4.5rem); }
+.dudas__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); }
+.dudas__item {
+  margin: 0; padding: clamp(1.4rem, 3vw, 2.2rem); border: 1px solid var(--line); border-radius: 20px;
+  background: var(--surface); color: var(--ink); font-size: clamp(1.02rem, 1.45vw, 1.22rem); line-height: 1.55;
+}
+.dudas__item--ya { border-color: transparent; background: var(--tint-sage); color: var(--heading); font-weight: 500; }
+@media (max-width: 760px) { .dudas__grid { grid-template-columns: 1fr; } }

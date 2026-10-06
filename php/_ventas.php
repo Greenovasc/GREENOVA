@@ -79,7 +79,7 @@ function avisos_de_pago(array $v, array $guia): void {
     $para_cliente = "Hola, $primer:\n\nRecibimos tu pago. ¡Gracias por tu compra en GreeNova SC!\n\nNúmero de ticket: {$v['folio']} (lo necesitas para facturar)\n\n" . $resumen . "\n\n" .
         ($guia['ok'] ? "Tu número de guía es {$guia['guia']} ({$v['paqueteria']})." . ($guia['rastreo'] ? "\nRastréalo aquí: {$guia['rastreo']}" : '') :
                        "En cuanto salga tu pedido te mandamos el número de guía.") .
-        "\n\nSi necesitas factura, entra a www.greenovasc.com.mx/facturacion.html.\n¿Dudas? Escríbenos a ventas@greenovasc.com.mx o al 55 2260 1113.\n\nGreeNova SC · Empaques responsables, negocios con propósito.";
+        "\n\nSi necesitas factura, entra a www.greenovasc.com.mx/facturacion.html.\n¿Dudas? Escríbenos a ventas@greenovasc.com.mx o al 55 2260 1113.\n\nGreeNova SC · El futuro se sirve en GreeNova.";
     correo($v['correo'], 'Recibimos tu pago · Pedido ' . $v['folio'], $para_cliente);
 }
 

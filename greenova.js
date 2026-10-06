@@ -432,6 +432,11 @@
       pedido: {
         registro: ["Regístrate para <em>continuar tu pedido</em>", "Estás a un paso de realizar tu pedido."],
         entrar: ["Inicia sesión para <em>continuar tu pedido</em>", "Estás a un paso de realizar tu pedido."]
+      },
+      /* "Descargar catálogo gratis" de la portada: al registrarse se baja solo. */
+      catalogo: {
+        registro: ["Regístrate y <em>descarga el catálogo</em>", "Solo tu nombre y tu WhatsApp. Al terminar, se descarga solo."],
+        entrar: ["Inicia sesión y <em>descarga el catálogo</em>", "Entra con tu nombre y tu WhatsApp. Al terminar, se descarga solo."]
       }
     };
 
@@ -475,7 +480,7 @@
             '<img src="assets/prod/fajilla-kraft.webp?v=20260926c" alt="Vaso de papel con fajilla kraft GreeNova SC" width="900" height="900" decoding="async">' +
             '<div class="bienv__firma">' +
               '<img src="assets/logo-greenova-claro.svg" alt="GreeNova SC" width="1664" height="377">' +
-              "<p>Empaques responsables, negocios con propósito.</p>" +
+              "<p>El futuro se sirve en GreeNova.</p>" +
             "</div>" +
           "</div>" +
           '<div class="bienv__cuerpo">' +
@@ -521,9 +526,12 @@
         var t = e.target.closest("[data-tab]");
         if (t) { pestana(t.dataset.tab, true); return; }
         if (e.target.closest("[data-ignorar]")) {
+          /* En el catálogo este botón es "Descargar sin registrarme": baja igual. */
+          var sigue = modo === "catalogo" ? pendiente : null;
           pendiente = null;
           metrica("registro_ignorado");
           cierra();
+          if (sigue) setTimeout(function () { sigue(true); }, reduce ? 0 : 280);
           return;
         }
         if (e.target.closest("[data-cerrar]")) cierra();
@@ -552,15 +560,16 @@
       });
       forma("registro").hidden = cual !== "registro";
       forma("entrar").hidden = cual !== "entrar";
-      var t = TEXTOS[modo === "pedido" ? "pedido" : "entrada"][cual];
+      var t = (TEXTOS[modo] || TEXTOS.entrada)[cual];
       host.querySelector("h2").innerHTML = t[0];
       host.querySelector(".bienv__txt").textContent = t[1];
       /* Si viene de comprar, el botón dice "Continuar con la compra" y no hay
          "Ignorar por ahora" (para cerrar está la X). */
-      var compra = modo === "pedido";
-      forma("registro").querySelector(".btn__label").textContent = compra ? "Continuar con la compra" : "Registrarme";
-      forma("entrar").querySelector(".btn__label").textContent = compra ? "Continuar con la compra" : "Iniciar sesión";
+      var compra = modo === "pedido", catalogo = modo === "catalogo";
+      forma("registro").querySelector(".btn__label").textContent = compra ? "Continuar con la compra" : catalogo ? "Descargar catálogo" : "Registrarme";
+      forma("entrar").querySelector(".btn__label").textContent = compra ? "Continuar con la compra" : catalogo ? "Descargar catálogo" : "Iniciar sesión";
       host.querySelector("[data-ignorar]").hidden = compra;
+      host.querySelector("[data-ignorar]").textContent = catalogo ? "Descargar sin registrarme" : "Ignorar por ahora";
       host.querySelectorAll(".bienv__estado").forEach(function (x) { x.textContent = ""; });
       var c = conocido(), fe = forma("entrar");
       if (cual === "entrar" && c) {
@@ -727,10 +736,14 @@
        escucha en captura para detener el clic antes que su propio código. */
     document.addEventListener("click", function (e) {
       var el = e.target.closest && e.target.closest("[data-requiere-registro]");
-      if (!el || el.tagName === "FORM" || conSesion()) return;
+      if (!el || el.tagName === "FORM" || conSesion() || el.dataset.libre) return;
       e.preventDefault();
       e.stopImmediatePropagation();
-      abre("pedido", function () { el.click(); });
+      /* sinCuenta: "Descargar sin registrarme" del catálogo; esa liga ya no vuelve a preguntar. */
+      abre(el.dataset.registroModo || "pedido", function (sinCuenta) {
+        if (sinCuenta) el.dataset.libre = "1";
+        el.click();
+      });
     }, true);
     document.addEventListener("submit", function (e) {
       var f = e.target;

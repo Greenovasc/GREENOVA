@@ -70,10 +70,10 @@ window.GREENOVA_AGENTE = (function () {
       c: "La tapa se elige por el diámetro de boca del vaso, no por las onzas. Vasos de papel: boca 62 mm (4 oz), 80 mm (8 oz) y 90 mm (10 a 20 oz). Vasos PET: bocas de 78, 90, 92, 95, 98 y 107 mm. En la tienda, al ver un vaso, salen las tapas de su misma boca." },
 
     { t: "Qué hay en la tienda y qué se cotiza",
-      c: "Todo el catálogo 2026 está en la tienda. Con precio en línea: vasos de papel, PET y PP; tapas para vaso y para contenedor; contenedor de papel blanco de 4, 6, 8, 12, 16 y 32 oz; caja kraft de 26, 45, 49, 66 y 96 oz; charola kraft para papas; contenedor PET; contenedor PET para rebanada de pastel; ensaladera PET con tapa de 18, 32, 48 y 64 oz; soufflé PP de 2 oz y su tapa; cono para crepa; fajillas; removedores; popote de tapioca estuchado; popote PLA estuchado de 25 cm; portavasos charola de 2 y 4 espacios; bolsa semikraft con fuelle chica, mediana y grande, y bobina Egapack de 600 m. Sin precio en línea, se cotizan con \"Pedir cotización\": popote de tapioca a granel (caja de 5 kg), popote cuchara, portavasos con asa, servilleta larga, papel grado alimenticio RH y encerado, Sanitas y la tapa negra de poliestireno para vaso de 8 oz. Platos y cubiertos no están en la tienda: se piden con \"Envía tu lista\" o escribiendo a ventas." },
+      c: "Todo el catálogo 2026 está en la tienda. Con precio en línea: vasos de papel, PET y PP; tapas para vaso; contenedor de papel blanco de 4, 6, 8, 12, 16 y 32 oz; caja kraft de 26, 45, 49, 66 y 96 oz; charola kraft para papas; contenedor PET; contenedor PET para rebanada de pastel; ensaladera PET con tapa de 18, 32, 48 y 64 oz; soufflé PP de 2 oz; cono para crepa; fajillas; removedores; popote de tapioca estuchado; popote PLA estuchado de 25 cm; portavasos charola de 2 y 4 espacios; y bolsa semikraft con fuelle chica, mediana y grande. Sin precio en línea, se cotizan con \"Pedir cotización\": popote de tapioca a granel (caja de 5 kg), portavasos con asa, servilleta larga, papel grado alimenticio RH y encerado, y la tapa negra de poliestireno para vaso de 8 oz. Platos y cubiertos no están en la tienda: se piden con \"Envía tu lista\" o escribiendo a ventas." },
 
-    { t: "Accesorios que se cotizan: popote cuchara, portavasos con asa, servilleta y papel",
-      c: "Salen en la tienda sin precio en línea; se cotizan con el botón \"Pedir cotización\". Portavasos con asa de 2 espacios (caja de 250) y de 4 espacios (caja de 200); servilleta larga de 39.0 x 37.5 cm (caja de 1,200); papel grado alimenticio RH y encerado, para envolver alimentos (caja de 1,000); popote de tapioca biodegradable de 21 cm (caja de 5 kg) y popote cuchara biodegradable de 26 cm (caja de 5 kg)." },
+    { t: "Accesorios que se cotizan: portavasos con asa, servilleta y papel",
+      c: "Salen en la tienda sin precio en línea; se cotizan con el botón \"Pedir cotización\". Portavasos con asa de 2 espacios (caja de 250) y de 4 espacios (caja de 200); servilleta larga de 39.0 x 37.5 cm (caja de 1,200); papel grado alimenticio RH y encerado, para envolver alimentos (caja de 1,000); y popote de tapioca biodegradable de 21 cm (caja de 5 kg)." },
 
     { t: "Cómo hacer un pedido",
       c: "Agrega a tu carrito lo que necesitas, por paquete o por caja, y envía tu pedido desde la tienda. Si prefieres, escribe directo a ventas@greenovasc.com.mx o al 55 2260 1113." }
@@ -283,10 +283,8 @@ window.GREENOVA_AGENTE = (function () {
         { id: "vaso-papel-negro", v: "8 oz", por: "El mismo tamaño en negro: se ve más gourmet." },
         { id: "vaso-papel-blanco", v: "12 oz", por: "Tres bolas, o helado para compartir." },
         { id: "contenedor-papel", v: "16 oz", por: "Helado para llevar; lo hay de 4 a 32 oz." },
-        { id: "tapa-contenedor", v: "De papel · boca 115 mm", por: "La tapa de ese contenedor." },
         { id: "vaso-pet-95", v: "12 oz", por: "Malteadas, nieves y raspados: se luce el color." },
-        { id: "tapa-pet-domo", v: "Boca 95 mm", por: "Para ese vaso; deja espacio a la crema y los toppings." },
-        { id: "popote-cuchara", v: "26 cm", por: "Para nieves, raspados y chamoyadas: es popote y cuchara." }
+        { id: "tapa-pet-domo", v: "Boca 95 mm", por: "Para ese vaso; deja espacio a la crema y los toppings." }
       ] },
 
     { nombre: "Cafetería",
@@ -481,7 +479,6 @@ window.GREENOVA_AGENTE = (function () {
         { id: "vaso-papel-color-44", v: "Rojo", por: "Refresco grande; también en azul y en gris." },
         { id: "vaso-papel-blanco", v: "44 oz", por: "Refresco grande o palomitas." },
         { id: "vaso-papel-blanco", v: "32 oz", por: "Refresco mediano." },
-        { id: "tapa-papel-105", v: "Plana", por: "La tapa del vaso de papel de 32 oz." },
         { id: "vaso-pet-107", v: "32 oz", por: "Michelada o refresco de casi un litro." },
         { id: "tapa-pet-plana-ranura", v: "Boca 107 mm", por: "Para ese vaso, con ranura para popote." },
         { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." }
@@ -512,7 +509,6 @@ window.GREENOVA_AGENTE = (function () {
         { id: "removedor-madera", v: "14 cm", por: "Para el azúcar y la leche." },
         { id: "vaso-pet-95", v: "9 oz", por: "Agua, refresco o jugo." },
         { id: "vaso-pet-78", v: "7 oz", por: "Shots, degustaciones o postres mini." },
-        { id: "vaso-pp-fiestero", v: "9 oz", por: "Vaso fiestero para refresco o agua." },
         { id: "souffle", v: "2 oz", por: "Salsas y aderezos de la mesa." },
         { id: "servilleta-larga", v: "39.0", por: "Servilleta de 39 x 37.5 cm." },
         { id: "portavaso-charola", v: "4 espacios", por: "Para repartir bebidas en charola." }
@@ -539,7 +535,6 @@ window.GREENOVA_AGENTE = (function () {
         { id: "caja-kraft", v: "45 oz", por: "El guisado o el plato fuerte." },
         { id: "contenedor-papel", v: "12 oz", por: "Sopa, arroz o frijoles." },
         { id: "souffle", v: "2 oz", por: "Salsas y aderezos." },
-        { id: "tapa-souffle", v: "2 oz", por: "La tapa del soufflé, para llevar." },
         { id: "contenedor-pet", v: "11.5", por: "Transparente: ensalada o postre para llevar." },
         { id: "vaso-pet-95", v: "16 oz", por: "El agua del día." },
         { id: "tapa-pet-sorbe-tapon", v: "Boca 95 mm", por: "Con tapón: no se tira en el camino." },
