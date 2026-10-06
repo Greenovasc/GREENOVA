@@ -1,0 +1,13 @@
+node_modules/
+__pycache__/
+.vercel/
+.env
+.env.*
+dist/
+.venv/
+agente-rag/chroma_db/
+.clave-panel.json
+.datos-local.sqlite
+*.sqlite
+*.log
+greenova-secretos.php

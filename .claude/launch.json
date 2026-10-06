@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "greenova-landing",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "/Users/gabrielayala/Greenova/.claude/worktrees/markdown-files-check-34a1fc/serve.py",
+        "4322"
+      ],
+      "port": 4322
+    }
+  ]
+}

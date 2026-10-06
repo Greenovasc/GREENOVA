@@ -1,0 +1,11 @@
+# GreeNova SC — carpeta php/ en Hostinger.
+# Por URL solo se pueden abrir los puntos de entrada (chat, gasto, checkout y
+# el aviso de Openpay). Las piezas internas (_comun, _ventas, openpay,
+# envios, medidas) y cualquier bitácora quedan bloqueadas.
+<FilesMatch "^(_.*|openpay|envios|medidas)\.php$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "\.(log|sqlite|json|txt)$">
+  Require all denied
+</FilesMatch>
+Options -Indexes
