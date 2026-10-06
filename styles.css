@@ -3086,12 +3086,7 @@ div.cat--info { cursor: default; }
 }
 .info-secciones h2 { display: inline; margin-left: 10px; color: var(--forest); font-family: var(--font-display); font-size: clamp(1.2rem, 2.2vw, 1.45rem); vertical-align: middle; }
 .info-secciones ul { padding-left: 1.2rem; }
-.info-secciones a, .info-preguntas a { color: var(--forest); text-decoration: underline; text-underline-offset: 3px; }
-.info-preguntas { max-width: 820px; }
-.info-preguntas h2 { margin: 0 0 16px; color: var(--forest); font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); }
-.info-preguntas details { margin-bottom: 10px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
-.info-preguntas summary { padding: 16px 20px; cursor: pointer; font-weight: 600; color: var(--ink); }
-.info-preguntas details p { margin: 0; padding: 0 20px 18px; color: var(--ink-2); }
+.info-secciones a { color: var(--forest); text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 1000px) {
   .info-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .info-detalle__grid { grid-template-columns: 1fr; }
