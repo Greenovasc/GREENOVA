@@ -441,3 +441,9 @@ También se quitaron de las recomendaciones del asistente, de su texto sobre qu�
 - **Oferta irresistible:** Gabriel no la quiere por ahora; no se pone.
 - **Catálogo:** por ahora se usa el PDF del lead magnet. Gabriel manda el nuevo mañana, y para cambiarlo basta con reemplazar `assets/catalogo/catalogo-greenova-sc-2026.pdf` y su portada.
 - **"Publícalo en GitHub":** `main` solo tenía el commit `prueba.txt` (30b8ade), sin historia en común con esta rama. Se unió con `--allow-unrelated-histories` para no borrar nada, y `main` quedó con el sitio completo.
+
+## Ronda 31: el porqué en una sola frase (2026-10-05)
+
+- "Esto es mucho texto; en una frase debe decirlo todo."
+- Los dos párrafos ("Suena exagerado, pero no lo es…" y "Y no, no es que no tengas tiempo…") quedaron en una sola frase, centrada y en grande: "La gente decide en dos segundos si tu negocio es profesional o cualquier changarro: lo dice el empaque."
+- `styles.css` pasó a `?v=20261005b`.

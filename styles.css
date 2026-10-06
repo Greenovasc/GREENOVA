@@ -3387,23 +3387,14 @@ div.cat--info { cursor: default; }
 section[id] { scroll-margin-top: var(--nav-h); }
 
 /* ---------- 2026-10-05: copy nuevo de la portada ----------
-   Después de la portada: el porqué (texto grande) y el catálogo para
+   Después de la portada: el porqué (una sola frase) y el catálogo para
    descargar; antes de "¿Aún utilizas unicel?": la duda y la oportunidad. */
-.porque { padding-block: clamp(3rem, 6vw, 5rem) clamp(1.2rem, 2.6vw, 2rem); }
-.porque__grid {
-  display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-  gap: clamp(1.5rem, 5vw, 4.5rem); align-items: end;
+.porque { padding-block: clamp(3rem, 6vw, 5rem) clamp(1.2rem, 2.6vw, 2rem); text-align: center; }
+.porque__frase {
+  max-width: 30ch; margin: 0 auto; color: var(--heading); font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(1.7rem, 3.6vw, 2.9rem); line-height: 1.15; letter-spacing: -.025em; text-wrap: balance;
 }
-.porque__grande {
-  margin: 0; color: var(--heading); font-family: var(--font-display); font-weight: 500;
-  font-size: clamp(1.45rem, 2.8vw, 2.3rem); line-height: 1.24; letter-spacing: -.02em; text-wrap: pretty;
-}
-.porque__grande strong { color: var(--sage); font-weight: 700; }
-.porque__sub {
-  margin: 0; padding-left: 1.2rem; border-left: 3px solid var(--accent);
-  color: var(--ink-2); font-size: clamp(1rem, 1.3vw, 1.12rem); line-height: 1.6;
-}
-@media (max-width: 860px) { .porque__grid { grid-template-columns: 1fr; } }
+.porque__frase span { color: var(--sage); }
 
 .catalogo { padding-block: clamp(1.2rem, 2.6vw, 2rem) clamp(3rem, 6vw, 5rem); }
 .catalogo__caja {
