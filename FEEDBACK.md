@@ -447,3 +447,10 @@ También se quitaron de las recomendaciones del asistente, de su texto sobre qu�
 - "Esto es mucho texto; en una frase debe decirlo todo."
 - Los dos párrafos ("Suena exagerado, pero no lo es…" y "Y no, no es que no tengas tiempo…") quedaron en una sola frase, centrada y en grande: "La gente decide en dos segundos si tu negocio es profesional o cualquier changarro: lo dice el empaque."
 - `styles.css` pasó a `?v=20261005b`.
+
+## Ronda 32: frase que atraiga y texto a la derecha (2026-10-05)
+
+- "Busca una mejor frase que atraiga clientes y en la derecha haz que diga: …"
+- **Izquierda, en grande:** "Lo primero que prueba tu cliente es tu empaque."
+- **Derecha, con la línea verde:** el texto de Gabriel, con puntuación para que se lea bien: "Sí, la primera impresión es importante: desde el vaso y tu logo hasta el sabor. Una marca que sabe rico y tiene buen empaque se ve increíble y vende más."
+- `styles.css` pasó a `?v=20261005c`.
