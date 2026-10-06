@@ -645,6 +645,8 @@ window.GREENOVA_AGENTE = (function () {
     /* 29 · papel encerado: croissant. Se recortaron las luces de estudio de
        las esquinas y se desenfocó el letrero de la panadería del fondo. */
     "papel-encerado": { f: "papel-encerado-croissant", alt: "Croissant de pistache envuelto en papel encerado kraft, sobre una tabla de madera.", giros: ["Panadería", "Cafetería", "Negocio nuevo"] },
+    /* 30 · papel RH: quesadillas */
+    "papel-rh": { f: "papel-rh-quesadillas", alt: "Quesadillas de pollo con queso derretido sobre papel blanco grado alimenticio, con salsa y limones.", giros: ["Tacos", "Restaurantes", "Negocio nuevo"] },
     /* 31 y 32 · popotes de tapioca: los dos con bubble tea. Gemini los hizo
        blancos; el de tapioca suelto, en la foto de estudio, es kraft. */
     "popote-tapioca": { f: "popote-tapioca-bubble-tea", alt: "Bubble tea de taro con fresa, con tapa domo y popote de tapioca.", giros: ["Bubble tea", "Frappés"] },
@@ -664,7 +666,10 @@ window.GREENOVA_AGENTE = (function () {
     "cono-crepa": { f: "cono-crepa-fresas", alt: "Crepa con fresas, crema y avellana en cono de papel blanco.", giros: ["Crepas", "Eventos", "Negocio nuevo"] },
     /* 41 · bolsa semikraft: salió con mandado (fruta, verdura y queso) en vez
        de pan dulce, así que en Panadería, Restaurantes y Tamales va la de estudio. */
-    "bolsa-semikraft": { f: "bolsa-semikraft-mandado", alt: "Bolsa semikraft con fuelle llena de uvas, aguacate, jitomates, zanahorias y queso.", giros: ["Tiendas de conveniencia", "Fruta", "Negocio nuevo"] }
+    "bolsa-semikraft": { f: "bolsa-semikraft-mandado", alt: "Bolsa semikraft con fuelle llena de uvas, aguacate, jitomates, zanahorias y queso.", giros: ["Tiendas de conveniencia", "Fruta", "Negocio nuevo"] },
+    /* 42 · soufflé de 2 oz: salsas con tacos. En Sushi, Pizzería y
+       Hamburguesas va la de estudio: ahí es para soya, aderezo o cátsup. */
+    "souffle": { f: "souffle-salsas", alt: "Salsa roja, salsa verde y guacamole en soufflés de 2 oz, junto a unos tacos.", giros: ["Tacos", "Mariscos", "Restaurantes", "Eventos", "Negocio nuevo"] }
   };
 
   /* Preguntas sugeridas que aparecen al abrir el chat. */

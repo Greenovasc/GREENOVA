@@ -386,3 +386,24 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
 - El pie de la portada ahora es idéntico al de las demás páginas, con la columna "Ubicación" y el mapa chiquito que abre Google Maps.
 - Se borraron los estilos `.ubica*` y `.foot__grid--sin-mapa`, que ya no se usan. `styles.css` pasó a `?v=20261004a`.
 - Con la sección se fue su botón "Escríbenos por WhatsApp", que era el único de la portada.
+
+## Ronda 28: 14 fotos de estudio y 2 con comida (2026-10-05)
+
+- "Ahí están las imágenes": son 16. Llegaron en el orden de la carpeta PARA GEMINI.
+- **Instaladas (11 de estudio).** Se igualaron al tamaño del vaso blanco y llevan nombre nuevo:
+  - 03 → `tapa-cafetera-80-negra-solapa` y 08 → `tapa-cafetera-90-negra-solapa`. Gemini volvió a escribir mal las letras en relieve ("LOSK TURH"), igual que en el intento 1; Gabriel las mandó así.
+  - 41 → `vaso-pp-92-estudio`. También es la foto principal del vaso PP, que ahora lleva `fotoPropia`.
+  - 49 → `tapa-pet-sorbe-tapon-estudio` (bocas 90 y 95) y 50 → `tapa-pet-sorbe-tapon-98-estudio`. El producto ahora lleva `fotoPropia`.
+  - 53 → `popote-tapioca-estuchado-estudio`, que también usa el popote PLA estuchado.
+  - 54 → `servilleta-larga-estudio`, 55 → `papel-encerado-estudio` y 60 → `portavaso-charola-2-estudio` (medida "2 espacios").
+  - 63 → `vaso-papel-doble-pared-blanco-estudio` y 64 → `vaso-papel-doble-pared-negro-estudio`.
+- **Con comida (2):**
+  - 30 → `papel-rh-quesadillas`: sale en Tacos, Restaurantes y Negocio nuevo.
+  - 42 → `souffle-salsas`: sale en Tacos, Mariscos, Restaurantes, Eventos y Negocio nuevo. En Sushi, Pizzería y Hamburguesas sale la de estudio.
+- **No se instalaron 3, por el fondo distinto** (pared gris lisa y verde oscuro de corte recto). Gabriel pidió usar solo fondos iguales:
+  - 42 vaso PP de boca 95
+  - 52 popote de tapioca
+  - 56 papel RH
+  - Quedaron en "Faltan por hacer" como "REHACER (intento 1, fondo distinto)".
+- **La 65 es nueva:** el vaso doble pared genérico (estampado) también tenía el fondo liso. Se agregó a PARA GEMINI y a "Faltan por hacer".
+- `productos.js` y `agente-criterios.js` pasaron a `?v=20261005a`.

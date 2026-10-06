@@ -80,15 +80,15 @@ window.GREENOVA = (function () {
         { paq: 50, caja: 1000, pPaq: 67.25, pCaja: 1205.0, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-KRAFT-02", img: null },
         { paq: 50, caja: 1000, pPaq: 75.24, pCaja: 1364.9, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-KRAFT-03", img: null }
       ] } },
-    { id: "vaso-papel-doble-pared", nombre: "Vaso de papel doble pared", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-doble-pared-blanco", uso: "Bebida caliente", fotoPropia: true, personalizable: true,
+    { id: "vaso-papel-doble-pared", nombre: "Vaso de papel doble pared", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-doble-pared-blanco-estudio", uso: "Bebida caliente", fotoPropia: true, personalizable: true,
       desc: "Vaso de papel de doble pared para bebida caliente, con recubrimiento interior de polietileno.",
       v: ["Blanco · 8 oz · boca 80 mm", "Blanco · 12 oz · boca 90 mm", "Blanco · 16 oz · boca 90 mm", "Negro · 12 oz · boca 90 mm", "Negro · 16 oz · boca 90 mm", "Genérico · 12 oz · boca 90 mm"],
       venta: { linea: "papel", tam: [
-        { paq: 50, caja: 1000, pPaq: 50.42, pCaja: 868.43, boca: 80, esp: "Boca 80 mm · Alto 92 mm · Base 52 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-01", img: "vaso-papel-doble-pared-blanco" },
-        { paq: 50, caja: 1000, pPaq: 60.58, pCaja: 1071.63, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-02", img: "vaso-papel-doble-pared-blanco" },
-        { paq: 25, caja: 500, pPaq: 68.53, pCaja: 1300.55, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-03", img: "vaso-papel-doble-pared-blanco" },
-        { paq: 50, caja: 1000, pPaq: 82.89, pCaja: 1517.78, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-04", img: "vaso-papel-doble-pared-negro" },
-        { paq: 28, caja: 560, pPaq: 83.46, pCaja: 1590.72, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-05", img: "vaso-papel-doble-pared-negro" },
+        { paq: 50, caja: 1000, pPaq: 50.42, pCaja: 868.43, boca: 80, esp: "Boca 80 mm · Alto 92 mm · Base 52 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-01", img: "vaso-papel-doble-pared-blanco-estudio" },
+        { paq: 50, caja: 1000, pPaq: 60.58, pCaja: 1071.63, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-02", img: "vaso-papel-doble-pared-blanco-estudio" },
+        { paq: 25, caja: 500, pPaq: 68.53, pCaja: 1300.55, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-03", img: "vaso-papel-doble-pared-blanco-estudio" },
+        { paq: 50, caja: 1000, pPaq: 82.89, pCaja: 1517.78, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-04", img: "vaso-papel-doble-pared-negro-estudio" },
+        { paq: 28, caja: 560, pPaq: 83.46, pCaja: 1590.72, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-05", img: "vaso-papel-doble-pared-negro-estudio" },
         { paq: 25, caja: 500, pPaq: 57.39, pCaja: 1077.87, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-06", img: "vaso-papel-doble-pared-generico" }
       ] } },
     { id: "vaso-papel-color-44", nombre: "Vaso de papel de color 44 oz", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-44-rojo", uso: "Bebida fría o caliente", fotoPropia: true, personalizable: true,
@@ -114,7 +114,7 @@ window.GREENOVA = (function () {
       venta: { linea: "ps", tam: [
         { paq: 100, caja: 1000, pPaq: 159.56, pCaja: 1455.59, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-01", img: "tapa-blanca-solo" },
         { paq: 50, caja: 100, pPaq: null, pCaja: null, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-02", img: "tapa-cafetera-80-negra-ps" },
-        { paq: 50, caja: 1000, pPaq: 39.24, pCaja: 644.77, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-03", img: "tienda-03" },
+        { paq: 50, caja: 1000, pPaq: 39.24, pCaja: 644.77, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-03", img: "tapa-cafetera-80-negra-solapa" },
         { paq: 50, caja: 1000, pPaq: 58.11, pCaja: 1022.21, boca: 80, esp: "Boca 80 mm", sku: "GN-TAPA-CAFETERA-80-04", img: "tapa-kraft-cafe" }
       ] } },
     { id: "tapa-cafetera-90", nombre: "Tapa para vaso de papel de 10 a 20 oz", cat: "tapas-papel", mat: ["ps", "pp"], img: "tapa-blanca-plana", uso: "Tapa para vaso de papel de 10 a 20 oz", fotoPropia: true,
@@ -124,7 +124,7 @@ window.GREENOVA = (function () {
         { paq: 50, caja: 1000, pPaq: 49.83, pCaja: 856.54, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-01", img: "tapa-blanca-plana" },
         { paq: 50, caja: 1000, pPaq: 49.83, pCaja: 856.54, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-02", img: "tapa-cafetera-90-negra-3ovalos" },
         { paq: 50, caja: 1000, pPaq: 56.75, pCaja: 994.9, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-03", img: "tapa-cafetera-90-negra-solo" },
-        { paq: 50, caja: 1000, pPaq: 48.72, pCaja: 834.31, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-04", img: "tienda-08" },
+        { paq: 50, caja: 1000, pPaq: 48.72, pCaja: 834.31, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-04", img: "tapa-cafetera-90-negra-solapa" },
         { paq: 50, caja: 1000, pPaq: 50.79, pCaja: 875.79, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-05", img: "tapa-viajera-negra" },
         { paq: 50, caja: 1000, pPaq: 52.25, pCaja: 904.9, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-06", img: "tapa-domo-blanca" },
         { paq: 50, caja: 1000, pPaq: 52.25, pCaja: 904.9, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-CAFETERA-90-07", img: "tapa-cafetera-90-negra-pp" },
@@ -204,12 +204,12 @@ window.GREENOVA = (function () {
         { paq: 50, caja: 1000, pPaq: 111.43, pCaja: 2088.55, boca: 90, esp: "Boca 90 mm", sku: "GN-VASO-PET-U-02", img: "vaso-pet-vpu" },
         { paq: 50, caja: 1000, pPaq: 130.99, pCaja: 2479.72, boca: 90, esp: "Boca 90 mm", sku: "GN-VASO-PET-U-03", img: "vaso-pet-vpu" }
       ] } },
-    { id: "vaso-pp", nombre: "Vaso PP para bebida caliente", cat: "vasos-pet", mat: ["pp"], img: "tienda-42", uso: "Bebida caliente", personalizable: true,
+    { id: "vaso-pp", nombre: "Vaso PP para bebida caliente", cat: "vasos-pet", mat: ["pp"], img: "vaso-pp-92-estudio", uso: "Bebida caliente", fotoPropia: true, personalizable: true,
       desc: "Vaso de polipropileno de 16 oz para bebida caliente.",
       v: ["En U · 16 oz · boca 89 mm", "16 oz · boca 92 mm", "16 oz · boca 95 mm"],
       venta: { linea: "pp", tam: [
         { paq: 50, caja: 1000, pPaq: 105.6, pCaja: 1971.94, boca: 89, esp: "Boca 89 mm", sku: "GN-VASO-PP-01", img: "vaso-pp-u-estudio" },
-        { paq: 25, caja: 1000, pPaq: 40.02, pCaja: 1460.71, boca: 92, esp: "Boca 92 mm", sku: "GN-VASO-PP-02", img: "tienda-41" },
+        { paq: 25, caja: 1000, pPaq: 40.02, pCaja: 1460.71, boca: 92, esp: "Boca 92 mm", sku: "GN-VASO-PP-02", img: "vaso-pp-92-estudio" },
         { paq: 25, caja: 1000, pPaq: 44.94, pCaja: 1657.5, boca: 95, esp: "Boca 95 mm", sku: "GN-VASO-PP-03", img: "tienda-42" }
       ] } },
 
@@ -259,20 +259,20 @@ window.GREENOVA = (function () {
         { paq: 50, caja: 1000, pPaq: 65.1, pCaja: 1161.91, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-SORBE-02", img: "tapa-fria-plana-lisa" },
         { paq: 90, caja: 1080, pPaq: 90.71, pCaja: 937.33, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-SORBE-03", img: "tapa-fria-plana-lisa" }
       ] } },
-    { id: "tapa-pet-sorbe-tapon", nombre: "Tapa PET sorbe con tapón", cat: "tapas-pet", mat: ["pet"], img: "tienda-49", uso: "Tapa para vaso PET",
+    { id: "tapa-pet-sorbe-tapon", nombre: "Tapa PET sorbe con tapón", cat: "tapas-pet", mat: ["pet"], img: "tapa-pet-sorbe-tapon-estudio", uso: "Tapa para vaso PET", fotoPropia: true,
       desc: "Tapa de PET para beber sin popote, con tapón.",
       v: ["Boca 90 mm", "Boca 95 mm", "Boca 98 mm"],
       venta: { linea: "pet", tam: [
-        { paq: 50, caja: 1000, pPaq: 46.51, pCaja: 790.24, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-PET-SORBE-TAPON-01", img: "tienda-49" },
-        { paq: 50, caja: 1000, pPaq: 55.83, pCaja: 976.51, boca: 95, esp: "Boca 95 mm", sku: "GN-TAPA-PET-SORBE-TAPON-02", img: "tienda-49" },
-        { paq: 50, caja: 1000, pPaq: 62.77, pCaja: 1115.48, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-SORBE-TAPON-03", img: "tienda-50" }
+        { paq: 50, caja: 1000, pPaq: 46.51, pCaja: 790.24, boca: 90, esp: "Boca 90 mm", sku: "GN-TAPA-PET-SORBE-TAPON-01", img: "tapa-pet-sorbe-tapon-estudio" },
+        { paq: 50, caja: 1000, pPaq: 55.83, pCaja: 976.51, boca: 95, esp: "Boca 95 mm", sku: "GN-TAPA-PET-SORBE-TAPON-02", img: "tapa-pet-sorbe-tapon-estudio" },
+        { paq: 50, caja: 1000, pPaq: 62.77, pCaja: 1115.48, boca: 98, esp: "Boca 98 mm", sku: "GN-TAPA-PET-SORBE-TAPON-03", img: "tapa-pet-sorbe-tapon-98-estudio" }
       ] } },
 
     /* ---------------- popotes, portavasos, servilletas y papel ---------------- */
     { id: "popote-tapioca", nombre: "Popote de tapioca biodegradable", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca", uso: "Popote para bebida fría",
       desc: "Popote biodegradable de tapioca, de 21 cm. Se cotiza por caja.",
       v: ["21 cm · caja de 5 kg"] },
-    { id: "popote-tapioca-estuchado", nombre: "Popote de tapioca estuchado", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca-estuchado", uso: "Popote para bebida fría",
+    { id: "popote-tapioca-estuchado", nombre: "Popote de tapioca estuchado", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca-estuchado-estudio", uso: "Popote para bebida fría", fotoPropia: true,
       desc: "Popote biodegradable de tapioca, de 21 cm, en sobre individual.",
       v: ["21 cm · diámetro 11 mm"],
       venta: { linea: "tapioca", tam: [
@@ -285,16 +285,16 @@ window.GREENOVA = (function () {
       desc: "Charola portavasos para llevar 2 o 4 bebidas.",
       v: ["2 espacios", "4 espacios"],
       venta: { linea: "carton", tam: [
-        { paq: 100, caja: 600, pPaq: 221.62, pCaja: 1245.70, boca: null, esp: null, sku: "GN-PORTAVASO-CHAROLA-01", img: null },
+        { paq: 100, caja: 600, pPaq: 221.62, pCaja: 1245.70, boca: null, esp: null, sku: "GN-PORTAVASO-CHAROLA-01", img: "portavaso-charola-2-estudio" },
         { paq: 1, caja: 300, pPaq: 2.47, pCaja: 699.11, boca: null, esp: null, sku: "GN-PORTAVASO-CHAROLA-02", img: null }
       ] } },
     { id: "portavaso-asa", nombre: "Portavasos con asa", cat: "portavasos", mat: ["carton"], img: "portavaso-caja-kraft", uso: "Para llevar 2 o 4 bebidas", fotoPropia: true,
       desc: "Portavasos de cartón con asa, para llevar 2 o 4 bebidas. Se cotiza por caja.",
       v: ["2 espacios · caja de 250 pzs", "4 espacios · caja de 200 pzs"] },
-    { id: "servilleta-larga", nombre: "Servilleta larga", cat: "servilletas-papel", mat: ["papel"], img: "servilleta-larga", uso: "Servilleta para mesa o para llevar",
+    { id: "servilleta-larga", nombre: "Servilleta larga", cat: "servilletas-papel", mat: ["papel"], img: "servilleta-larga-estudio", uso: "Servilleta para mesa o para llevar", fotoPropia: true,
       desc: "Servilleta de papel de 39.0 x 37.5 cm. Se cotiza por caja.",
       v: ["39.0 x 37.5 cm · caja de 1,200 pzs"] },
-    { id: "papel-encerado", nombre: "Papel grado alimenticio encerado", cat: "servilletas-papel", mat: ["papel"], img: "papel-encerado-kraft", uso: "Para envolver alimentos",
+    { id: "papel-encerado", nombre: "Papel grado alimenticio encerado", cat: "servilletas-papel", mat: ["papel"], img: "papel-encerado-estudio", uso: "Para envolver alimentos", fotoPropia: true,
       desc: "Papel encerado grado alimenticio, para envolver alimentos. Se cotiza por caja.",
       v: ["Caja de 1,000 pzs"] },
     { id: "papel-rh", nombre: "Papel grado alimenticio RH", cat: "servilletas-papel", mat: ["papel"], img: "papel-rh", uso: "Para envolver alimentos",
@@ -391,7 +391,7 @@ window.GREENOVA = (function () {
       venta: { linea: "otro", tam: [
         { paq: 1, caja: 1000, pPaq: 1.77, pCaja: 1625, boca: null, esp: null, sku: "GN-CONO-CREPA-01", img: null }
       ] } },
-    { id: "popote-pla-estuchado", nombre: "Popote PLA estuchado", cat: "popotes", mat: ["pla"], img: "popote-tapioca-estuchado", uso: "Popote para bebida fría",
+    { id: "popote-pla-estuchado", nombre: "Popote PLA estuchado", cat: "popotes", mat: ["pla"], img: "popote-tapioca-estuchado-estudio", uso: "Popote para bebida fría", fotoPropia: true,
       desc: "Popote de PLA de 25 cm en sobre individual.",
       v: ["25 cm"],
       venta: { linea: "pla", tam: [
