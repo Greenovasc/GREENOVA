@@ -454,3 +454,10 @@ También se quitaron de las recomendaciones del asistente, de su texto sobre qu�
 - **Izquierda, en grande:** "Lo primero que prueba tu cliente es tu empaque."
 - **Derecha, con la línea verde:** el texto de Gabriel, con puntuación para que se lea bien: "Sí, la primera impresión es importante: desde el vaso y tu logo hasta el sabor. Una marca que sabe rico y tiene buen empaque se ve increíble y vende más."
 - `styles.css` pasó a `?v=20261005c`.
+
+## Ronda 33: mensaje que genere deseo (2026-10-05)
+
+- "Mucho texto; que sea un mensaje que genere deseo, buen marketing y que represente nuestros valores e intereses."
+- **Izquierda:** "Haz que tu cliente presuma tu vaso."
+- **Derecha:** "Compostable, certificado y con tu logo: se ve increíble, vende más y cuida el planeta." Son 14 palabras, antes eran 30.
+- La captura que mandó Gabriel era de la versión anterior; esa pestaña del navegador no se había recargado.
