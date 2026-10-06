@@ -469,3 +469,8 @@ También se quitaron de las recomendaciones del asistente, de su texto sobre qu�
 - **Derecha:** el texto de Gabriel con sus mismas palabras, solo con puntuación: "Sí, la primera impresión es importante: desde el vaso y tu logo hasta el sabor. Marca que sabe rico y tiene buen empaque se ve increíble y vende más."
 - El texto de la derecha es de Gabriel: no se cambia sin que lo pida.
 - `styles.css` pasó a `?v=20261005d`.
+
+## Ronda 35: facturación sin preguntas frecuentes (2026-10-05)
+
+- "Quita lo de preguntas frecuentes": se quitó la sección de `facturacion.html` con sus 4 preguntas. La página queda con el encabezado, los tres pasos y el pie.
+- Se borraron los estilos `.info-preguntas`, que ya no se usan. `styles.css` pasó a `?v=20261005e`.
