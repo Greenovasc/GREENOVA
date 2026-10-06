@@ -435,3 +435,9 @@ Se recorrieron las 9 páginas en escritorio (1440 y 1280) y en celular (375). Se
 - Sanitas
 
 También se quitaron de las recomendaciones del asistente, de su texto sobre qué hay en la tienda y del catálogo del RAG (`agente-rag/catalogo.json`). La categoría "Tapas para contenedor y soufflé" ya no sale porque quedó vacía.
+
+## Ronda 30: publicar en main (2026-10-05)
+
+- **Oferta irresistible:** Gabriel no la quiere por ahora; no se pone.
+- **Catálogo:** por ahora se usa el PDF del lead magnet. Gabriel manda el nuevo mañana, y para cambiarlo basta con reemplazar `assets/catalogo/catalogo-greenova-sc-2026.pdf` y su portada.
+- **"Publícalo en GitHub":** `main` solo tenía el commit `prueba.txt` (30b8ade), sin historia en común con esta rama. Se unió con `--allow-unrelated-histories` para no borrar nada, y `main` quedó con el sitio completo.
