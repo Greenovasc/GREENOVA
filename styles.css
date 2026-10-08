@@ -3487,30 +3487,33 @@ ol.steps { list-style: none; margin: 0; padding: 0; }
 /* Tienda sin el párrafo bajo el título (pág. 6): el buscador toma su aire. */
 .shop-head .shop-head__title + .shop-search { margin-top: 1.8rem; }
 
-/* El problema (pág. 3), en mediano (Gabriel: "demasiado grande, hazlo
-   mediano"): la pregunta, la frase que resalta, el lema y las dos tarjetas. */
-.franja--problema h2 { max-width: 24ch; font-size: clamp(1.6rem, 3vw, 2.4rem); }
+/* El problema (pág. 3), compacto (Gabriel: "letras grandes, pero que no
+   ocupe todo el campo de visión"): texto a la izquierda, las dos tarjetas a
+   la derecha, una sobre otra. */
+.franja--problema { padding-block: clamp(2rem, 4vw, 3rem); text-align: left; }
+.problema { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(1.4rem, 4vw, 3.5rem); align-items: center; }
+.franja--problema h2 { max-width: 16ch; margin: 0; font-size: clamp(1.9rem, 3.4vw, 2.75rem); line-height: 1.08; }
 .franja--problema .franja__meta {
-  max-width: 30ch; margin: .7rem auto 0;
-  font-family: var(--font-display); font-weight: 700; letter-spacing: -.02em; line-height: 1.15;
-  font-size: clamp(1.3rem, 2.3vw, 1.8rem); color: var(--heading); text-wrap: balance;
+  margin: .7rem 0 0; font-family: var(--font-display); font-weight: 700; letter-spacing: -.02em; line-height: 1.2;
+  font-size: clamp(1.25rem, 2vw, 1.6rem); color: var(--heading);
 }
 .franja__meta span { color: var(--sage); }
 .franja--problema .franja__lema {
-  display: inline-block; margin: 1rem auto 0; padding: .45rem 1rem; border-radius: 999px;
+  display: inline-block; margin: 1rem 0 1.3rem; padding: .45rem 1rem; border-radius: 999px;
   background: var(--forest); color: var(--brand-ink); font-weight: 600; font-size: .95rem;
 }
-.franja--problema .dudas__grid { max-width: 880px; margin: clamp(1.4rem, 3vw, 2rem) auto clamp(1.4rem, 3vw, 1.8rem); text-align: left; }
+.franja--problema .franja__lema + .btn { display: flex; width: fit-content; }
+.problema__tarjetas { display: grid; gap: 12px; }
 .franja--problema .dudas__item {
-  margin: 0; padding: clamp(1.1rem, 2.2vw, 1.5rem); border-color: transparent; border-radius: 16px; box-shadow: var(--shadow-sm);
-  color: var(--ink); font-size: clamp(.95rem, 1.2vw, 1.05rem); line-height: 1.55;
+  margin: 0; padding: clamp(1rem, 2vw, 1.35rem) clamp(1.1rem, 2.2vw, 1.5rem); border-color: transparent; border-radius: 16px; box-shadow: var(--shadow-sm);
+  color: var(--ink); font-size: clamp(.95rem, 1.2vw, 1.03rem); line-height: 1.55;
 }
-.franja--problema .dudas__item--reto {
-  display: flex; align-items: center;
-  font-family: var(--font-display); font-weight: 700; line-height: 1.25;
-  font-size: clamp(1.1rem, 1.7vw, 1.3rem); color: var(--heading);
-}
+.franja--problema .dudas__item--reto { font-family: var(--font-display); font-weight: 700; line-height: 1.25; font-size: clamp(1.1rem, 1.6vw, 1.25rem); color: var(--heading); }
 .franja--problema .dudas__item--ya { background: var(--forest); color: var(--brand-ink); font-weight: 500; }
+@media (max-width: 860px) {
+  .problema { grid-template-columns: 1fr; }
+  .franja--problema h2 { max-width: 20ch; }
+}
 
 /* Preguntas frecuentes (pág. 8). */
 .faq__grid { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: clamp(1.2rem, 4vw, 3.5rem); align-items: start; }

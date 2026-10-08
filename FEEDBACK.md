@@ -550,3 +550,14 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
   - El botón "Cotizar" de la cabecera, porque Gabriel pidió quitarlo después del PowerPoint.
   - Los testimonios, porque no hay reales.
 - `styles.css` pasó a `?v=20261007c`.
+
+## Ronda 39: unicel compacto y fotos de bagazo, paja de trigo y fécula (2026-10-07)
+
+- "Que lo hagas más compacto: las letras, que se vean grandes, pero que no ocupe todo el campo de visión de la página."
+  - La franja va en dos columnas:
+    - Izquierda: la pregunta (máximo 2.75rem), "Cada comida cuenta y tu envase también.", el lema y "Ir a la tienda".
+    - Derecha: las dos tarjetas, una sobre otra.
+  - A 1280 px la sección pasó de unos 850 px de alto a 360. En celular va en una columna.
+- Gabriel confirmó: bagazo de caña, paja de trigo y fécula de maíz son contenedores, charolas y bowls para comida.
+- Las fotos para Gemini están en `~/Desktop/Fotos Greenova para Gemini/PARA GEMINI - bagazo, paja de trigo y fecula/`. Van la referencia de ambiente y las tres fotos de producto; faltan sus fotos con comida para el cursor.
+- `styles.css` pasó a `?v=20261007d`.
