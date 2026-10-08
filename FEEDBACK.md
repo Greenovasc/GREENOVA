@@ -568,3 +568,15 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
 - Gabriel preguntó en qué parte de los comentarios se pedía "Así de fácil compras". **En ninguna lo pedía explícitamente.**
   - La lámina 7 solo dice "Hay que darle estructura-orden a la página". La lámina 8 es una captura de Gemini con la estructura de una página de inicio; su punto 6 es "Proceso de trabajo (Cómo funciona): pasos sencillos en 3 o 4 fases".
   - Los 4 pasos y las preguntas frecuentes (su punto 7) fueron interpretación mía de esa captura.
+
+## Ronda 41: sin interpretaciones, foto de bagazo con hamburguesa (2026-10-07)
+
+- Gabriel: "No quiero que interpretes nada que no estaba en el archivo comentarios."
+  - Se quitó "Así de fácil compras": no venía escrito, salió de la captura de Gemini de la lámina 8.
+  - Se borraron sus estilos nuevos (`ol.steps` y la regla de 2 columnas en celular).
+- **Bagazo de caña, foto al pasar el cursor:**
+  - Es la hamburguesa con papas en el contenedor con bisagra que mandó Gabriel (original de 2048 px en Descargas, `Gemini_Generated_Image_8eyz…`).
+  - Pidió "ocultar un poco el helado del fondo". La vitrina se desenfocó fuerte, con 35 % del color y un poco más de luz; la máscara de Vision protege la caja y la comida. Además se recortó por la izquierda.
+  - Quedó en `assets/landing/cafe-bagazo.webp` (900 px).
+- **Por qué salió en una heladería:** la referencia de ambiente que le di era la foto de la vitrina de helados (`cafe-contenedores`). Se cambió en la carpeta del escritorio por `cafe-bowls`, que no tiene helados. Los prompts de paja de trigo y fécula ahora dicen qué lugar va con cada comida.
+- `styles.css` pasó a `?v=20261007f`.
