@@ -561,3 +561,10 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
 - Gabriel confirmó: bagazo de caña, paja de trigo y fécula de maíz son contenedores, charolas y bowls para comida.
 - Las fotos para Gemini están en `~/Desktop/Fotos Greenova para Gemini/PARA GEMINI - bagazo, paja de trigo y fecula/`. Van la referencia de ambiente y las tres fotos de producto; faltan sus fotos con comida para el cursor.
 - `styles.css` pasó a `?v=20261007d`.
+
+## Ronda 40: sin preguntas frecuentes (2026-10-07)
+
+- "Quita lo de preguntas frecuentes": se quitó la sección de la portada con sus estilos `.faq*`. `styles.css` pasó a `?v=20261007e`.
+- Gabriel preguntó en qué parte de los comentarios se pedía "Así de fácil compras". **En ninguna lo pedía explícitamente.**
+  - La lámina 7 solo dice "Hay que darle estructura-orden a la página". La lámina 8 es una captura de Gemini con la estructura de una página de inicio; su punto 6 es "Proceso de trabajo (Cómo funciona): pasos sencillos en 3 o 4 fases".
+  - Los 4 pasos y las preguntas frecuentes (su punto 7) fueron interpretación mía de esa captura.

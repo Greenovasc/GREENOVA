@@ -3515,20 +3515,3 @@ ol.steps { list-style: none; margin: 0; padding: 0; }
   .franja--problema h2 { max-width: 20ch; }
 }
 
-/* Preguntas frecuentes (pág. 8). */
-.faq__grid { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: clamp(1.2rem, 4vw, 3.5rem); align-items: start; }
-.faq__intro p { margin: .35rem 0 0; color: var(--ink-2); line-height: 1.55; }
-.faq__lista { display: grid; gap: 10px; }
-.faq__item { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
-.faq__item summary {
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  padding: 1rem 1.2rem; cursor: pointer; list-style: none;
-  font-weight: 600; color: var(--heading);
-}
-.faq__item summary::-webkit-details-marker { display: none; }
-.faq__item summary::after { content: "+"; flex: none; font-size: 1.3rem; line-height: 1; color: var(--sage); transition: rotate .2s var(--ease); }
-.faq__item[open] summary::after { rotate: 45deg; }
-.faq__item p { margin: 0; padding: 0 1.2rem 1.1rem; color: var(--ink-2); line-height: 1.6; }
-.faq__item a { color: var(--forest); text-decoration: underline; text-underline-offset: 3px; }
-@media (max-width: 760px) { .faq__grid { grid-template-columns: 1fr; } }
-.faq { padding-top: clamp(.5rem, 1.5vw, 1rem); }
