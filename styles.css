@@ -3509,11 +3509,3 @@ section[id] { scroll-margin-top: var(--nav-h); }
   .franja--problema h2 { max-width: 20ch; }
 }
 
-
-/* Catálogo nuevo (2026-10-07): la portada es horizontal (16:9). */
-.catalogo__caja { grid-template-columns: minmax(0, 300px) minmax(0, 1fr) minmax(0, 380px); }
-@media (max-width: 1100px) { .catalogo__caja { grid-template-columns: minmax(0, 260px) minmax(0, 1fr); } }
-@media (max-width: 640px) {
-  .catalogo__caja { grid-template-columns: 1fr; }
-  .catalogo__portada { width: 100%; max-width: 340px; }
-}

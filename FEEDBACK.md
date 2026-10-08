@@ -594,3 +594,12 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
   - Son las originales de 2048 px de Descargas, a 900 px.
 - Las referencias que faltan quedaron juntas en `~/Desktop/Fotos Greenova para Gemini/PARA GEMINI - las que faltan (07.10)/`.
 - `styles.css` pasó a `?v=20261007g`.
+
+## Ronda 43: la imagen de portada del catálogo, la de antes (2026-10-07)
+
+- Gabriel: "Esa imagen estaba muy bien, no hace falta quitarla. No le pongas la de ahorita, no se ve tan estética como la otra."
+  - Regresó `portada-catalogo-2026b.webp`: la portada vertical de "Catálogo y precios 2026", derecha (lám. 1: "está chueca"), con la pila de hojas.
+  - El título, el botón y el collage se quedan como están.
+  - Se borró `portada-catalogo-2026c.webp` y los estilos de la portada horizontal.
+- El PDF que se descarga sigue siendo el nuevo, de 33 páginas.
+- `styles.css` pasó a `?v=20261007h`.
