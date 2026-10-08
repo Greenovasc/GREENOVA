@@ -89,7 +89,7 @@ window.GREENOVA = (function () {
         { paq: 25, caja: 500, pPaq: 68.53, pCaja: 1300.55, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-03", img: "vaso-papel-doble-pared-blanco-estudio" },
         { paq: 50, caja: 1000, pPaq: 82.89, pCaja: 1517.78, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-04", img: "vaso-papel-doble-pared-negro-estudio" },
         { paq: 28, caja: 560, pPaq: 83.46, pCaja: 1590.72, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-05", img: "vaso-papel-doble-pared-negro-estudio" },
-        { paq: 25, caja: 500, pPaq: 57.39, pCaja: 1077.87, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-06", img: "vaso-papel-doble-pared-generico" }
+        { paq: 25, caja: 500, pPaq: 57.39, pCaja: 1077.87, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-06", img: "vaso-papel-doble-pared-generico-estudio" }
       ] } },
     { id: "vaso-papel-color-44", nombre: "Vaso de papel de color 44 oz", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-44-rojo", uso: "Bebida fría o caliente", fotoPropia: true, personalizable: true,
       desc: "Vaso de papel de 44 oz en rojo, azul o gris, con recubrimiento interior de polietileno.",
@@ -210,7 +210,7 @@ window.GREENOVA = (function () {
       venta: { linea: "pp", tam: [
         { paq: 50, caja: 1000, pPaq: 105.6, pCaja: 1971.94, boca: 89, esp: "Boca 89 mm", sku: "GN-VASO-PP-01", img: "vaso-pp-u-estudio" },
         { paq: 25, caja: 1000, pPaq: 40.02, pCaja: 1460.71, boca: 92, esp: "Boca 92 mm", sku: "GN-VASO-PP-02", img: "vaso-pp-92-estudio" },
-        { paq: 25, caja: 1000, pPaq: 44.94, pCaja: 1657.5, boca: 95, esp: "Boca 95 mm", sku: "GN-VASO-PP-03", img: "tienda-42" }
+        { paq: 25, caja: 1000, pPaq: 44.94, pCaja: 1657.5, boca: 95, esp: "Boca 95 mm", sku: "GN-VASO-PP-03", img: "vaso-pp-95-estudio" }
       ] } },
 
     /* ---------------- tapas para vaso pet ---------------- */
@@ -269,7 +269,7 @@ window.GREENOVA = (function () {
       ] } },
 
     /* ---------------- popotes, portavasos, servilletas y papel ---------------- */
-    { id: "popote-tapioca", nombre: "Popote de tapioca biodegradable", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca", fotoPropia: true, uso: "Popote para bebida fría",
+    { id: "popote-tapioca", nombre: "Popote de tapioca biodegradable", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca-estudio", fotoPropia: true, uso: "Popote para bebida fría",
       desc: "Popote biodegradable de tapioca, de 21 cm. Se cotiza por caja.",
       v: ["21 cm · caja de 5 kg"] },
     { id: "popote-tapioca-estuchado", nombre: "Popote de tapioca estuchado", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca-estuchado-estudio", uso: "Popote para bebida fría", fotoPropia: true,
@@ -294,7 +294,7 @@ window.GREENOVA = (function () {
     { id: "papel-encerado", nombre: "Papel grado alimenticio encerado", cat: "servilletas-papel", mat: ["papel"], img: "papel-encerado-estudio", uso: "Para envolver alimentos", fotoPropia: true,
       desc: "Papel encerado grado alimenticio, para envolver alimentos. Se cotiza por caja.",
       v: ["Caja de 1,000 pzs"] },
-    { id: "papel-rh", nombre: "Papel grado alimenticio RH", cat: "servilletas-papel", mat: ["papel"], img: "papel-rh", fotoPropia: true, uso: "Para envolver alimentos",
+    { id: "papel-rh", nombre: "Papel grado alimenticio RH", cat: "servilletas-papel", mat: ["papel"], img: "papel-rh-estudio", fotoPropia: true, uso: "Para envolver alimentos",
       desc: "Papel grado alimenticio RH, para envolver alimentos. Se cotiza por caja.",
       v: ["Caja de 1,000 pzs"] },
 

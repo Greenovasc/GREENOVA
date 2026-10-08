@@ -603,3 +603,24 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
   - Se borró `portada-catalogo-2026c.webp` y los estilos de la portada horizontal.
 - El PDF que se descarga sigue siendo el nuevo, de 33 páginas.
 - `styles.css` pasó a `?v=20261007h`.
+
+## Ronda 44: seis fotos de Gemini instaladas (2026-10-07)
+
+- **Al pasar el cursor** (fotos de 2048 px de Descargas, a 900 px):
+
+  | Tarjeta | Foto | Archivo |
+  |---|---|---|
+  | Bolsas | bolsa con galletas y baguette en panadería | `assets/landing/cafe-bolsas-pan.webp` |
+  | Papel encerado y RH | torta en encerado y hamburguesa en RH, en tortería | `cafe-papel-torta.webp` |
+
+- **Estudio:** las 4 que faltaban (42, 52, 56 y 65). Se midieron con Vision y ya traían el tamaño de producto parejo, así que no se recortaron.
+
+  | Foto | Producto | Archivo nuevo | Reemplaza a |
+  |---|---|---|---|
+  | 42 | vaso PP boca 95 | `vaso-pp-95-estudio` | `tienda-42` |
+  | 52 | popote de tapioca | `popote-tapioca-estudio` | |
+  | 56 | papel RH | `papel-rh-estudio` | la foto de fondo beige |
+  | 65 | vaso de doble pared genérico | `vaso-papel-doble-pared-generico-estudio` | |
+
+- Gabriel preguntó por qué cambiar las fotos de Servicios: lo pide la lám. 4 de los comentarios, puntos 1, 2 y 3. Se le citó el texto; él decide.
+- `productos.js` pasó a `?v=20261007b`.
