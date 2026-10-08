@@ -534,3 +534,19 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
 - "Quita lo de cotizar en la parte de arriba": se quitó el botón de la cabecera y el enlace del menú del celular en las 8 páginas, con sus estilos.
 - Papel grado alimenticio RH y Popote de tapioca se veían chicos dentro del cuadro de la ficha. Ahora llevan `fotoPropia: true` y van de orilla a orilla. Ya no queda ningún producto sin `fotoPropia`. En la tienda todas las fotos llenan su tarjeta igual.
 - `styles.css` pasó a `?v=20261007b` y `productos.js` a `?v=20261007a`.
+
+## Ronda 38: el PowerPoint completo, en mediano (2026-10-07)
+
+- "Algunas cosas están bien, solo que lo hiciste demasiado grande; hazlo como el archivo comentarios te dice, pero mediano, y a todo lo del archivo hazle caso."
+- **El problema (lám. 3) regresa, en mediano:**
+  - Va justo después de la portada, como pide la estructura (lám. 8).
+  - "¿Aún utilizas unicel para tus alimentos?" ahora mide 2.4rem como máximo (antes, 3.2rem).
+  - "Cada comida cuenta y tu envase también." va en negritas de 1.8rem como máximo; con el primer cambio llegaba a 4.6rem.
+  - Abajo van la pastilla "El sabor atrae, el empaque convence.", las dos tarjetas (máximo 880 px de ancho) y "Ir a la tienda".
+  - Clase `.franja--problema`.
+- **Bagazo de caña, paja de trigo y fécula de maíz (lám. 2):** ya están las 10 tarjetas, cinco por fila. Las tres nuevas usan fotos de estudio del mismo fondo que ya existían (`almeja-bagazo`, `charola-paja-trigo`, `souffle-fecula`). No están en la tienda, así que dicen "Pedir cotización" y llevan al formulario. Su foto con comida falta (Gemini).
+- **Preguntas frecuentes (lám. 8):** cinco preguntas antes de la cotización, solo con lo que ya dice el sitio: envíos, pedido mínimo, pago, factura y logo.
+- **Se queda fuera:**
+  - El botón "Cotizar" de la cabecera, porque Gabriel pidió quitarlo después del PowerPoint.
+  - Los testimonios, porque no hay reales.
+- `styles.css` pasó a `?v=20261007c`.

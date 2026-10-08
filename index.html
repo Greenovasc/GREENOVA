@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
 <link rel="preload" as="image" href="assets/prod/vaso-papel-par-cutout.webp?v=20260928b">
-<link rel="stylesheet" href="styles.css?v=20261007b">
+<link rel="stylesheet" href="styles.css?v=20261007c">
 <script>document.documentElement.classList.add("js");</script>
 
 <script type="application/ld+json">
@@ -144,15 +144,36 @@
     </div>
   </section>
 
+  <!-- ============ El problema: ¿Aún utilizas unicel? ============
+       Comentarios del 2026-10-07 (pág. 3): resalta "Cada comida cuenta y tu
+       envase también", con "El sabor atrae, el empaque convence."; abajo, las
+       dos tarjetas y el botón a la tienda. Gabriel: "lo hiciste demasiado
+       grande, hazlo mediano". Es el segundo bloque, como pide la estructura
+       de inicio (pág. 8). -->
+  <section class="franja franja--problema" id="problema" aria-labelledby="problema-h">
+    <div class="wrap rv">
+      <h2 id="problema-h">¿Aún utilizas unicel para tus alimentos?</h2>
+      <p class="franja__meta">Cada comida cuenta y <span>tu envase también.</span></p>
+      <p class="franja__lema">El sabor atrae, el empaque convence.</p>
+      <div class="dudas__grid">
+        <p class="dudas__item dudas__item--reto">Tu competencia ya está cambiando su empaque. ¿Y tú?</p>
+        <p class="dudas__item dudas__item--ya">En CDMX el unicel ya está prohibido. Los negocios que cambian primero ganan a los clientes que buscan algo mejor; los que esperan, se quedan atrás.</p>
+      </div>
+      <a class="btn btn--primary" href="tienda.html">
+        Ir a la tienda
+        <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg>
+      </a>
+    </div>
+  </section>
+
   <!-- ============ Nuestros productos ============
        Comentarios del 2026-10-07 (pág. 2): foto del producto y, al pasar el
        cursor, el producto con la bebida o el alimento. Van en el orden de los
-       comentarios. Faltan de Gemini: Bebidas (café con vapor, por ahora la
-       del capuchino con tapa), Bolsas (con galletas o baguette), Papel
-       encerado y RH (torta en encerado y hamburguesa en RH; por ahora el
-       croissant), y las tarjetas de bagazo de caña, paja de trigo y fécula de
-       maíz, que no van hasta tener sus fotos y sus productos. Las fotos de
-       estudio son todas del mismo fondo. -->
+       comentarios, cinco por fila. Faltan de Gemini las fotos con comida de
+       Bolsas (galletas o baguette), Papel encerado y RH (torta en encerado y
+       hamburguesa en RH; por ahora el croissant) y las de bagazo de caña, paja
+       de trigo y fécula de maíz. Esas tres no están en la tienda: llevan a
+       la cotización. Las fotos de estudio son todas del mismo fondo. -->
   <section class="bloque bloque--cats" id="productos" aria-labelledby="cats-h">
     <div class="wrap">
       <div class="bloque__intro rv">
@@ -195,31 +216,22 @@
           <span class="cat__foto"><img src="assets/prod/papel-encerado-estudio.webp?v=20261005a" alt="Papel grado alimenticio encerado." loading="lazy" decoding="async" width="900" height="900"><img class="cat__amb" src="assets/uso/papel-encerado-croissant.webp?v=20261007a" alt="" loading="lazy" decoding="async" width="900" height="900"></span>
           <span class="cat__txt"><small>Para envolver tortas, sándwiches y hamburguesas</small><b>Comprar en línea</b></span>
         </a>
+        <a class="cat rv" data-d="7" role="listitem" href="#cotizar">
+          <span class="cat__barra">Bagazo de caña <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg></span>
+          <span class="cat__foto"><img src="assets/prod/almeja-bagazo.webp?v=20261007a" alt="Contenedor con bisagra de bagazo de caña." loading="lazy" decoding="async" width="900" height="900"></span>
+          <span class="cat__txt"><small>Contenedores con bisagra</small><b>Pedir cotización</b></span>
+        </a>
+        <a class="cat rv" data-d="8" role="listitem" href="#cotizar">
+          <span class="cat__barra">Paja de trigo <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg></span>
+          <span class="cat__foto"><img src="assets/prod/charola-paja-trigo.webp?v=20261007a" alt="Charola de paja de trigo." loading="lazy" decoding="async" width="900" height="900"></span>
+          <span class="cat__txt"><small>Charolas para comida</small><b>Pedir cotización</b></span>
+        </a>
+        <a class="cat rv" data-d="9" role="listitem" href="#cotizar">
+          <span class="cat__barra">Fécula de maíz <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg></span>
+          <span class="cat__foto"><img src="assets/prod/souffle-fecula.webp?v=20261007a" alt="Bowl de fécula de maíz." loading="lazy" decoding="async" width="900" height="900"></span>
+          <span class="cat__txt"><small>Bowls para comida</small><b>Pedir cotización</b></span>
+        </a>
       </div>
-    </div>
-  </section>
-
-  <!-- ============ Dudas y oportunidad ============
-       Copy de Gabriel (2026-10-05). Va justo antes de "¿Aún utilizas unicel?",
-       que remata la idea. -->
-  <section class="bloque dudas" aria-label="Lo que te frena y lo que estás perdiendo">
-    <div class="wrap dudas__grid">
-      <p class="dudas__item rv">Si ya probaste un vaso “eco” que se desbarataba antes de que el cliente saliera por la puerta, entiendo la desconfianza — pero ese no era el material, era el proveedor barato.</p>
-      <p class="dudas__item dudas__item--ya rv" data-d="1">Mientras tú sigues dudando, CDMX ya prohibió el unicel y tu competencia ya se está cambiando. El que se adelanta se queda con esos clientes. El que reacciona tarde, no.</p>
-    </div>
-  </section>
-
-  <!-- ============ ¿Aún utilizas unicel? ============
-       La frase del Feedback (pág. 3) en una franja, como "Conoce nuestro
-       catálogo" de WeCare. -->
-  <section class="franja" id="problema" aria-labelledby="problema-h">
-    <div class="wrap rv">
-      <h2 id="problema-h">¿Aún utilizas unicel para tus alimentos?</h2>
-      <p>Cada comida cuenta, tu envase también.</p>
-      <a class="btn btn--primary" href="tienda.html">
-        Ir a la tienda
-        <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg>
-      </a>
     </div>
   </section>
 
@@ -373,6 +385,41 @@
         <li class="step rv" data-d="2"><span class="step__n">3</span><h3>Paga seguro</h3><p>Con tarjeta o transferencia SPEI, y eliges tu paquetería.</p></li>
         <li class="step rv" data-d="3"><span class="step__n">4</span><h3>Recíbelo</h3><p>Te llega a tu negocio, a cualquier parte de México.</p></li>
       </ol>
+    </div>
+  </section>
+
+  <!-- ============ Preguntas frecuentes ============
+       Las "preguntas frecuentes" de la estructura de inicio (comentarios del
+       2026-10-07, pág. 8). Solo lo que ya dice el sitio: envíos, pedido
+       mínimo, pago, factura y logo. -->
+  <section class="bloque faq" id="preguntas" aria-labelledby="faq-h">
+    <div class="wrap faq__grid">
+      <div class="faq__intro rv">
+        <h2 id="faq-h">Preguntas frecuentes</h2>
+        <p>Lo que más nos preguntan antes de comprar.</p>
+      </div>
+      <div class="faq__lista rv" data-d="1">
+        <details class="faq__item">
+          <summary>¿Hacen envíos a todo México?</summary>
+          <p>Sí. Los pedidos salen de la Ciudad de México y, al pagar, eliges la paquetería que más te convenga.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Cuál es el pedido mínimo?</summary>
+          <p>Desde un paquete en los productos que tienen precio en la tienda. Los demás se cotizan.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Cómo puedo pagar?</summary>
+          <p>Con tarjeta o transferencia SPEI. El pago es seguro, con Openpay.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Me dan factura?</summary>
+          <p>Sí. Con el número de ticket de tu recibo la sacas en el portal; los pasos están en <a href="facturacion.html">Facturación</a>.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Pueden imprimir mi logo?</summary>
+          <p>Sí, con serigrafía en vasos, contenedores y bolsas. <a href="#cotizar">Cotízalo aquí</a>.</p>
+        </details>
+      </div>
     </div>
   </section>
 

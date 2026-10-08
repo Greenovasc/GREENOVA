@@ -3436,10 +3436,10 @@ section[id] { scroll-margin-top: var(--nav-h); }
 /* ==========================================================================
    2026-10-07: comentarios ("Comentarios 07.10.2026.pptx")
    ========================================================================== */
-/* Nuestros productos (pág. 2): ya no son 5. Cuatro por fila y la última
-   centrada; con bagazo, paja de trigo y fécula serán diez (cinco por fila). */
+/* Nuestros productos (pág. 2): diez líneas, cinco por fila; en tableta, tres
+   por fila con la última centrada. */
 .cats--filas { display: flex; flex-wrap: wrap; justify-content: center; }
-.cats--filas > .cat { flex: 0 0 calc((100% - 3 * 14px) / 4); }
+.cats--filas > .cat { flex: 0 0 calc((100% - 4 * 14px) / 5); }
 @media (max-width: 1100px) { .cats--filas > .cat { flex-basis: calc((100% - 2 * 14px) / 3); } }
 @media (max-width: 640px) {
   .cats--filas { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 4px; }
@@ -3486,3 +3486,46 @@ ol.steps { list-style: none; margin: 0; padding: 0; }
 }
 /* Tienda sin el párrafo bajo el título (pág. 6): el buscador toma su aire. */
 .shop-head .shop-head__title + .shop-search { margin-top: 1.8rem; }
+
+/* El problema (pág. 3), en mediano (Gabriel: "demasiado grande, hazlo
+   mediano"): la pregunta, la frase que resalta, el lema y las dos tarjetas. */
+.franja--problema h2 { max-width: 24ch; font-size: clamp(1.6rem, 3vw, 2.4rem); }
+.franja--problema .franja__meta {
+  max-width: 30ch; margin: .7rem auto 0;
+  font-family: var(--font-display); font-weight: 700; letter-spacing: -.02em; line-height: 1.15;
+  font-size: clamp(1.3rem, 2.3vw, 1.8rem); color: var(--heading); text-wrap: balance;
+}
+.franja__meta span { color: var(--sage); }
+.franja--problema .franja__lema {
+  display: inline-block; margin: 1rem auto 0; padding: .45rem 1rem; border-radius: 999px;
+  background: var(--forest); color: var(--brand-ink); font-weight: 600; font-size: .95rem;
+}
+.franja--problema .dudas__grid { max-width: 880px; margin: clamp(1.4rem, 3vw, 2rem) auto clamp(1.4rem, 3vw, 1.8rem); text-align: left; }
+.franja--problema .dudas__item {
+  margin: 0; padding: clamp(1.1rem, 2.2vw, 1.5rem); border-color: transparent; border-radius: 16px; box-shadow: var(--shadow-sm);
+  color: var(--ink); font-size: clamp(.95rem, 1.2vw, 1.05rem); line-height: 1.55;
+}
+.franja--problema .dudas__item--reto {
+  display: flex; align-items: center;
+  font-family: var(--font-display); font-weight: 700; line-height: 1.25;
+  font-size: clamp(1.1rem, 1.7vw, 1.3rem); color: var(--heading);
+}
+.franja--problema .dudas__item--ya { background: var(--forest); color: var(--brand-ink); font-weight: 500; }
+
+/* Preguntas frecuentes (pág. 8). */
+.faq__grid { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: clamp(1.2rem, 4vw, 3.5rem); align-items: start; }
+.faq__intro p { margin: .35rem 0 0; color: var(--ink-2); line-height: 1.55; }
+.faq__lista { display: grid; gap: 10px; }
+.faq__item { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.faq__item summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 1rem 1.2rem; cursor: pointer; list-style: none;
+  font-weight: 600; color: var(--heading);
+}
+.faq__item summary::-webkit-details-marker { display: none; }
+.faq__item summary::after { content: "+"; flex: none; font-size: 1.3rem; line-height: 1; color: var(--sage); transition: rotate .2s var(--ease); }
+.faq__item[open] summary::after { rotate: 45deg; }
+.faq__item p { margin: 0; padding: 0 1.2rem 1.1rem; color: var(--ink-2); line-height: 1.6; }
+.faq__item a { color: var(--forest); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 760px) { .faq__grid { grid-template-columns: 1fr; } }
+.faq { padding-top: clamp(.5rem, 1.5vw, 1rem); }
