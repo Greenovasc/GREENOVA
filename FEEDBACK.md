@@ -474,3 +474,52 @@ También se quitaron de las recomendaciones del asistente, de su texto sobre qu�
 
 - "Quita lo de preguntas frecuentes": se quitó la sección de `facturacion.html` con sus 4 preguntas. La página queda con el encabezado, los tres pasos y el pie.
 - Se borraron los estilos `.info-preguntas`, que ya no se usan. `styles.css` pasó a `?v=20261005e`.
+
+## Ronda 36: "Comentarios 07.10.2026.pptx" (2026-10-07)
+
+Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
+
+- **Lám. 1, portada:** el subtítulo ahora es "Haz que tu comida se vea tan bien como sabe."
+- **Lám. 1, el porqué:**
+  - Frase: "No vendas sólo comida, vende una experiencia desde el empaque."
+  - Derecha: "Dale a tu comida la presentación que merece. Sirve mejor, presenta mejor, vende más."
+- **Lám. 1, catálogo:**
+  - La portada va derecha, como pila de hojas, renderizada del PDF a 520 px (`portada-catalogo-2026b.webp`).
+  - El título es "Descarga el catálogo completo aquí" y se quitó la frase "Ahí está TODO…".
+  - A la derecha va un collage de 6 fotos de estudio del mismo fondo (`assets/catalogo/collage-productos.webp`).
+- **Lám. 2, Nuestros productos:** foto de estudio y, al pasar el cursor, con bebida o comida. Ahora son 7 tarjetas en el orden de la lámina, cuatro por fila con la última centrada:
+
+  | Tarjeta | Foto al pasar el cursor |
+  |---|---|
+  | Bebidas | café con vapor (capuchino con tapa negra) |
+  | Vasos PET (nueva) | frappé |
+  | Contenedores | helado (se queda) |
+  | Bowls | ensalada (se queda) |
+  | Bolsas | la de antes (falta Gemini) |
+  | Complementos | portavasos con cafés y fajillas |
+  | Papel encerado y RH (nueva) | croissant, provisional (falta Gemini) |
+
+  Bagazo de caña, paja de trigo y fécula de maíz no tienen productos en el catálogo ni fotos. Sus tarjetas no van hasta tener las dos cosas.
+- **Lám. 3, el problema:**
+  - La franja del unicel es el segundo bloque.
+  - "Cada comida cuenta y tu envase también." va en grande, con "El sabor atrae, el empaque convence." en una pastilla.
+  - Las dos tarjetas pasaron a la franja:
+    - "Tu competencia ya está cambiando su empaque. ¿Y tú?"
+    - "En CDMX el unicel ya está prohibido. Los negocios que cambian primero ganan a los clientes que buscan algo mejor; los que esperan, se quedan atrás." Es el mensaje de CDMX con otras palabras.
+- **Lám. 4, Servicios:** se quitó la frase "Tu marca en tu empaque…". Las tres fotos nuevas van con Gemini:
+  - vasos serigrafiados de colores con TU LOGO;
+  - empaque para hamburguesa, papas, alitas y hot dogs;
+  - bolsas bond de colores con TU LOGO.
+- **Lám. 5, redes:**
+  - "Síguenos en redes" con tres botones: Facebook, Instagram y TikTok.
+  - En el pie de las 8 páginas van los tres íconos (Phosphor).
+  - Las ligas de Facebook y TikTok usan el mismo usuario que Instagram (`greenovasc`); están por confirmar.
+- **Lám. 5, SEO:** los títulos del mega menú ya no son `<h3>` (iban antes del `<h1>`); ahora son `<p class="mega__t">`. Cada página tiene un solo `<h1>` y los `<h2>`/`<h3>` en orden. A cualquier producto se llega en 2 o 3 clics.
+- **Lám. 6, tienda:** se quitó "Todo el catálogo en una pantalla…".
+- **Láms. 7 a 9, estructura:**
+  - Cabecera: botón "Cotizar" destacado; en el celular va dentro del menú.
+  - Pie: columna "Menú" con el menú principal, más las tres redes.
+  - Orden de la portada: portada → problema (unicel) → productos → catálogo → beneficios (el porqué) → servicios → redes → "Así de fácil compras" (4 pasos, nuevo) → cotización.
+  - Sin testimonios: no hay reales.
+  - La ficha de producto ya sigue la estructura. "Ideal para" no se volvió a poner, porque Gabriel lo quitó el 2026-10-03.
+- `styles.css` pasó a `?v=20261007a`.

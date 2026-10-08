@@ -1468,7 +1468,7 @@ body[data-locked="true"] { overflow: hidden; }
 .mega__inner { padding-block: 26px 20px; }
 .mega__cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px 36px; max-width: 1240px; }
 
-.mega__col h3 {
+.mega__col .mega__t {
   font-family: var(--font-body);
   font-size: .9375rem; font-weight: 700; color: var(--green);
   margin: 0 0 .8rem;
@@ -1560,12 +1560,12 @@ body[data-locked="true"] { overflow: hidden; }
    El JS ya fuerza un reflujo al abrir, así que la animación se repite en cada
    apertura sin tener que reiniciarla a mano. */
 @media (prefers-reduced-motion: no-preference) {
-  .mega[data-open="true"] .mega__col h3,
+  .mega[data-open="true"] .mega__col .mega__t,
   .mega[data-open="true"] .mega__col li,
   .mega[data-open="true"] .mega__foot > * {
     animation: mega-item .34s var(--ease) backwards;
   }
-  .mega[data-open="true"] .mega__col h3            { animation-delay: .04s; }
+  .mega[data-open="true"] .mega__col .mega__t            { animation-delay: .04s; }
   .mega[data-open="true"] .mega__col li:nth-child(1) { animation-delay: .10s; }
   .mega[data-open="true"] .mega__col li:nth-child(2) { animation-delay: .16s; }
   .mega[data-open="true"] .mega__col li:nth-child(3) { animation-delay: .22s; }
@@ -3432,3 +3432,96 @@ section[id] { scroll-margin-top: var(--nav-h); }
 }
 .dudas__item--ya { border-color: transparent; background: var(--tint-sage); color: var(--heading); font-weight: 500; }
 @media (max-width: 760px) { .dudas__grid { grid-template-columns: 1fr; } }
+
+/* ==========================================================================
+   2026-10-07: comentarios ("Comentarios 07.10.2026.pptx")
+   ========================================================================== */
+/* Cabecera: botón "Cotizar" destacado (pág. 7). En el celular va como la
+   última opción del menú. */
+.nav__cta.btn { margin-left: .4rem; padding: .62rem 1.25rem; font-size: .9rem; white-space: nowrap; }
+@media (min-width: 901px) { .nav__cotizar-movil { display: none; } }
+@media (max-width: 900px) { .nav[data-open="true"] .nav__cta { display: none; } }
+.nav[data-open="true"] .nav__links a.nav__cotizar-movil { color: var(--forest); font-weight: 700; }
+
+/* Franja del unicel (pág. 3): "Cada comida cuenta y tu envase también" es
+   lo que más se ve; abajo, el lema y las dos tarjetas. */
+.franja h2 { max-width: 26ch; font-size: clamp(1.45rem, 2.6vw, 2.2rem); }
+.franja .franja__meta {
+  max-width: 17ch; margin: .7rem auto 0;
+  font-family: var(--font-display); font-weight: 700; letter-spacing: -.03em; line-height: 1.04;
+  font-size: clamp(2.4rem, 5.8vw, 4.6rem); color: var(--heading); text-wrap: balance;
+}
+.franja__meta span { color: var(--sage); }
+.franja .franja__lema {
+  display: inline-block; margin: 1.2rem auto 0; padding: .55rem 1.2rem; border-radius: 999px;
+  background: var(--forest); color: var(--brand-ink); font-weight: 600; font-size: clamp(.95rem, 1.4vw, 1.1rem);
+}
+.franja .dudas__grid { max-width: 1000px; margin: clamp(1.8rem, 3.5vw, 2.6rem) auto clamp(1.6rem, 3vw, 2.2rem); text-align: left; }
+.franja .dudas__item {
+  margin: 0; border-color: transparent; box-shadow: var(--shadow-sm);
+  color: var(--ink); font-size: clamp(1.02rem, 1.45vw, 1.2rem); line-height: 1.55;
+}
+.franja .dudas__item--reto {
+  display: flex; align-items: center;
+  font-family: var(--font-display); font-weight: 700; letter-spacing: -.02em; line-height: 1.2;
+  font-size: clamp(1.35rem, 2.3vw, 1.8rem); color: var(--heading);
+}
+.franja .dudas__item--ya { background: var(--forest); color: var(--brand-ink); font-weight: 500; }
+
+/* Nuestros productos (pág. 2): ya no son 5. Cuatro por fila y la última
+   centrada; con bagazo, paja de trigo y fécula serán diez (cinco por fila). */
+.cats--filas { display: flex; flex-wrap: wrap; justify-content: center; }
+.cats--filas > .cat { flex: 0 0 calc((100% - 3 * 14px) / 4); }
+@media (max-width: 1100px) { .cats--filas > .cat { flex-basis: calc((100% - 2 * 14px) / 3); } }
+@media (max-width: 640px) {
+  .cats--filas { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 4px; }
+  .cats--filas > .cat { flex: 0 0 46%; }
+}
+
+/* Catálogo (pág. 1): portada derecha, como una pila de hojas, y el collage
+   de productos en el espacio de la derecha. */
+.catalogo__caja { grid-template-columns: minmax(0, 200px) minmax(0, 1fr) minmax(0, 420px); }
+.catalogo__portada {
+  rotate: none; border-radius: 6px;
+  box-shadow: 9px 9px 0 -2px rgba(245, 249, 244, .28), 18px 18px 0 -5px rgba(245, 249, 244, .14), 0 24px 50px rgba(10, 30, 24, .35);
+}
+.catalogo__txt h2 { max-width: 13ch; }
+.catalogo__txt .btn { margin-top: 1.6rem; }
+.catalogo__collage { display: block; width: 100%; height: auto; }
+@media (max-width: 1100px) {
+  .catalogo__caja { grid-template-columns: minmax(0, 180px) minmax(0, 1fr); }
+  .catalogo__collage { grid-column: 1 / -1; justify-self: center; max-width: 560px; }
+}
+@media (max-width: 640px) {
+  .catalogo__caja { grid-template-columns: 1fr; }
+  .catalogo__collage { max-width: 100%; }
+}
+
+/* El porqué ahora va entre el catálogo y Servicios. */
+.porque { padding-block: clamp(.5rem, 1.5vw, 1rem) 0; }
+.bloque .porque__frase { max-width: 21ch; font-size: clamp(2rem, 3.9vw, 3.1rem); }
+.porque__sub b { color: var(--heading); font-weight: 700; }
+
+/* Redes (pág. 5): Facebook, Instagram y TikTok. */
+.redes__cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+
+/* Cómo comprar: los 4 pasos (pág. 8). */
+ol.steps { list-style: none; margin: 0; padding: 0; }
+
+/* Pie con el menú repetido: cinco columnas. */
+.foot__grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, .7fr) minmax(0, 1.05fr) minmax(0, .85fr) minmax(0, 1.25fr); gap: 2rem; }
+@media (max-width: 1100px) and (min-width: 761px) { .foot__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .foot__grid { grid-template-columns: 1fr; } }
+/* Con "Cotizar" la cabecera se aprieta entre 901 y 1060 px: menos aire y
+   cada enlace en un solo renglón. */
+@media (max-width: 1060px) and (min-width: 901px) {
+  .nav__links { gap: 1.1rem; }
+  .nav__links a:not(.btn), .nav__mega-btn { font-size: .92rem; white-space: nowrap; }
+  .nav__iconos { gap: 4px; }
+}
+@media (max-width: 640px) {
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .step { padding: 18px 14px; }
+}
+/* Tienda sin el párrafo bajo el título (pág. 6): el buscador toma su aire. */
+.shop-head .shop-head__title + .shop-search { margin-top: 1.8rem; }
