@@ -580,3 +580,17 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
   - Quedó en `assets/landing/cafe-bagazo.webp` (900 px).
 - **Por qué salió en una heladería:** la referencia de ambiente que le di era la foto de la vitrina de helados (`cafe-contenedores`). Se cambió en la carpeta del escritorio por `cafe-bowls`, que no tiene helados. Los prompts de paja de trigo y fécula ahora dicen qué lugar va con cada comida.
 - `styles.css` pasó a `?v=20261007f`.
+
+## Ronda 42: catálogo nuevo y fotos de paja de trigo y fécula (2026-10-07)
+
+- **Catálogo:** el nuevo es `Catálogo_Greenovasc_2026-4.pdf` (Canva, 33 páginas horizontales).
+  - Pesaba 98 MB. Se comprimió a 8.3 MB con `pypdf`: el color de cada imagen pasó a JPEG calidad 80, con la misma transparencia y el mismo texto. Se compararon las 33 páginas contra el original; la diferencia media es menor a 1 de 255.
+  - Reemplaza a `assets/catalogo/catalogo-greenova-sc-2026.pdf` (`?v=20261007a`).
+  - La portada horizontal es `portada-catalogo-2026c.webp` (800×450).
+  - Se observó en el PDF de Gabriel, sin tocarlo: el índice dice "11-" y "###" en Ofertas y Cotiza ya, y la portada todavía dice "Empaques Responsables, Negocios con Propósito".
+- **Fotos con comida para el cursor:**
+  - Paja de trigo: enchiladas en cocina económica (`assets/landing/cafe-paja-trigo.webp`).
+  - Fécula: bowl de arroz con pollo en restaurante saludable (`cafe-fecula.webp`).
+  - Son las originales de 2048 px de Descargas, a 900 px.
+- Las referencias que faltan quedaron juntas en `~/Desktop/Fotos Greenova para Gemini/PARA GEMINI - las que faltan (07.10)/`.
+- `styles.css` pasó a `?v=20261007g`.
