@@ -523,3 +523,14 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
   - Sin testimonios: no hay reales.
   - La ficha de producto ya sigue la estructura. "Ideal para" no se volvió a poner, porque Gabriel lo quitó el 2026-10-03.
 - `styles.css` pasó a `?v=20261007a`.
+
+## Ronda 37: se regresa lo del unicel y se quita "Cotizar" (2026-10-07)
+
+- "Eso no me gustó, vuelve como estaba antes y te doy instrucciones." Gabriel aclaró que se refería solo a la parte del unicel:
+  - Las dos tarjetas regresaron a su propia sección, con los textos de antes ("Si ya probaste un vaso 'eco'…" y "Mientras tú sigues dudando…").
+  - La franja también regresó: "¿Aún utilizas unicel para tus alimentos?", "Cada comida cuenta, tu envase también." en chico y "Ir a la tienda".
+  - Van justo después de "Nuestros productos", como antes.
+  - Se borraron los estilos `.franja__meta`, `.franja__lema` y `.franja .dudas__*`.
+- "Quita lo de cotizar en la parte de arriba": se quitó el botón de la cabecera y el enlace del menú del celular en las 8 páginas, con sus estilos.
+- Papel grado alimenticio RH y Popote de tapioca se veían chicos dentro del cuadro de la ficha. Ahora llevan `fotoPropia: true` y van de orilla a orilla. Ya no queda ningún producto sin `fotoPropia`. En la tienda todas las fotos llenan su tarjeta igual.
+- `styles.css` pasó a `?v=20261007b` y `productos.js` a `?v=20261007a`.

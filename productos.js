@@ -269,7 +269,7 @@ window.GREENOVA = (function () {
       ] } },
 
     /* ---------------- popotes, portavasos, servilletas y papel ---------------- */
-    { id: "popote-tapioca", nombre: "Popote de tapioca biodegradable", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca", uso: "Popote para bebida fría",
+    { id: "popote-tapioca", nombre: "Popote de tapioca biodegradable", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca", fotoPropia: true, uso: "Popote para bebida fría",
       desc: "Popote biodegradable de tapioca, de 21 cm. Se cotiza por caja.",
       v: ["21 cm · caja de 5 kg"] },
     { id: "popote-tapioca-estuchado", nombre: "Popote de tapioca estuchado", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca-estuchado-estudio", uso: "Popote para bebida fría", fotoPropia: true,
@@ -294,7 +294,7 @@ window.GREENOVA = (function () {
     { id: "papel-encerado", nombre: "Papel grado alimenticio encerado", cat: "servilletas-papel", mat: ["papel"], img: "papel-encerado-estudio", uso: "Para envolver alimentos", fotoPropia: true,
       desc: "Papel encerado grado alimenticio, para envolver alimentos. Se cotiza por caja.",
       v: ["Caja de 1,000 pzs"] },
-    { id: "papel-rh", nombre: "Papel grado alimenticio RH", cat: "servilletas-papel", mat: ["papel"], img: "papel-rh", uso: "Para envolver alimentos",
+    { id: "papel-rh", nombre: "Papel grado alimenticio RH", cat: "servilletas-papel", mat: ["papel"], img: "papel-rh", fotoPropia: true, uso: "Para envolver alimentos",
       desc: "Papel grado alimenticio RH, para envolver alimentos. Se cotiza por caja.",
       v: ["Caja de 1,000 pzs"] },
 

@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
 <link rel="preload" as="image" href="assets/prod/vaso-papel-par-cutout.webp?v=20260928b">
-<link rel="stylesheet" href="styles.css?v=20261007a">
+<link rel="stylesheet" href="styles.css?v=20261007b">
 <script>document.documentElement.classList.add("js");</script>
 
 <script type="application/ld+json">
@@ -69,7 +69,6 @@
       </div>
       <a href="ofertas.html">Outlet</a>
       <a href="contacto.html">Contacto</a>
-      <a class="nav__cotizar-movil" href="#cotizar">Cotizar</a>
     </nav>
       <div class="mega" id="mega" hidden>
         <div class="wrap mega__inner">
@@ -100,8 +99,6 @@
         <svg class="ico" aria-hidden="true"><use href="#i-shopping-cart"></use></svg>
         <span class="cart-btn__count" id="cart-count" data-empty="true">0</span>
       </button>
-      <!-- Botón destacado de la cabecera (comentarios del 2026-10-07, pág. 7). -->
-      <a class="btn btn--primary nav__cta" href="#cotizar">Cotizar</a>
     </div>
     <button class="nav__toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menú">
       <svg class="ico" aria-hidden="true"><use href="#i-list"></use></svg>
@@ -144,28 +141,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ============ El problema: ¿Aún utilizas unicel? ============
-       La frase del Feedback (pág. 3) en una franja. Comentarios del
-       2026-10-07: "Cada comida cuenta y tu envase también" va grande porque es
-       el objetivo, con "El sabor atrae, el empaque convence."; abajo, las dos
-       tarjetas (antes su propia sección, "Dudas y oportunidad") y el botón a
-       la tienda. Es el segundo bloque, como pide la estructura de inicio. -->
-  <section class="franja" id="problema" aria-labelledby="problema-h">
-    <div class="wrap rv">
-      <h2 id="problema-h">¿Aún utilizas unicel para tus alimentos?</h2>
-      <p class="franja__meta">Cada comida cuenta y <span>tu envase también.</span></p>
-      <p class="franja__lema">El sabor atrae, el empaque convence.</p>
-      <div class="dudas__grid">
-        <p class="dudas__item dudas__item--reto">Tu competencia ya está cambiando su empaque. ¿Y tú?</p>
-        <p class="dudas__item dudas__item--ya">En CDMX el unicel ya está prohibido. Los negocios que cambian primero ganan a los clientes que buscan algo mejor; los que esperan, se quedan atrás.</p>
-      </div>
-      <a class="btn btn--primary" href="tienda.html">
-        Ir a la tienda
-        <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg>
-      </a>
     </div>
   </section>
 
@@ -221,6 +196,30 @@
           <span class="cat__txt"><small>Para envolver tortas, sándwiches y hamburguesas</small><b>Comprar en línea</b></span>
         </a>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ Dudas y oportunidad ============
+       Copy de Gabriel (2026-10-05). Va justo antes de "¿Aún utilizas unicel?",
+       que remata la idea. -->
+  <section class="bloque dudas" aria-label="Lo que te frena y lo que estás perdiendo">
+    <div class="wrap dudas__grid">
+      <p class="dudas__item rv">Si ya probaste un vaso “eco” que se desbarataba antes de que el cliente saliera por la puerta, entiendo la desconfianza — pero ese no era el material, era el proveedor barato.</p>
+      <p class="dudas__item dudas__item--ya rv" data-d="1">Mientras tú sigues dudando, CDMX ya prohibió el unicel y tu competencia ya se está cambiando. El que se adelanta se queda con esos clientes. El que reacciona tarde, no.</p>
+    </div>
+  </section>
+
+  <!-- ============ ¿Aún utilizas unicel? ============
+       La frase del Feedback (pág. 3) en una franja, como "Conoce nuestro
+       catálogo" de WeCare. -->
+  <section class="franja" id="problema" aria-labelledby="problema-h">
+    <div class="wrap rv">
+      <h2 id="problema-h">¿Aún utilizas unicel para tus alimentos?</h2>
+      <p>Cada comida cuenta, tu envase también.</p>
+      <a class="btn btn--primary" href="tienda.html">
+        Ir a la tienda
+        <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"></use></svg>
+      </a>
     </div>
   </section>
 
@@ -531,7 +530,7 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="productos.js?v=20261005a"></script>
+<script src="productos.js?v=20261007a"></script>
 <script src="agente-criterios.js?v=20261005a"></script>
 <script src="cuenta.js?v=20261003c"></script>
 <script src="greenova.js?v=20261005a"></script>
