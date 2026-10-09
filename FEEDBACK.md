@@ -638,3 +638,24 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
 
 - Se borraron las fotos viejas `serv-serigrafia`, `serv-contenedores` y `serv-bolsas`. Los títulos y textos de los cuadros no cambiaron.
 - Con esto ya están todas las fotos que pidió el PowerPoint.
+
+## Ronda 46: fotos de "Contenedores de comida" y collage con comida (2026-10-08)
+
+- **"Contenedores de comida - Fotos.pptx"** (copia en `~/Greenova/MKT/`): 7 láminas con el nombre y la foto de cada producto, sin instrucciones. Gabriel confirmó que son para hacer sus fotos de estudio.
+  - Las 19 referencias están en `~/Desktop/Fotos Greenova para Gemini/PARA GEMINI - contenedores de comida (08.10)/`; los prompts se dieron en el chat.
+  - Dudas pendientes de la presentación:
+    - La 06 y la 07 se llaman igual (tapa de paja de trigo 10x7), pero son tapas distintas.
+    - La segunda foto de "Tapa PLA 9x7" es una tapa ovalada.
+- **Llegó la 01 (papel chino).** Coincide con la foto real. Quedó en `assets/prod/papel-chino-estudio.webp`, al tamaño de las demás. El producto entra a la tienda junto con los otros nuevos cuando lleguen sus fotos.
+- **Catálogo:** el collage ahora usa las fotos con comida de los mismos 6 productos. Antes eran sus fotos de estudio.
+
+  | Producto | Foto con comida |
+  |---|---|
+  | Fajilla kraft | capuchino en la mano |
+  | Contenedor kraft | salmón con verduras |
+  | Portavasos charola | 4 cafés |
+  | Charola kraft | hamburguesa con papas |
+  | Vaso PET | latte frío |
+  | Ensaladera PET | quinoa |
+
+  Antes de usarlas se revisó que en cada foto sale el mismo envase. El archivo nuevo es `collage-productos-comida.webp`; se borró `collage-productos.webp`.
