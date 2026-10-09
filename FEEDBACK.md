@@ -624,3 +624,17 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
 
 - Gabriel preguntó por qué cambiar las fotos de Servicios: lo pide la lám. 4 de los comentarios, puntos 1, 2 y 3. Se le citó el texto; él decide.
 - `productos.js` pasó a `?v=20261007b`.
+
+## Ronda 45: las 3 fotos de Servicios (2026-10-08)
+
+- Gabriel aclaró la lám. 4: el punto 2 ("la imagen de la derecha") va en la foto de en medio, Contenedores a medida; la de la derecha sigue siendo de bolsas.
+- Las 3 fotos de Gemini (originales de 2048 px en Descargas), a 800×840:
+
+  | Foto | Qué muestra | Retoque | Archivo |
+  |---|---|---|---|
+  | Izquierda | vasos verde, rojo, azul y negro con "TU LOGO" | Se borró el texto inventado del frasco ("TINTA FERDE DESTUO") rellenando con el color de la etiqueta; el frasco dice solo "TU LOGO". Se recortó la orilla derecha, que traía letras raras en la libreta. | `serv-serigrafia-color.webp` |
+  | En medio | tableta con el suaje, cajas para hamburguesa, porta papas y charola para hot dog | | `serv-comida-rapida.webp` |
+  | Derecha | bolsas kraft y bond blanca, verde, roja, azul y negra con "TU LOGO" | | `serv-bolsas-color.webp` |
+
+- Se borraron las fotos viejas `serv-serigrafia`, `serv-contenedores` y `serv-bolsas`. Los títulos y textos de los cuadros no cambiaron.
+- Con esto ya están todas las fotos que pidió el PowerPoint.
