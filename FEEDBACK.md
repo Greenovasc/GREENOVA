@@ -662,3 +662,23 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
 - **Llegaron la 02, la 03 y la 04** (paja de trigo: ovalado, rectangular de 48 oz y rectangular grande 10x7). Quedaron en `assets/prod/contenedor-ovalado-paja-trigo-estudio`, `contenedor-rect-paja-trigo-48-estudio` y `contenedor-rect-grande-paja-trigo-estudio`.
   - En la 03 Gemini inventó una tercera línea en el relieve ("crcilc day daily compcrtable"). Se borró rellenando por difusión. Quedan las dos líneas correctas: "Made from plants, not petroleum" y "CERTIFIED COMPOSTABLE".
   - Faltan de la 05 a la 19.
+- **Llegaron 12 más.** Se instalaron la 05 a la 12, la 14, la 15, la 16 y la 17. Archivos en `assets/prod/`:
+
+  | # | Archivo |
+  |---|---|
+  | 05 | `bisagra-paja-trigo-estudio` |
+  | 06 | `tapa-paja-trigo-10x7-a-estudio` |
+  | 07 | `tapa-paja-trigo-10x7-b-estudio` |
+  | 08 | `tapa-pla-rect-10x7-estudio` |
+  | 09 | `tapa-pla-rect-9x7-estudio` |
+  | 10 | `tapa-pla-ovalada-24-estudio` |
+  | 11 | `bisagra-cana-estudio` |
+  | 12 | `souffle-fecula-tapa-estudio` |
+  | 14 | `rebanada-pizza-estudio` |
+  | 15 | `caja-kraft-plegable-estudio` |
+  | 16 | `contenedor-ps-17x14x6-estudio` |
+  | 17 | `souffle-pp-2oz-estudio` |
+
+  - La 06 salió con el relieve de World Centric bien escrito, igual que la tapa real. Se dejó así y se le avisó a Gabriel.
+  - Las tapas PLA, la caja kraft, el soufflé PP y el contenedor PS ya venían anchos (más de 0.78), así que no se recortaron.
+  - Faltan 3: la 13 (ensaladera kraft), la 18 (tapa plana PET 63 mm) y la 19 (popote cuchara).
