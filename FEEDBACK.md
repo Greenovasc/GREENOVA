@@ -682,3 +682,11 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
   - La 06 salió con el relieve de World Centric bien escrito, igual que la tapa real. Se dejó así y se le avisó a Gabriel.
   - Las tapas PLA, la caja kraft, el soufflé PP y el contenedor PS ya venían anchos (más de 0.78), así que no se recortaron.
   - Faltan 3: la 13 (ensaladera kraft), la 18 (tapa plana PET 63 mm) y la 19 (popote cuchara).
+- **Llegaron las 3 que faltaban:** 13 `ensaladera-kraft-estudio`, 18 `tapa-pet-plana-63-estudio` y 19 `popote-cuchara-estudio`.
+  - La 18 trae el vasito y los símbolos de PET y de grado alimenticio en relieve.
+  - Gabriel dejó la 06 con las letras de World Centric.
+  - Ya están las 19 de estudio.
+- **Fotos con comida de los productos nuevos:**
+  - Las referencias están en `~/Desktop/Fotos Greenova para Gemini/PARA GEMINI - con comida, productos nuevos (10.10)/`: la 00 es la de estilo A0 y luego va la foto de estudio de cada producto. Los prompts se dieron en el chat.
+  - La 12 (soufflé de fécula) no lleva prompt: usa `uso/souffle-salsas`, que ya tiene soufflés blancos.
+  - La 15 sustituye a `caja-kraft-salmon`, que muestra el contenedor rectangular con tapa y no la caja plegable.
