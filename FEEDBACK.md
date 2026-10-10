@@ -659,3 +659,6 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
   | Ensaladera PET | quinoa |
 
   Antes de usarlas se revisó que en cada foto sale el mismo envase. El archivo nuevo es `collage-productos-comida.webp`; se borró `collage-productos.webp`.
+- **Llegaron la 02, la 03 y la 04** (paja de trigo: ovalado, rectangular de 48 oz y rectangular grande 10x7). Quedaron en `assets/prod/contenedor-ovalado-paja-trigo-estudio`, `contenedor-rect-paja-trigo-48-estudio` y `contenedor-rect-grande-paja-trigo-estudio`.
+  - En la 03 Gemini inventó una tercera línea en el relieve ("crcilc day daily compcrtable"). Se borró rellenando por difusión. Quedan las dos líneas correctas: "Made from plants, not petroleum" y "CERTIFIED COMPOSTABLE".
+  - Faltan de la 05 a la 19.
