@@ -690,3 +690,4 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
   - Las referencias están en `~/Desktop/Fotos Greenova para Gemini/PARA GEMINI - con comida, productos nuevos (10.10)/`: la 00 es la de estilo A0 y luego va la foto de estudio de cada producto. Los prompts se dieron en el chat.
   - La 12 (soufflé de fécula) no lleva prompt: usa `uso/souffle-salsas`, que ya tiene soufflés blancos.
   - La 15 sustituye a `caja-kraft-salmon`, que muestra el contenedor rectangular con tapa y no la caja plegable.
+- **Fotos con comida que ya llegaron:** 01 `uso/papel-chino-chow-mein`, 02 `uso/contenedor-ovalado-paja-chilaquiles` y 03 `uso/contenedor-rect-paja-48-mole`. Son de 1024 px y se bajaron a 900. Se meten a `FOTOS_USO` cuando los productos entren a la tienda.
