@@ -682,6 +682,7 @@ window.GREENOVA_AGENTE = (function () {
     "tapa-paja-trigo-10x7|vista": { f: "tapa-paja-trigo-10x7-otra-vista", alt: "Tapa de paja de trigo para contenedor rectangular grande, otra vista.", giros: [] },
     "tapa-pla-rect-10x7": { f: "tapa-pla-rect-10x7-sushi", alt: "Rollos de sushi en contenedor de paja de trigo con tapa transparente de PLA.", giros: ["Sushi"] },
     "tapa-pla-rect-9x7": { f: "tapa-pla-rect-9x7-fruta", alt: "Fruta picada en contenedor de paja de trigo con tapa transparente de PLA.", giros: ["Fruta", "Ensaladas", "Jugos"] },
+    "tapa-pla-ovalada-24": { f: "tapa-pla-ovalada-24-hot-cakes", alt: "Hot cakes con fresas y moras en contenedor ovalado de paja de trigo con tapa transparente de PLA.", giros: ["Cafetería", "Tamales", "Hoteles", "Negocio nuevo"] },
     "tapa-souffle": { f: "tapa-pet-plana-63-hamburguesa", alt: "Cátsup, mostaza y mayonesa en soufflés con tapa plana, junto a una hamburguesa con papas.", giros: ["Hamburguesas", "Restaurantes", "Negocio nuevo"] },
     "souffle-fecula": { f: "souffle-salsas", alt: "Salsa roja, salsa verde y guacamole en soufflés blancos, junto a unos tacos.", giros: ["Tacos", "Mariscos", "Restaurantes", "Eventos", "Negocio nuevo"] },
     "ensaladera-kraft": { f: "ensaladera-kraft-poke", alt: "Poke de salmón con arroz, aguacate, pepino y edamame en ensaladera kraft.", giros: ["Ensaladas", "Sushi", "Restaurantes", "Negocio nuevo"] },

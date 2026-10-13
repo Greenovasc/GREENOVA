@@ -753,3 +753,5 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
   Se borraron `almeja-bagazo`, `charola-paja-trigo`, `souffle-fecula` (foto), `cafe-paja-trigo` y `cafe-fecula`: mostraban productos que no son los de la presentación.
 - **Revisión de "Comentarios 07.10.2026.pptx":** se comparó cada lámina contra `index.html` y `tienda.html`; todo lo escrito en las láminas 1 a 6 está en la página. De las láminas 7 a 9 (solo capturas y "Hay que darle estructura-orden a la página") quedaron el orden de las secciones y la columna "Menú" del pie; Gabriel no ha dicho si se quedan.
 - `productos.js`, `tienda.js` y `agente-criterios.js` pasaron a `?v=20261012a`. El sitemap tiene 57 fichas.
+- **Llegó la 10** (más tarde, el mismo día): `uso/tapa-pla-ovalada-24-hot-cakes`, hot cakes con fresas y moras bajo la tapa ovalada PLA. Ya están las 18 fotos con comida de los productos nuevos. `agente-criterios.js` pasó a `?v=20261012b`.
+- Gabriel pidió subirlo a GitHub: rama y `main`.
