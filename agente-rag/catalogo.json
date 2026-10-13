@@ -2095,6 +2095,171 @@
       "cotizar": true,
       "precios": [],
       "notas": "Caja de 2000 pz. Envuelto de forma individual."
+    },
+    {
+      "id": "popote-cuchara-biodegradable",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Popote cuchara biodegradable",
+      "material": "Fécula de maíz",
+      "boca_mm": null,
+      "medidas": "26 cm",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Caja de 5 kg. Combina popote y cuchara en una pieza."
+    },
+    {
+      "id": "contenedor-papel-chino",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Contenedor de papel chino",
+      "material": "Papel",
+      "boca_mm": null,
+      "medidas": "16 oz y 26 oz",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
+    },
+    {
+      "id": "contenedor-ovalado-paja-trigo",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Contenedor ovalado de paja de trigo",
+      "material": "Paja de trigo",
+      "boca_mm": null,
+      "medidas": "24 oz y 32 oz",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
+    },
+    {
+      "id": "contenedor-rect-paja-trigo-48",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Contenedor rectangular de paja de trigo 48 oz",
+      "material": "Paja de trigo",
+      "boca_mm": null,
+      "medidas": "48 oz, 9x7x3",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
+    },
+    {
+      "id": "contenedor-rect-grande-paja-trigo",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Contenedor rectangular grande de paja de trigo 10x7",
+      "material": "Paja de trigo",
+      "boca_mm": null,
+      "medidas": "10x7",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
+    },
+    {
+      "id": "bisagra-paja-trigo",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Bisagra de paja de trigo 9x6",
+      "material": "Paja de trigo",
+      "boca_mm": null,
+      "medidas": "9x6",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Contenedor con tapa de bisagra. Se cotiza."
+    },
+    {
+      "id": "bisagra-cana",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Bisagra de caña de azúcar",
+      "material": "Bagazo de caña",
+      "boca_mm": null,
+      "medidas": "6x6, 8x8 y 9x9",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Contenedor con tapa de bisagra. Se cotiza."
+    },
+    {
+      "id": "tapa-paja-trigo-10x7",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Tapa de paja de trigo para contenedor rectangular grande 10x7",
+      "material": "Paja de trigo",
+      "boca_mm": null,
+      "medidas": "10x7",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
+    },
+    {
+      "id": "tapa-pla-rect-10x7",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Tapa PLA para contenedor rectangular 10x7",
+      "material": "PLA",
+      "boca_mm": null,
+      "medidas": "10x7",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
+    },
+    {
+      "id": "tapa-pla-rect-9x7",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Tapa PLA para contenedor rectangular grande 9x7",
+      "material": "PLA",
+      "boca_mm": null,
+      "medidas": "9x7",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
+    },
+    {
+      "id": "tapa-pla-ovalada-24",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Tapa PLA para contenedor ovalado 24 oz",
+      "material": "PLA",
+      "boca_mm": null,
+      "medidas": "24 oz",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
+    },
+    {
+      "id": "souffle-fecula",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Soufflé de fécula de maíz",
+      "material": "Fécula de maíz",
+      "boca_mm": null,
+      "medidas": "2 oz y 4 oz",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
+    },
+    {
+      "id": "ensaladera-kraft",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Ensaladera kraft",
+      "material": "Kraft",
+      "boca_mm": null,
+      "medidas": "24 oz, 32 oz y 44 oz",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
+    },
+    {
+      "id": "contenedor-rebanada-pizza",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Contenedor para rebanada de pizza",
+      "material": "",
+      "boca_mm": null,
+      "medidas": "Triangular",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
+    },
+    {
+      "id": "contenedor-ps",
+      "categoria": "Contenedores y accesorios (a cotizar)",
+      "nombre": "Contenedor transparente PS",
+      "material": "Poliestireno (PS)",
+      "boca_mm": null,
+      "medidas": "17 x 14 x 6 cm",
+      "cotizar": true,
+      "precios": [],
+      "notas": "Se cotiza."
     }
   ]
 }

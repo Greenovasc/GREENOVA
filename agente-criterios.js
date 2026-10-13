@@ -58,7 +58,7 @@ window.GREENOVA_AGENTE = (function () {
       c: "En la tienda cada producto se compra por paquete o por caja. Cada medida dice cuántas piezas trae el paquete y cuántas la caja, y su precio con IVA incluido. El pedido mínimo es un paquete." },
 
     { t: "Materiales que se manejan",
-      c: "Vasos de papel (blanco, negro, kraft, doble pared y de color), vasos de PET y de polipropileno (PP), tapas de poliestireno (PS), polipropileno (PP), PET y papel, fajillas de kraft y removedores de madera." },
+      c: "Vasos de papel (blanco, negro, kraft, doble pared y de color), vasos de PET y de polipropileno (PP), tapas de poliestireno (PS), polipropileno (PP), PET y papel, fajillas de kraft y removedores de madera. Para comida: contenedores de papel, kraft, PET y PS, de paja de trigo y de caña de azúcar, tapas de PLA y soufflés de PP y de fécula de maíz." },
 
     { t: "Envíos a todo México",
       c: "Sí, GreeNova envía a todo el país. La salida es desde la Ciudad de México hacia cualquier estado de la República. El costo y el tiempo dependen del destino y del volumen; ventas los confirma con el pedido." },
@@ -70,7 +70,7 @@ window.GREENOVA_AGENTE = (function () {
       c: "La tapa se elige por el diámetro de boca del vaso, no por las onzas. Vasos de papel: boca 62 mm (4 oz), 80 mm (8 oz) y 90 mm (10 a 20 oz). Vasos PET: bocas de 78, 90, 92, 95, 98 y 107 mm. En la tienda, al ver un vaso, salen las tapas de su misma boca." },
 
     { t: "Qué hay en la tienda y qué se cotiza",
-      c: "Todo el catálogo 2026 está en la tienda. Con precio en línea: vasos de papel, PET y PP; tapas para vaso; contenedor de papel blanco de 4, 6, 8, 12, 16 y 32 oz; caja kraft de 26, 45, 49, 66 y 96 oz; charola kraft para papas; contenedor PET; contenedor PET para rebanada de pastel; ensaladera PET con tapa de 18, 32, 48 y 64 oz; soufflé PP de 2 oz; cono para crepa; fajillas; removedores; popote de tapioca estuchado; popote PLA estuchado de 25 cm; portavasos charola de 2 y 4 espacios; y bolsa semikraft con fuelle chica, mediana y grande. Sin precio en línea, se cotizan con \"Pedir cotización\": popote de tapioca a granel (caja de 5 kg), portavasos con asa, servilleta larga, papel grado alimenticio RH y encerado, y la tapa negra de poliestireno para vaso de 8 oz. Platos y cubiertos no están en la tienda: se piden con \"Envía tu lista\" o escribiendo a ventas." },
+      c: "Todo el catálogo 2026 está en la tienda. Con precio en línea: vasos de papel, PET y PP; tapas para vaso; contenedor de papel blanco de 4, 6, 8, 12, 16 y 32 oz; caja kraft de 26, 45, 49, 66 y 96 oz; charola kraft para papas; contenedor PET; contenedor PET para rebanada de pastel; ensaladera PET con tapa de 18, 32, 48 y 64 oz; soufflé PP de 2 oz y su tapa plana de PET; cono para crepa; fajillas; removedores; popote de tapioca estuchado; popote PLA estuchado de 25 cm; portavasos charola de 2 y 4 espacios; y bolsa semikraft con fuelle chica, mediana y grande. Sin precio en línea, se cotizan con \"Pedir cotización\": popote de tapioca a granel (caja de 5 kg), portavasos con asa, servilleta larga, papel grado alimenticio RH y encerado, la tapa negra de poliestireno para vaso de 8 oz, popote cuchara de 26 cm, contenedor de papel chino de 16 y 26 oz, contenedores de paja de trigo (ovalado de 24 y 32 oz, rectangular de 48 oz, rectangular grande de 10x7 y bisagra de 9x6) con sus tapas de paja de trigo y de PLA, bisagra de caña de azúcar de 6x6, 8x8 y 9x9, soufflé de fécula de maíz de 2 y 4 oz, ensaladera kraft de 24, 32 y 44 oz, contenedor para rebanada de pizza y contenedor transparente PS de 17 x 14 x 6 cm. Platos y cubiertos no están en la tienda: se piden con \"Envía tu lista\" o escribiendo a ventas." },
 
     { t: "Accesorios que se cotizan: portavasos con asa, servilleta y papel",
       c: "Salen en la tienda sin precio en línea; se cotizan con el botón \"Pedir cotización\". Portavasos con asa de 2 espacios (caja de 250) y de 4 espacios (caja de 200); servilleta larga de 39.0 x 37.5 cm (caja de 1,200); papel grado alimenticio RH y encerado, para envolver alimentos (caja de 1,000); y popote de tapioca biodegradable de 21 cm (caja de 5 kg)." },
@@ -376,8 +376,9 @@ window.GREENOVA_AGENTE = (function () {
 
     { nombre: "Pizzería",
       dice: ["pizza", "pizzeria", "calzone", "comida italiana", "pasta"],
-      intro: "Para pizzería, lo que acompaña a la pizza:",
+      intro: "Para pizzería, la rebanada para llevar y lo que acompaña a la pizza:",
       recs: [
+        { id: "contenedor-rebanada-pizza", v: "Triangular", por: "Para la rebanada para llevar." },
         { id: "vaso-pet-95", v: "16 oz", por: "Refresco o agua, en mesa o para llevar." },
         { id: "tapa-pet-plana-ranura", v: "Boca 95 mm", por: "Para ese vaso, con ranura para popote." },
         { id: "vaso-papel-color-44", v: "Rojo", por: "Refresco grande para compartir." },
@@ -646,8 +647,9 @@ window.GREENOVA_AGENTE = (function () {
        blancos; el de tapioca suelto, en la foto de estudio, es kraft. */
     "popote-tapioca": { f: "popote-tapioca-bubble-tea", alt: "Bubble tea de taro con fresa, con tapa domo y popote de tapioca.", giros: ["Bubble tea", "Frappés"] },
     "popote-tapioca-estuchado": { f: "popote-tapioca-estuchado-te-verde", alt: "Té verde de manzana con perlas, con popote de tapioca y más popotes en el mostrador.", giros: ["Jugos", "Ensaladas", "Escuelas", "Bubble tea", "Negocio nuevo"] },
-    /* 35 · caja kraft: plato fuerte */
-    "caja-kraft": { f: "caja-kraft-salmon", alt: "Salmón con verduras rostizadas y quinoa en caja kraft, con su tapa al lado.", giros: ["Restaurantes", "Ensaladas", "Sushi", "Eventos", "Negocio nuevo"] },
+    /* Caja kraft: pad thai (2026-10-12). La del salmón era de un contenedor
+       con tapa, no de la caja plegable. */
+    "caja-kraft": { f: "caja-kraft-plegable-pad-thai", alt: "Pad thai con camarones, cacahuate y limón en caja kraft, junto a otra caja cerrada.", giros: ["Sushi", "Restaurantes", "Eventos", "Negocio nuevo"] },
     /* 36 · charola kraft: hamburguesa con papas. Los neones del fondo se
        desenfocaron: el rojo era el nombre de una cadena real. */
     "charola-papas": { f: "charola-papas-hamburguesa", alt: "Hamburguesa con tocino y papas a la francesa en charola kraft con papel a cuadros.", giros: ["Hamburguesas", "Restaurantes", "Cine", "Eventos", "Micheladas", "Negocio nuevo"] },
@@ -662,9 +664,30 @@ window.GREENOVA_AGENTE = (function () {
     /* 41 · bolsa semikraft: salió con mandado (fruta, verdura y queso) en vez
        de pan dulce, así que en Panadería, Restaurantes y Tamales va la de estudio. */
     "bolsa-semikraft": { f: "bolsa-semikraft-mandado", alt: "Bolsa semikraft con fuelle llena de uvas, aguacate, jitomates, zanahorias y queso.", giros: ["Tiendas de conveniencia", "Fruta", "Negocio nuevo"] },
-    /* 42 · soufflé de 2 oz: salsas con tacos. En Sushi, Pizzería y
-       Hamburguesas va la de estudio: ahí es para soya, aderezo o cátsup. */
-    "souffle": { f: "souffle-salsas", alt: "Salsa roja, salsa verde y guacamole en soufflés de 2 oz, junto a unos tacos.", giros: ["Tacos", "Mariscos", "Restaurantes", "Eventos", "Negocio nuevo"] }
+    /* Soufflé PP de 2 oz (transparente): salsas con alitas (2026-10-12). La
+       foto de las salsas con tacos pasó al soufflé de fécula, que es blanco. */
+    "souffle": { f: "souffle-pp-2oz-alitas", alt: "Salsa búfalo, salsa BBQ y aderezo ranch en soufflés transparentes de 2 oz, junto a unas alitas.", giros: ["Hamburguesas", "Pizzería", "Restaurantes", "Eventos", "Micheladas", "Negocio nuevo"] },
+
+    /* ---- Productos de "Contenedores de comida - Fotos.pptx" (2026-10-12) ---- */
+    "contenedor-papel-chino": { f: "papel-chino-chow-mein", alt: "Chow mein con pollo y verduras en contenedor de papel chino, con palillos.", giros: ["Sushi", "Restaurantes", "Negocio nuevo"] },
+    "contenedor-ovalado-paja-trigo": { f: "contenedor-ovalado-paja-chilaquiles", alt: "Chilaquiles verdes con pollo, crema y queso en contenedor ovalado de paja de trigo.", giros: ["Tamales", "Tacos", "Restaurantes", "Negocio nuevo"] },
+    "contenedor-rect-paja-trigo-48": { f: "contenedor-rect-paja-48-mole", alt: "Pollo en mole con arroz y frijoles en contenedor rectangular de paja de trigo.", giros: ["Tacos", "Restaurantes", "Eventos", "Negocio nuevo"] },
+    "contenedor-rect-grande-paja-trigo": { f: "contenedor-rect-grande-paja-flautas", alt: "Flautas con lechuga, crema, queso y salsa verde en contenedor rectangular grande de paja de trigo.", giros: ["Tacos", "Restaurantes", "Negocio nuevo"] },
+    "bisagra-paja-trigo": { f: "bisagra-paja-trigo-torta", alt: "Torta de milanesa partida a la mitad en contenedor de paja de trigo con bisagra.", giros: ["Tacos", "Restaurantes", "Negocio nuevo"] },
+    "bisagra-cana": { f: "bisagra-cana-tacos", alt: "Tacos al pastor con piña, cebolla y cilantro en contenedor de caña de azúcar con bisagra.", giros: ["Tacos", "Restaurantes", "Negocio nuevo"] },
+    /* La tapa de paja de trigo 10x7 trae dos fotos con el mismo nombre en la
+       presentación: la otra va aquí, con la segunda foto con comida. */
+    "tapa-paja-trigo-10x7": { f: "tapa-paja-trigo-10x7-a-enchiladas", alt: "Enchiladas suizas en contenedor de paja de trigo con su tapa.", giros: ["Tacos", "Restaurantes", "Negocio nuevo"] },
+    "tapa-paja-trigo-10x7|pasta": { f: "tapa-paja-trigo-10x7-b-pasta", alt: "Pasta boloñesa con parmesano en contenedor de paja de trigo, con su tapa a un lado.", giros: ["Pizzería", "Restaurantes"] },
+    "tapa-paja-trigo-10x7|vista": { f: "tapa-paja-trigo-10x7-otra-vista", alt: "Tapa de paja de trigo para contenedor rectangular grande, otra vista.", giros: [] },
+    "tapa-pla-rect-10x7": { f: "tapa-pla-rect-10x7-sushi", alt: "Rollos de sushi en contenedor de paja de trigo con tapa transparente de PLA.", giros: ["Sushi"] },
+    "tapa-pla-rect-9x7": { f: "tapa-pla-rect-9x7-fruta", alt: "Fruta picada en contenedor de paja de trigo con tapa transparente de PLA.", giros: ["Fruta", "Ensaladas", "Jugos"] },
+    "tapa-souffle": { f: "tapa-pet-plana-63-hamburguesa", alt: "Cátsup, mostaza y mayonesa en soufflés con tapa plana, junto a una hamburguesa con papas.", giros: ["Hamburguesas", "Restaurantes", "Negocio nuevo"] },
+    "souffle-fecula": { f: "souffle-salsas", alt: "Salsa roja, salsa verde y guacamole en soufflés blancos, junto a unos tacos.", giros: ["Tacos", "Mariscos", "Restaurantes", "Eventos", "Negocio nuevo"] },
+    "ensaladera-kraft": { f: "ensaladera-kraft-poke", alt: "Poke de salmón con arroz, aguacate, pepino y edamame en ensaladera kraft.", giros: ["Ensaladas", "Sushi", "Restaurantes", "Negocio nuevo"] },
+    "contenedor-rebanada-pizza": { f: "rebanada-pizza-pepperoni", alt: "Rebanada de pizza de pepperoni en su contenedor triangular.", giros: ["Pizzería"] },
+    "contenedor-ps": { f: "contenedor-ps-17x14x6-conchas", alt: "Conchas de vainilla y de chocolate en contenedor transparente con bisagra.", giros: ["Panadería", "Cafetería", "Negocio nuevo"] },
+    "popote-cuchara": { f: "popote-cuchara-mangonada", alt: "Mangonada con chamoy y chile en polvo, con popote cuchara.", giros: ["Helado", "Fruta", "Aguas", "Frappés"] }
   };
 
   /* Preguntas sugeridas que aparecen al abrir el chat. */

@@ -710,3 +710,46 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
   | 19 | `popote-cuchara-mangonada` | |
 
   - Faltan 2 con comida: la 07 (tapa de paja de trigo B) y la 10 (tapa ovalada PLA). A sus prompts se les agregó que el contenedor es gris claro, no kraft.
+
+## Ronda 47: los productos nuevos entran a la tienda, TikTok y revisión de los comentarios (2026-10-12)
+
+- **TikTok:** la liga es `https://www.tiktok.com/@greenovasc.desecha` (se le quitaron los parámetros de rastreo `_r` y `_t`). Va en el botón de "Síguenos en redes" y en el pie de las 8 páginas. La de Facebook sigue siendo la supuesta (`greenovasc`).
+- **Fotos con comida:** llegó la 07 (`uso/tapa-paja-trigo-10x7-b-pasta`). Las otras dos que mandó son repeticiones de la 02 y la 04; se dejaron las que ya estaban. Falta la 10 (tapa ovalada PLA): hay una en Descargas (`rhgot2…`, hot cakes), pero Gabriel no la mandó y no se instaló.
+- **Productos de "Contenedores de comida - Fotos.pptx" en la tienda** (`productos.js`), con el nombre y las medidas de la presentación:
+
+  | Producto | Categoría | Precio |
+  |---|---|---|
+  | Contenedor de papel chino (16 y 26 oz) | Contenedores de papel | se cotiza |
+  | Contenedor ovalado de paja de trigo (24 y 32 oz) | Contenedores de paja de trigo (nueva) | se cotiza |
+  | Contenedor rectangular de paja de trigo 48 oz | Contenedores de paja de trigo | se cotiza |
+  | Contenedor rectangular grande de paja de trigo 10x7 | Contenedores de paja de trigo | se cotiza |
+  | Bisagra de paja de trigo 9x6 | Contenedores de paja de trigo | se cotiza |
+  | Bisagra de caña de azúcar (6x6, 8x8 y 9x9) | Contenedores de bagazo de caña (nueva) | se cotiza |
+  | Tapa de paja de trigo 10x7 | Tapas para contenedor y soufflé | se cotiza |
+  | Tapa PLA rectangular 10x7, rectangular grande 9x7 y ovalada 24 oz | Tapas para contenedor y soufflé | se cotizan |
+  | Tapa plana PET para soufflé de 2 oz (63 mm) | Tapas para contenedor y soufflé | Hoja1 del Excel: $39.56 y $638.91 |
+  | Soufflé de fécula de maíz (2 y 4 oz) | Soufflés y conos | se cotiza |
+  | Ensaladera kraft (24, 32 y 44 oz) | Ensaladeras | se cotiza |
+  | Contenedor para rebanada de pizza | Cajas, charolas y contenedores PET | se cotiza |
+  | Contenedor transparente PS 17 x 14 x 6 cm | Cajas, charolas y contenedores PET | se cotiza |
+  | Popote cuchara biodegradable 26 cm | Popotes | se cotiza |
+
+  - Regresaron el popote cuchara y la tapa para soufflé, que se habían quitado por no tener foto (ronda 29). Se da por hecho que la "Tapa plana PETE 63 mm" de la presentación es la "Tapa PET Souffle 02 oz" del Excel; se le avisó a Gabriel.
+  - La tapa de paja de trigo 10x7 es un solo producto: las dos fotos de la presentación llevan el mismo nombre. La segunda foto de estudio va en su galería (`uso/tapa-paja-trigo-10x7-otra-vista`).
+  - Materiales nuevos: paja de trigo, bagazo de caña y fécula de maíz.
+  - Fotos corregidas de productos que ya estaban: la caja kraft usa la caja plegable (`caja-kraft-plegable-estudio`, con pad thai) y el soufflé PP el transparente (`souffle-pp-2oz-estudio`, con alitas). Los dos llevan "Boca 63 mm" donde la presentación lo dice.
+  - `tienda.js`: las dos categorías nuevas van en "Comida para llevar"; "bisagra", "bagazo" y "pizza" salieron de la lista de lo que no está en la tienda.
+  - `agente-criterios.js`: fotos con comida de cada producto (`FOTOS_USO`), el texto de qué hay en la tienda y la rebanada de pizza en "Pizzería" (si no, al buscar "pizza" no salía).
+  - `agente-rag/catalogo.json`: 15 renglones nuevos, todos "a cotizar".
+  - Se probó: las 18 fichas abren sin errores, el buscador encuentra los productos, el cobro en PHP lee los 57 productos y el panel de precios los conserva al guardar.
+- **Portada, tarjetas de bagazo, paja de trigo y fécula:** ahora enseñan los productos reales y llevan a la tienda.
+
+  | Tarjeta | Foto | Al pasar el cursor | Liga |
+  |---|---|---|---|
+  | Bagazo de caña | bisagra de caña | hamburguesa (la que Gabriel aprobó) | `tienda.html?cat=bagazo-cana` |
+  | Paja de trigo | contenedor ovalado | chilaquiles | `tienda.html?cat=paja-trigo` |
+  | Fécula de maíz | soufflé con tapa | salsas con tacos | `producto.html?id=souffle-fecula` |
+
+  Se borraron `almeja-bagazo`, `charola-paja-trigo`, `souffle-fecula` (foto), `cafe-paja-trigo` y `cafe-fecula`: mostraban productos que no son los de la presentación.
+- **Revisión de "Comentarios 07.10.2026.pptx":** se comparó cada lámina contra `index.html` y `tienda.html`; todo lo escrito en las láminas 1 a 6 está en la página. De las láminas 7 a 9 (solo capturas y "Hay que darle estructura-orden a la página") quedaron el orden de las secciones y la columna "Menú" del pie; Gabriel no ha dicho si se quedan.
+- `productos.js`, `tienda.js` y `agente-criterios.js` pasaron a `?v=20261012a`. El sitemap tiene 57 fichas.
