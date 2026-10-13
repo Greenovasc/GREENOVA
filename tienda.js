@@ -34,7 +34,7 @@
   var SECCIONES = [
     { id: "vasos", nombre: "Vasos", cats: ["vasos-papel", "vasos-pet"] },
     { id: "tapas", nombre: "Tapas", cats: ["tapas-papel", "tapas-pet", "tapas-contenedor"] },
-    { id: "comida", nombre: "Comida para llevar", cats: ["contenedores", "cajas-charolas", "ensaladeras", "souffles"] },
+    { id: "comida", nombre: "Comida para llevar", cats: ["contenedores", "paja-trigo", "bagazo-cana", "cajas-charolas", "ensaladeras", "souffles"] },
     { id: "accesorios", nombre: "Accesorios para bebida", cats: ["fajillas", "removedores", "popotes", "portavasos"] },
     { id: "bolsas", nombre: "Bolsas, servilletas y envoltura", cats: ["bolsas", "servilletas-papel"] }
   ];
@@ -293,8 +293,8 @@
   /* Lo que se cotiza pero no está en la tienda: si lo buscan (aunque sea mal
      escrito) no se confunde con otra palabra; sale "Sin resultados" con el
      botón para pedirlo. */
-  var FUERA = ["plato", "cuchara", "tenedor", "cuchillo", "cubierto", "almeja", "bisagra",
-               "domo pastel", "bagazo", "helado", "pizza"]
+  var FUERA = ["plato", "cuchara", "tenedor", "cuchillo", "cubierto", "almeja",
+               "domo pastel", "helado"]
     .map(function (w) { return { w: w, s: suena(w) }; });
   var VOCAB = null;
   function vocab() {
@@ -511,6 +511,7 @@
                "tapas-pet": "Tapas", "fajillas": "Accesorios", "removedores": "Accesorios",
                "popotes": "Accesorios", "portavasos": "Accesorios", "servilletas-papel": "Accesorios",
                "tapas-contenedor": "Tapas", "contenedores": "Contenedores", "cajas-charolas": "Contenedores",
+               "paja-trigo": "Contenedores", "bagazo-cana": "Contenedores",
                "ensaladeras": "Contenedores", "souffles": "Contenedores", "bolsas": "Bolsas" };
 
   /* Lo que no tiene ningún precio en la lista se cotiza (Gabriel, 2026-10-03:

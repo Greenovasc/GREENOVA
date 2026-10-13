@@ -16,6 +16,8 @@ window.GREENOVA = (function () {
     { id: "tapas-pet", nombre: "Tapas para vaso PET", icono: "i-circle-half" },
     { id: "tapas-contenedor", nombre: "Tapas para contenedor y soufflé", icono: "i-circle-half" },
     { id: "contenedores", nombre: "Contenedores de papel", icono: "i-bowl-food" },
+    { id: "paja-trigo", nombre: "Contenedores de paja de trigo", icono: "i-bowl-food" },
+    { id: "bagazo-cana", nombre: "Contenedores de bagazo de caña", icono: "i-bowl-food" },
     { id: "cajas-charolas", nombre: "Cajas, charolas y contenedores PET", icono: "i-package" },
     { id: "ensaladeras", nombre: "Ensaladeras", icono: "i-bowl-food" },
     { id: "souffles", nombre: "Soufflés y conos", icono: "i-bowl-food" },
@@ -38,6 +40,9 @@ window.GREENOVA = (function () {
     "tapioca": "Tapioca",
     "carton": "Cartón",
     "pla": "PLA",
+    "paja-trigo": "Paja de trigo",
+    "bagazo": "Bagazo de caña",
+    "fecula": "Fécula de maíz",
     "otro": "Otro material"
   };
 
@@ -89,7 +94,7 @@ window.GREENOVA = (function () {
         { paq: 25, caja: 500, pPaq: 68.53, pCaja: 1300.55, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-03", img: "vaso-papel-doble-pared-blanco-estudio" },
         { paq: 50, caja: 1000, pPaq: 82.89, pCaja: 1517.78, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-04", img: "vaso-papel-doble-pared-negro-estudio" },
         { paq: 28, caja: 560, pPaq: 83.46, pCaja: 1590.72, boca: 90, esp: "Boca 90 mm · Alto 139 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-05", img: "vaso-papel-doble-pared-negro-estudio" },
-        { paq: 25, caja: 500, pPaq: 57.39, pCaja: 1077.87, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-06", img: "vaso-papel-doble-pared-generico" }
+        { paq: 25, caja: 500, pPaq: 57.39, pCaja: 1077.87, boca: 90, esp: "Boca 90 mm · Alto 108 mm · Base 59 mm", sku: "GN-VASO-PAPEL-DOBLE-PARED-06", img: "vaso-papel-doble-pared-generico-estudio" }
       ] } },
     { id: "vaso-papel-color-44", nombre: "Vaso de papel de color 44 oz", cat: "vasos-papel", mat: ["papel"], img: "vaso-papel-44-rojo", uso: "Bebida fría o caliente", fotoPropia: true, personalizable: true,
       desc: "Vaso de papel de 44 oz en rojo, azul o gris, con recubrimiento interior de polietileno.",
@@ -210,7 +215,7 @@ window.GREENOVA = (function () {
       venta: { linea: "pp", tam: [
         { paq: 50, caja: 1000, pPaq: 105.6, pCaja: 1971.94, boca: 89, esp: "Boca 89 mm", sku: "GN-VASO-PP-01", img: "vaso-pp-u-estudio" },
         { paq: 25, caja: 1000, pPaq: 40.02, pCaja: 1460.71, boca: 92, esp: "Boca 92 mm", sku: "GN-VASO-PP-02", img: "vaso-pp-92-estudio" },
-        { paq: 25, caja: 1000, pPaq: 44.94, pCaja: 1657.5, boca: 95, esp: "Boca 95 mm", sku: "GN-VASO-PP-03", img: "tienda-42" }
+        { paq: 25, caja: 1000, pPaq: 44.94, pCaja: 1657.5, boca: 95, esp: "Boca 95 mm", sku: "GN-VASO-PP-03", img: "vaso-pp-95-estudio" }
       ] } },
 
     /* ---------------- tapas para vaso pet ---------------- */
@@ -269,7 +274,7 @@ window.GREENOVA = (function () {
       ] } },
 
     /* ---------------- popotes, portavasos, servilletas y papel ---------------- */
-    { id: "popote-tapioca", nombre: "Popote de tapioca biodegradable", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca", uso: "Popote para bebida fría",
+    { id: "popote-tapioca", nombre: "Popote de tapioca biodegradable", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca-estudio", fotoPropia: true, uso: "Popote para bebida fría",
       desc: "Popote biodegradable de tapioca, de 21 cm. Se cotiza por caja.",
       v: ["21 cm · caja de 5 kg"] },
     { id: "popote-tapioca-estuchado", nombre: "Popote de tapioca estuchado", cat: "popotes", mat: ["tapioca"], img: "popote-tapioca-estuchado-estudio", uso: "Popote para bebida fría", fotoPropia: true,
@@ -294,7 +299,7 @@ window.GREENOVA = (function () {
     { id: "papel-encerado", nombre: "Papel grado alimenticio encerado", cat: "servilletas-papel", mat: ["papel"], img: "papel-encerado-estudio", uso: "Para envolver alimentos", fotoPropia: true,
       desc: "Papel encerado grado alimenticio, para envolver alimentos. Se cotiza por caja.",
       v: ["Caja de 1,000 pzs"] },
-    { id: "papel-rh", nombre: "Papel grado alimenticio RH", cat: "servilletas-papel", mat: ["papel"], img: "papel-rh", uso: "Para envolver alimentos",
+    { id: "papel-rh", nombre: "Papel grado alimenticio RH", cat: "servilletas-papel", mat: ["papel"], img: "papel-rh-estudio", fotoPropia: true, uso: "Para envolver alimentos",
       desc: "Papel grado alimenticio RH, para envolver alimentos. Se cotiza por caja.",
       v: ["Caja de 1,000 pzs"] },
 
@@ -310,7 +315,7 @@ window.GREENOVA = (function () {
         { paq: 25, caja: 500, pPaq: 59.48, pCaja: 1119.59, boca: 115, esp: "Boca 115 mm", sku: "GN-CONTENEDOR-PAPEL-05", img: null },
         { paq: 25, caja: 500, pPaq: 74.83, pCaja: 1426.55, boca: 115, esp: "Boca 115 mm", sku: "GN-CONTENEDOR-PAPEL-06", img: null }
       ] } },
-    { id: "caja-kraft", nombre: "Caja kraft para comida", cat: "cajas-charolas", mat: ["kraft"], img: "contenedor-kraft-rect", uso: "Comida para llevar", fotoPropia: true,
+    { id: "caja-kraft", nombre: "Caja kraft para comida", cat: "cajas-charolas", mat: ["kraft"], img: "caja-kraft-plegable-estudio", uso: "Comida para llevar", fotoPropia: true,
       desc: "Caja kraft para comida para llevar, de 26 a 96 oz.",
       v: ["26 oz · 11 x 9 x 6.5 cm", "45 oz · 15 x 12 x 6.5 cm", "49 oz · 20 x 14 x 5 cm", "66 oz · 20 x 14 x 6.5 cm", "96 oz · 20 x 14 x 9 cm"],
       venta: { linea: "kraft", tam: [
@@ -348,11 +353,11 @@ window.GREENOVA = (function () {
         { paq: 1, caja: 150, pPaq: 8.63, pCaja: 1274.22, boca: null, esp: null, sku: "GN-ENSALADERA-PET-03", img: null },
         { paq: 1, caja: 100, pPaq: 13.63, pCaja: 1349.11, boca: null, esp: null, sku: "GN-ENSALADERA-PET-04", img: null }
       ] } },
-    { id: "souffle", nombre: "Soufflé PP de 2 oz", cat: "souffles", mat: ["pp"], img: "souffle-fecula", uso: "Salsas y aderezos", fotoPropia: true,
+    { id: "souffle", nombre: "Soufflé PP de 2 oz", cat: "souffles", mat: ["pp"], img: "souffle-pp-2oz-estudio", uso: "Salsas y aderezos", fotoPropia: true,
       desc: "Vaso soufflé de polipropileno de 2 oz para salsas y aderezos. Su tapa se vende aparte.",
       v: ["2 oz"],
       venta: { linea: "pp", tam: [
-        { paq: 100, caja: 2500, pPaq: 42.69, pCaja: 717.33, boca: null, esp: null, sku: "GN-SOUFFLE-01", img: null }
+        { paq: 100, caja: 2500, pPaq: 42.69, pCaja: 717.33, boca: 63, esp: "Boca 63 mm", sku: "GN-SOUFFLE-01", img: null }
       ] } },
     { id: "cono-crepa", nombre: "Cono para crepa", cat: "souffles", mat: [], img: "cono-crepa", uso: "Crepas", fotoPropia: true,
       desc: "Cono porta crepa para servir en la mano.",
@@ -374,6 +379,61 @@ window.GREENOVA = (function () {
         { paq: 50, caja: 250, pPaq: 132.02, pCaja: 625.12, boca: null, esp: "28 x 35 x 15 cm", sku: "GN-BOLSA-SEMIKRAFT-02", img: null },
         { paq: 50, caja: 250, pPaq: 151.27, pCaja: 721.35, boca: null, esp: "30 x 39 x 17 cm", sku: "GN-BOLSA-SEMIKRAFT-03", img: null }
       ] } },
+
+    /* ---------------- de "Contenedores de comida - Fotos.pptx" (2026-10-12) ----------------
+       Nombres y medidas, los de la presentación. No traen precio en la lista:
+       se cotizan. La tapa para soufflé sí está en la Hoja1 del Excel. */
+    { id: "contenedor-papel-chino", nombre: "Contenedor de papel chino", cat: "contenedores", mat: ["papel"], img: "papel-chino-estudio", uso: "Comida para llevar", fotoPropia: true,
+      desc: "Contenedor de papel chino, de 16 y 26 oz. Se cotiza.",
+      v: ["16 oz", "26 oz"] },
+    { id: "contenedor-ovalado-paja-trigo", nombre: "Contenedor ovalado de paja de trigo", cat: "paja-trigo", mat: ["paja-trigo"], img: "contenedor-ovalado-paja-trigo-estudio", uso: "Comida para llevar", fotoPropia: true,
+      desc: "Contenedor ovalado de paja de trigo, de 24 y 32 oz. Se cotiza.",
+      v: ["24 oz", "32 oz"] },
+    { id: "contenedor-rect-paja-trigo-48", nombre: "Contenedor rectangular de paja de trigo 48 oz", cat: "paja-trigo", mat: ["paja-trigo"], img: "contenedor-rect-paja-trigo-48-estudio", uso: "Comida para llevar", fotoPropia: true,
+      desc: "Contenedor rectangular de paja de trigo de 48 oz (9x7x3). Se cotiza.",
+      v: ["48 oz · 9x7x3"] },
+    { id: "contenedor-rect-grande-paja-trigo", nombre: "Contenedor rectangular grande de paja de trigo 10x7", cat: "paja-trigo", mat: ["paja-trigo"], img: "contenedor-rect-grande-paja-trigo-estudio", uso: "Comida para llevar", fotoPropia: true,
+      desc: "Contenedor rectangular grande de paja de trigo, de 10x7. Se cotiza.",
+      v: ["10x7"] },
+    { id: "bisagra-paja-trigo", nombre: "Bisagra de paja de trigo 9x6", cat: "paja-trigo", mat: ["paja-trigo"], img: "bisagra-paja-trigo-estudio", uso: "Comida para llevar", fotoPropia: true,
+      desc: "Contenedor de paja de trigo con tapa de bisagra, de 9x6. Se cotiza.",
+      v: ["9x6"] },
+    { id: "bisagra-cana", nombre: "Bisagra de caña de azúcar", cat: "bagazo-cana", mat: ["bagazo"], img: "bisagra-cana-estudio", uso: "Comida para llevar", fotoPropia: true,
+      desc: "Contenedor de caña de azúcar con tapa de bisagra, de 6x6, 8x8 y 9x9. Se cotiza.",
+      v: ["6x6", "8x8", "9x9"] },
+    { id: "tapa-paja-trigo-10x7", nombre: "Tapa de paja de trigo para contenedor rectangular grande 10x7", cat: "tapas-contenedor", mat: ["paja-trigo"], img: "tapa-paja-trigo-10x7-a-estudio", uso: "Tapa para contenedor rectangular grande de paja de trigo", fotoPropia: true,
+      desc: "Tapa de paja de trigo para el contenedor rectangular grande de 10x7. Se cotiza.",
+      v: ["10x7"] },
+    { id: "tapa-pla-rect-10x7", nombre: "Tapa PLA para contenedor rectangular 10x7", cat: "tapas-contenedor", mat: ["pla"], img: "tapa-pla-rect-10x7-estudio", uso: "Tapa para contenedor rectangular de paja de trigo", fotoPropia: true,
+      desc: "Tapa transparente de PLA para el contenedor rectangular de 10x7. Se cotiza.",
+      v: ["10x7"] },
+    { id: "tapa-pla-rect-9x7", nombre: "Tapa PLA para contenedor rectangular grande 9x7", cat: "tapas-contenedor", mat: ["pla"], img: "tapa-pla-rect-9x7-estudio", uso: "Tapa para contenedor rectangular de paja de trigo", fotoPropia: true,
+      desc: "Tapa transparente de PLA para el contenedor rectangular grande de 9x7. Se cotiza.",
+      v: ["9x7"] },
+    { id: "tapa-pla-ovalada-24", nombre: "Tapa PLA para contenedor ovalado 24 oz", cat: "tapas-contenedor", mat: ["pla"], img: "tapa-pla-ovalada-24-estudio", uso: "Tapa para contenedor ovalado de paja de trigo", fotoPropia: true,
+      desc: "Tapa transparente de PLA para el contenedor ovalado de 24 oz. Se cotiza.",
+      v: ["24 oz"] },
+    { id: "tapa-souffle", nombre: "Tapa plana PET para soufflé de 2 oz", cat: "tapas-contenedor", mat: ["pet"], img: "tapa-pet-plana-63-estudio", uso: "Tapa para soufflé de 2 oz", fotoPropia: true,
+      desc: "Tapa plana de PET de 63 mm para el soufflé de 2 oz.",
+      v: ["2 oz"],
+      venta: { linea: "pet", tam: [
+        { paq: 100, caja: 2500, pPaq: 39.56, pCaja: 638.91, boca: 63, esp: "Boca 63 mm", sku: "GN-TAPA-SOUFFLE-01", img: null }
+      ] } },
+    { id: "souffle-fecula", nombre: "Soufflé de fécula de maíz", cat: "souffles", mat: ["fecula"], img: "souffle-fecula-tapa-estudio", uso: "Salsas y aderezos", fotoPropia: true,
+      desc: "Soufflé de fécula de maíz, de 2 y 4 oz. Se cotiza.",
+      v: ["2 oz", "4 oz"] },
+    { id: "ensaladera-kraft", nombre: "Ensaladera kraft", cat: "ensaladeras", mat: ["kraft"], img: "ensaladera-kraft-estudio", uso: "Ensaladas y bowls", fotoPropia: true,
+      desc: "Ensaladera kraft, de 24, 32 y 44 oz. Se cotiza.",
+      v: ["24 oz", "32 oz", "44 oz"] },
+    { id: "contenedor-rebanada-pizza", nombre: "Contenedor para rebanada de pizza", cat: "cajas-charolas", mat: [], img: "rebanada-pizza-estudio", uso: "Rebanada de pizza", fotoPropia: true,
+      desc: "Contenedor triangular para una rebanada de pizza. Se cotiza.",
+      v: ["Triangular"] },
+    { id: "contenedor-ps", nombre: "Contenedor transparente PS", cat: "cajas-charolas", mat: ["ps"], img: "contenedor-ps-17x14x6-estudio", uso: "Comida para llevar", fotoPropia: true,
+      desc: "Contenedor transparente de PS, de 17 x 14 x 6 cm. Se cotiza.",
+      v: ["17 x 14 x 6 cm"] },
+    { id: "popote-cuchara", nombre: "Popote cuchara biodegradable", cat: "popotes", mat: [], img: "popote-cuchara-estudio", uso: "Popote para raspados, nieves y frappés", fotoPropia: true,
+      desc: "Popote biodegradable de 26 cm con punta de cuchara. Se cotiza por caja.",
+      v: ["26 cm · caja de 5 kg"] },
 
   ];
 

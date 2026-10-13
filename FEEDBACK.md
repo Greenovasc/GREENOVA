@@ -474,3 +474,284 @@ También se quitaron de las recomendaciones del asistente, de su texto sobre qu�
 
 - "Quita lo de preguntas frecuentes": se quitó la sección de `facturacion.html` con sus 4 preguntas. La página queda con el encabezado, los tres pasos y el pie.
 - Se borraron los estilos `.info-preguntas`, que ya no se usan. `styles.css` pasó a `?v=20261005e`.
+
+## Ronda 36: "Comentarios 07.10.2026.pptx" (2026-10-07)
+
+Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
+
+- **Lám. 1, portada:** el subtítulo ahora es "Haz que tu comida se vea tan bien como sabe."
+- **Lám. 1, el porqué:**
+  - Frase: "No vendas sólo comida, vende una experiencia desde el empaque."
+  - Derecha: "Dale a tu comida la presentación que merece. Sirve mejor, presenta mejor, vende más."
+- **Lám. 1, catálogo:**
+  - La portada va derecha, como pila de hojas, renderizada del PDF a 520 px (`portada-catalogo-2026b.webp`).
+  - El título es "Descarga el catálogo completo aquí" y se quitó la frase "Ahí está TODO…".
+  - A la derecha va un collage de 6 fotos de estudio del mismo fondo (`assets/catalogo/collage-productos.webp`).
+- **Lám. 2, Nuestros productos:** foto de estudio y, al pasar el cursor, con bebida o comida. Ahora son 7 tarjetas en el orden de la lámina, cuatro por fila con la última centrada:
+
+  | Tarjeta | Foto al pasar el cursor |
+  |---|---|
+  | Bebidas | café con vapor (capuchino con tapa negra) |
+  | Vasos PET (nueva) | frappé |
+  | Contenedores | helado (se queda) |
+  | Bowls | ensalada (se queda) |
+  | Bolsas | la de antes (falta Gemini) |
+  | Complementos | portavasos con cafés y fajillas |
+  | Papel encerado y RH (nueva) | croissant, provisional (falta Gemini) |
+
+  Bagazo de caña, paja de trigo y fécula de maíz no tienen productos en el catálogo ni fotos. Sus tarjetas no van hasta tener las dos cosas.
+- **Lám. 3, el problema:**
+  - La franja del unicel es el segundo bloque.
+  - "Cada comida cuenta y tu envase también." va en grande, con "El sabor atrae, el empaque convence." en una pastilla.
+  - Las dos tarjetas pasaron a la franja:
+    - "Tu competencia ya está cambiando su empaque. ¿Y tú?"
+    - "En CDMX el unicel ya está prohibido. Los negocios que cambian primero ganan a los clientes que buscan algo mejor; los que esperan, se quedan atrás." Es el mensaje de CDMX con otras palabras.
+- **Lám. 4, Servicios:** se quitó la frase "Tu marca en tu empaque…". Las tres fotos nuevas van con Gemini:
+  - vasos serigrafiados de colores con TU LOGO;
+  - empaque para hamburguesa, papas, alitas y hot dogs;
+  - bolsas bond de colores con TU LOGO.
+- **Lám. 5, redes:**
+  - "Síguenos en redes" con tres botones: Facebook, Instagram y TikTok.
+  - En el pie de las 8 páginas van los tres íconos (Phosphor).
+  - Las ligas de Facebook y TikTok usan el mismo usuario que Instagram (`greenovasc`); están por confirmar.
+- **Lám. 5, SEO:** los títulos del mega menú ya no son `<h3>` (iban antes del `<h1>`); ahora son `<p class="mega__t">`. Cada página tiene un solo `<h1>` y los `<h2>`/`<h3>` en orden. A cualquier producto se llega en 2 o 3 clics.
+- **Lám. 6, tienda:** se quitó "Todo el catálogo en una pantalla…".
+- **Láms. 7 a 9, estructura:**
+  - Cabecera: botón "Cotizar" destacado; en el celular va dentro del menú.
+  - Pie: columna "Menú" con el menú principal, más las tres redes.
+  - Orden de la portada: portada → problema (unicel) → productos → catálogo → beneficios (el porqué) → servicios → redes → "Así de fácil compras" (4 pasos, nuevo) → cotización.
+  - Sin testimonios: no hay reales.
+  - La ficha de producto ya sigue la estructura. "Ideal para" no se volvió a poner, porque Gabriel lo quitó el 2026-10-03.
+- `styles.css` pasó a `?v=20261007a`.
+
+## Ronda 37: se regresa lo del unicel y se quita "Cotizar" (2026-10-07)
+
+- "Eso no me gustó, vuelve como estaba antes y te doy instrucciones." Gabriel aclaró que se refería solo a la parte del unicel:
+  - Las dos tarjetas regresaron a su propia sección, con los textos de antes ("Si ya probaste un vaso 'eco'…" y "Mientras tú sigues dudando…").
+  - La franja también regresó: "¿Aún utilizas unicel para tus alimentos?", "Cada comida cuenta, tu envase también." en chico y "Ir a la tienda".
+  - Van justo después de "Nuestros productos", como antes.
+  - Se borraron los estilos `.franja__meta`, `.franja__lema` y `.franja .dudas__*`.
+- "Quita lo de cotizar en la parte de arriba": se quitó el botón de la cabecera y el enlace del menú del celular en las 8 páginas, con sus estilos.
+- Papel grado alimenticio RH y Popote de tapioca se veían chicos dentro del cuadro de la ficha. Ahora llevan `fotoPropia: true` y van de orilla a orilla. Ya no queda ningún producto sin `fotoPropia`. En la tienda todas las fotos llenan su tarjeta igual.
+- `styles.css` pasó a `?v=20261007b` y `productos.js` a `?v=20261007a`.
+
+## Ronda 38: el PowerPoint completo, en mediano (2026-10-07)
+
+- "Algunas cosas están bien, solo que lo hiciste demasiado grande; hazlo como el archivo comentarios te dice, pero mediano, y a todo lo del archivo hazle caso."
+- **El problema (lám. 3) regresa, en mediano:**
+  - Va justo después de la portada, como pide la estructura (lám. 8).
+  - "¿Aún utilizas unicel para tus alimentos?" ahora mide 2.4rem como máximo (antes, 3.2rem).
+  - "Cada comida cuenta y tu envase también." va en negritas de 1.8rem como máximo; con el primer cambio llegaba a 4.6rem.
+  - Abajo van la pastilla "El sabor atrae, el empaque convence.", las dos tarjetas (máximo 880 px de ancho) y "Ir a la tienda".
+  - Clase `.franja--problema`.
+- **Bagazo de caña, paja de trigo y fécula de maíz (lám. 2):** ya están las 10 tarjetas, cinco por fila. Las tres nuevas usan fotos de estudio del mismo fondo que ya existían (`almeja-bagazo`, `charola-paja-trigo`, `souffle-fecula`). No están en la tienda, así que dicen "Pedir cotización" y llevan al formulario. Su foto con comida falta (Gemini).
+- **Preguntas frecuentes (lám. 8):** cinco preguntas antes de la cotización, solo con lo que ya dice el sitio: envíos, pedido mínimo, pago, factura y logo.
+- **Se queda fuera:**
+  - El botón "Cotizar" de la cabecera, porque Gabriel pidió quitarlo después del PowerPoint.
+  - Los testimonios, porque no hay reales.
+- `styles.css` pasó a `?v=20261007c`.
+
+## Ronda 39: unicel compacto y fotos de bagazo, paja de trigo y fécula (2026-10-07)
+
+- "Que lo hagas más compacto: las letras, que se vean grandes, pero que no ocupe todo el campo de visión de la página."
+  - La franja va en dos columnas:
+    - Izquierda: la pregunta (máximo 2.75rem), "Cada comida cuenta y tu envase también.", el lema y "Ir a la tienda".
+    - Derecha: las dos tarjetas, una sobre otra.
+  - A 1280 px la sección pasó de unos 850 px de alto a 360. En celular va en una columna.
+- Gabriel confirmó: bagazo de caña, paja de trigo y fécula de maíz son contenedores, charolas y bowls para comida.
+- Las fotos para Gemini están en `~/Desktop/Fotos Greenova para Gemini/PARA GEMINI - bagazo, paja de trigo y fecula/`. Van la referencia de ambiente y las tres fotos de producto; faltan sus fotos con comida para el cursor.
+- `styles.css` pasó a `?v=20261007d`.
+
+## Ronda 40: sin preguntas frecuentes (2026-10-07)
+
+- "Quita lo de preguntas frecuentes": se quitó la sección de la portada con sus estilos `.faq*`. `styles.css` pasó a `?v=20261007e`.
+- Gabriel preguntó en qué parte de los comentarios se pedía "Así de fácil compras". **En ninguna lo pedía explícitamente.**
+  - La lámina 7 solo dice "Hay que darle estructura-orden a la página". La lámina 8 es una captura de Gemini con la estructura de una página de inicio; su punto 6 es "Proceso de trabajo (Cómo funciona): pasos sencillos en 3 o 4 fases".
+  - Los 4 pasos y las preguntas frecuentes (su punto 7) fueron interpretación mía de esa captura.
+
+## Ronda 41: sin interpretaciones, foto de bagazo con hamburguesa (2026-10-07)
+
+- Gabriel: "No quiero que interpretes nada que no estaba en el archivo comentarios."
+  - Se quitó "Así de fácil compras": no venía escrito, salió de la captura de Gemini de la lámina 8.
+  - Se borraron sus estilos nuevos (`ol.steps` y la regla de 2 columnas en celular).
+- **Bagazo de caña, foto al pasar el cursor:**
+  - Es la hamburguesa con papas en el contenedor con bisagra que mandó Gabriel (original de 2048 px en Descargas, `Gemini_Generated_Image_8eyz…`).
+  - Pidió "ocultar un poco el helado del fondo". La vitrina se desenfocó fuerte, con 35 % del color y un poco más de luz; la máscara de Vision protege la caja y la comida. Además se recortó por la izquierda.
+  - Quedó en `assets/landing/cafe-bagazo.webp` (900 px).
+- **Por qué salió en una heladería:** la referencia de ambiente que le di era la foto de la vitrina de helados (`cafe-contenedores`). Se cambió en la carpeta del escritorio por `cafe-bowls`, que no tiene helados. Los prompts de paja de trigo y fécula ahora dicen qué lugar va con cada comida.
+- `styles.css` pasó a `?v=20261007f`.
+
+## Ronda 42: catálogo nuevo y fotos de paja de trigo y fécula (2026-10-07)
+
+- **Catálogo:** el nuevo es `Catálogo_Greenovasc_2026-4.pdf` (Canva, 33 páginas horizontales).
+  - Pesaba 98 MB. Se comprimió a 8.3 MB con `pypdf`: el color de cada imagen pasó a JPEG calidad 80, con la misma transparencia y el mismo texto. Se compararon las 33 páginas contra el original; la diferencia media es menor a 1 de 255.
+  - Reemplaza a `assets/catalogo/catalogo-greenova-sc-2026.pdf` (`?v=20261007a`).
+  - La portada horizontal es `portada-catalogo-2026c.webp` (800×450).
+  - Se observó en el PDF de Gabriel, sin tocarlo: el índice dice "11-" y "###" en Ofertas y Cotiza ya, y la portada todavía dice "Empaques Responsables, Negocios con Propósito".
+- **Fotos con comida para el cursor:**
+  - Paja de trigo: enchiladas en cocina económica (`assets/landing/cafe-paja-trigo.webp`).
+  - Fécula: bowl de arroz con pollo en restaurante saludable (`cafe-fecula.webp`).
+  - Son las originales de 2048 px de Descargas, a 900 px.
+- Las referencias que faltan quedaron juntas en `~/Desktop/Fotos Greenova para Gemini/PARA GEMINI - las que faltan (07.10)/`.
+- `styles.css` pasó a `?v=20261007g`.
+
+## Ronda 43: la imagen de portada del catálogo, la de antes (2026-10-07)
+
+- Gabriel: "Esa imagen estaba muy bien, no hace falta quitarla. No le pongas la de ahorita, no se ve tan estética como la otra."
+  - Regresó `portada-catalogo-2026b.webp`: la portada vertical de "Catálogo y precios 2026", derecha (lám. 1: "está chueca"), con la pila de hojas.
+  - El título, el botón y el collage se quedan como están.
+  - Se borró `portada-catalogo-2026c.webp` y los estilos de la portada horizontal.
+- El PDF que se descarga sigue siendo el nuevo, de 33 páginas.
+- `styles.css` pasó a `?v=20261007h`.
+
+## Ronda 44: seis fotos de Gemini instaladas (2026-10-07)
+
+- **Al pasar el cursor** (fotos de 2048 px de Descargas, a 900 px):
+
+  | Tarjeta | Foto | Archivo |
+  |---|---|---|
+  | Bolsas | bolsa con galletas y baguette en panadería | `assets/landing/cafe-bolsas-pan.webp` |
+  | Papel encerado y RH | torta en encerado y hamburguesa en RH, en tortería | `cafe-papel-torta.webp` |
+
+- **Estudio:** las 4 que faltaban (42, 52, 56 y 65). Se midieron con Vision y ya traían el tamaño de producto parejo, así que no se recortaron.
+
+  | Foto | Producto | Archivo nuevo | Reemplaza a |
+  |---|---|---|---|
+  | 42 | vaso PP boca 95 | `vaso-pp-95-estudio` | `tienda-42` |
+  | 52 | popote de tapioca | `popote-tapioca-estudio` | |
+  | 56 | papel RH | `papel-rh-estudio` | la foto de fondo beige |
+  | 65 | vaso de doble pared genérico | `vaso-papel-doble-pared-generico-estudio` | |
+
+- Gabriel preguntó por qué cambiar las fotos de Servicios: lo pide la lám. 4 de los comentarios, puntos 1, 2 y 3. Se le citó el texto; él decide.
+- `productos.js` pasó a `?v=20261007b`.
+
+## Ronda 45: las 3 fotos de Servicios (2026-10-08)
+
+- Gabriel aclaró la lám. 4: el punto 2 ("la imagen de la derecha") va en la foto de en medio, Contenedores a medida; la de la derecha sigue siendo de bolsas.
+- Las 3 fotos de Gemini (originales de 2048 px en Descargas), a 800×840:
+
+  | Foto | Qué muestra | Retoque | Archivo |
+  |---|---|---|---|
+  | Izquierda | vasos verde, rojo, azul y negro con "TU LOGO" | Se borró el texto inventado del frasco ("TINTA FERDE DESTUO") rellenando con el color de la etiqueta; el frasco dice solo "TU LOGO". Se recortó la orilla derecha, que traía letras raras en la libreta. | `serv-serigrafia-color.webp` |
+  | En medio | tableta con el suaje, cajas para hamburguesa, porta papas y charola para hot dog | | `serv-comida-rapida.webp` |
+  | Derecha | bolsas kraft y bond blanca, verde, roja, azul y negra con "TU LOGO" | | `serv-bolsas-color.webp` |
+
+- Se borraron las fotos viejas `serv-serigrafia`, `serv-contenedores` y `serv-bolsas`. Los títulos y textos de los cuadros no cambiaron.
+- Con esto ya están todas las fotos que pidió el PowerPoint.
+
+## Ronda 46: fotos de "Contenedores de comida" y collage con comida (2026-10-08)
+
+- **"Contenedores de comida - Fotos.pptx"** (copia en `~/Greenova/MKT/`): 7 láminas con el nombre y la foto de cada producto, sin instrucciones. Gabriel confirmó que son para hacer sus fotos de estudio.
+  - Las 19 referencias están en `~/Desktop/Fotos Greenova para Gemini/PARA GEMINI - contenedores de comida (08.10)/`; los prompts se dieron en el chat.
+  - Dudas pendientes de la presentación:
+    - La 06 y la 07 se llaman igual (tapa de paja de trigo 10x7), pero son tapas distintas.
+    - La segunda foto de "Tapa PLA 9x7" es una tapa ovalada.
+- **Llegó la 01 (papel chino).** Coincide con la foto real. Quedó en `assets/prod/papel-chino-estudio.webp`, al tamaño de las demás. El producto entra a la tienda junto con los otros nuevos cuando lleguen sus fotos.
+- **Catálogo:** el collage ahora usa las fotos con comida de los mismos 6 productos. Antes eran sus fotos de estudio.
+
+  | Producto | Foto con comida |
+  |---|---|
+  | Fajilla kraft | capuchino en la mano |
+  | Contenedor kraft | salmón con verduras |
+  | Portavasos charola | 4 cafés |
+  | Charola kraft | hamburguesa con papas |
+  | Vaso PET | latte frío |
+  | Ensaladera PET | quinoa |
+
+  Antes de usarlas se revisó que en cada foto sale el mismo envase. El archivo nuevo es `collage-productos-comida.webp`; se borró `collage-productos.webp`.
+- **Llegaron la 02, la 03 y la 04** (paja de trigo: ovalado, rectangular de 48 oz y rectangular grande 10x7). Quedaron en `assets/prod/contenedor-ovalado-paja-trigo-estudio`, `contenedor-rect-paja-trigo-48-estudio` y `contenedor-rect-grande-paja-trigo-estudio`.
+  - En la 03 Gemini inventó una tercera línea en el relieve ("crcilc day daily compcrtable"). Se borró rellenando por difusión. Quedan las dos líneas correctas: "Made from plants, not petroleum" y "CERTIFIED COMPOSTABLE".
+  - Faltan de la 05 a la 19.
+- **Llegaron 12 más.** Se instalaron la 05 a la 12, la 14, la 15, la 16 y la 17. Archivos en `assets/prod/`:
+
+  | # | Archivo |
+  |---|---|
+  | 05 | `bisagra-paja-trigo-estudio` |
+  | 06 | `tapa-paja-trigo-10x7-a-estudio` |
+  | 07 | `tapa-paja-trigo-10x7-b-estudio` |
+  | 08 | `tapa-pla-rect-10x7-estudio` |
+  | 09 | `tapa-pla-rect-9x7-estudio` |
+  | 10 | `tapa-pla-ovalada-24-estudio` |
+  | 11 | `bisagra-cana-estudio` |
+  | 12 | `souffle-fecula-tapa-estudio` |
+  | 14 | `rebanada-pizza-estudio` |
+  | 15 | `caja-kraft-plegable-estudio` |
+  | 16 | `contenedor-ps-17x14x6-estudio` |
+  | 17 | `souffle-pp-2oz-estudio` |
+
+  - La 06 salió con el relieve de World Centric bien escrito, igual que la tapa real. Se dejó así y se le avisó a Gabriel.
+  - Las tapas PLA, la caja kraft, el soufflé PP y el contenedor PS ya venían anchos (más de 0.78), así que no se recortaron.
+  - Faltan 3: la 13 (ensaladera kraft), la 18 (tapa plana PET 63 mm) y la 19 (popote cuchara).
+- **Llegaron las 3 que faltaban:** 13 `ensaladera-kraft-estudio`, 18 `tapa-pet-plana-63-estudio` y 19 `popote-cuchara-estudio`.
+  - La 18 trae el vasito y los símbolos de PET y de grado alimenticio en relieve.
+  - Gabriel dejó la 06 con las letras de World Centric.
+  - Ya están las 19 de estudio.
+- **Fotos con comida de los productos nuevos:**
+  - Las referencias están en `~/Desktop/Fotos Greenova para Gemini/PARA GEMINI - con comida, productos nuevos (10.10)/`: la 00 es la de estilo A0 y luego va la foto de estudio de cada producto. Los prompts se dieron en el chat.
+  - La 12 (soufflé de fécula) no lleva prompt: usa `uso/souffle-salsas`, que ya tiene soufflés blancos.
+  - La 15 sustituye a `caja-kraft-salmon`, que muestra el contenedor rectangular con tapa y no la caja plegable.
+- **Fotos con comida que ya llegaron:** 01 `uso/papel-chino-chow-mein`, 02 `uso/contenedor-ovalado-paja-chilaquiles` y 03 `uso/contenedor-rect-paja-48-mole`. Son de 1024 px y se bajaron a 900. Se meten a `FOTOS_USO` cuando los productos entren a la tienda.
+- **Llegó con comida la 04:** `uso/contenedor-rect-grande-paja-flautas` (flautas con lechuga, crema y salsa verde). Faltan 14 con comida: 05 a 11 y 13 a 19.
+- **Llegaron 12 fotos con comida más** (2026-10-12). Archivos en `assets/uso/`:
+
+  | # | Archivo | Retoque |
+  |---|---|---|
+  | 05 | `bisagra-paja-trigo-torta` | |
+  | 06 | `tapa-paja-trigo-10x7-a-enchiladas` | Se borró un letrero inventado del fondo ("MEXICA TAKEOU"). |
+  | 08 | `tapa-pla-rect-10x7-sushi` | El contenedor salió color kraft; se pasó a gris claro, como la paja de trigo. |
+  | 09 | `tapa-pla-rect-9x7-fruta` | Igual que la 08. |
+  | 11 | `bisagra-cana-tacos` | |
+  | 13 | `ensaladera-kraft-poke` | |
+  | 14 | `rebanada-pizza-pepperoni` | |
+  | 15 | `caja-kraft-plegable-pad-thai` | |
+  | 16 | `contenedor-ps-17x14x6-conchas` | Ninguno. La tapa salió con rayas y más plana que la de la foto de estudio; se le avisó a Gabriel. |
+  | 17 | `souffle-pp-2oz-alitas` | Gabriel pidió enfocar más los envases: se recortó más cerca (680 de 1024 px). |
+  | 18 | `tapa-pet-plana-63-hamburguesa` | Igual: se recortó más cerca (660 de 1024 px). |
+  | 19 | `popote-cuchara-mangonada` | |
+
+  - Faltan 2 con comida: la 07 (tapa de paja de trigo B) y la 10 (tapa ovalada PLA). A sus prompts se les agregó que el contenedor es gris claro, no kraft.
+
+## Ronda 47: los productos nuevos entran a la tienda, TikTok y revisión de los comentarios (2026-10-12)
+
+- **TikTok:** la liga es `https://www.tiktok.com/@greenovasc.desecha` (se le quitaron los parámetros de rastreo `_r` y `_t`). Va en el botón de "Síguenos en redes" y en el pie de las 8 páginas. La de Facebook sigue siendo la supuesta (`greenovasc`).
+- **Fotos con comida:** llegó la 07 (`uso/tapa-paja-trigo-10x7-b-pasta`). Las otras dos que mandó son repeticiones de la 02 y la 04; se dejaron las que ya estaban. Falta la 10 (tapa ovalada PLA): hay una en Descargas (`rhgot2…`, hot cakes), pero Gabriel no la mandó y no se instaló.
+- **Productos de "Contenedores de comida - Fotos.pptx" en la tienda** (`productos.js`), con el nombre y las medidas de la presentación:
+
+  | Producto | Categoría | Precio |
+  |---|---|---|
+  | Contenedor de papel chino (16 y 26 oz) | Contenedores de papel | se cotiza |
+  | Contenedor ovalado de paja de trigo (24 y 32 oz) | Contenedores de paja de trigo (nueva) | se cotiza |
+  | Contenedor rectangular de paja de trigo 48 oz | Contenedores de paja de trigo | se cotiza |
+  | Contenedor rectangular grande de paja de trigo 10x7 | Contenedores de paja de trigo | se cotiza |
+  | Bisagra de paja de trigo 9x6 | Contenedores de paja de trigo | se cotiza |
+  | Bisagra de caña de azúcar (6x6, 8x8 y 9x9) | Contenedores de bagazo de caña (nueva) | se cotiza |
+  | Tapa de paja de trigo 10x7 | Tapas para contenedor y soufflé | se cotiza |
+  | Tapa PLA rectangular 10x7, rectangular grande 9x7 y ovalada 24 oz | Tapas para contenedor y soufflé | se cotizan |
+  | Tapa plana PET para soufflé de 2 oz (63 mm) | Tapas para contenedor y soufflé | Hoja1 del Excel: $39.56 y $638.91 |
+  | Soufflé de fécula de maíz (2 y 4 oz) | Soufflés y conos | se cotiza |
+  | Ensaladera kraft (24, 32 y 44 oz) | Ensaladeras | se cotiza |
+  | Contenedor para rebanada de pizza | Cajas, charolas y contenedores PET | se cotiza |
+  | Contenedor transparente PS 17 x 14 x 6 cm | Cajas, charolas y contenedores PET | se cotiza |
+  | Popote cuchara biodegradable 26 cm | Popotes | se cotiza |
+
+  - Regresaron el popote cuchara y la tapa para soufflé, que se habían quitado por no tener foto (ronda 29). Se da por hecho que la "Tapa plana PETE 63 mm" de la presentación es la "Tapa PET Souffle 02 oz" del Excel; se le avisó a Gabriel.
+  - La tapa de paja de trigo 10x7 es un solo producto: las dos fotos de la presentación llevan el mismo nombre. La segunda foto de estudio va en su galería (`uso/tapa-paja-trigo-10x7-otra-vista`).
+  - Materiales nuevos: paja de trigo, bagazo de caña y fécula de maíz.
+  - Fotos corregidas de productos que ya estaban: la caja kraft usa la caja plegable (`caja-kraft-plegable-estudio`, con pad thai) y el soufflé PP el transparente (`souffle-pp-2oz-estudio`, con alitas). Los dos llevan "Boca 63 mm" donde la presentación lo dice.
+  - `tienda.js`: las dos categorías nuevas van en "Comida para llevar"; "bisagra", "bagazo" y "pizza" salieron de la lista de lo que no está en la tienda.
+  - `agente-criterios.js`: fotos con comida de cada producto (`FOTOS_USO`), el texto de qué hay en la tienda y la rebanada de pizza en "Pizzería" (si no, al buscar "pizza" no salía).
+  - `agente-rag/catalogo.json`: 15 renglones nuevos, todos "a cotizar".
+  - Se probó: las 18 fichas abren sin errores, el buscador encuentra los productos, el cobro en PHP lee los 57 productos y el panel de precios los conserva al guardar.
+- **Portada, tarjetas de bagazo, paja de trigo y fécula:** ahora enseñan los productos reales y llevan a la tienda.
+
+  | Tarjeta | Foto | Al pasar el cursor | Liga |
+  |---|---|---|---|
+  | Bagazo de caña | bisagra de caña | hamburguesa (la que Gabriel aprobó) | `tienda.html?cat=bagazo-cana` |
+  | Paja de trigo | contenedor ovalado | chilaquiles | `tienda.html?cat=paja-trigo` |
+  | Fécula de maíz | soufflé con tapa | salsas con tacos | `producto.html?id=souffle-fecula` |
+
+  Se borraron `almeja-bagazo`, `charola-paja-trigo`, `souffle-fecula` (foto), `cafe-paja-trigo` y `cafe-fecula`: mostraban productos que no son los de la presentación.
+- **Revisión de "Comentarios 07.10.2026.pptx":** se comparó cada lámina contra `index.html` y `tienda.html`; todo lo escrito en las láminas 1 a 6 está en la página. De las láminas 7 a 9 (solo capturas y "Hay que darle estructura-orden a la página") quedaron el orden de las secciones y la columna "Menú" del pie; Gabriel no ha dicho si se quedan.
+- `productos.js`, `tienda.js` y `agente-criterios.js` pasaron a `?v=20261012a`. El sitemap tiene 57 fichas.
+- **Llegó la 10** (más tarde, el mismo día): `uso/tapa-pla-ovalada-24-hot-cakes`, hot cakes con fresas y moras bajo la tapa ovalada PLA. Ya están las 18 fotos con comida de los productos nuevos. `agente-criterios.js` pasó a `?v=20261012b`.
+- Gabriel pidió subirlo a GitHub: rama y `main`.
