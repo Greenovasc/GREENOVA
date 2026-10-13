@@ -692,3 +692,21 @@ Nueve láminas por WhatsApp; "arregla solo lo que se te dice aquí".
   - La 15 sustituye a `caja-kraft-salmon`, que muestra el contenedor rectangular con tapa y no la caja plegable.
 - **Fotos con comida que ya llegaron:** 01 `uso/papel-chino-chow-mein`, 02 `uso/contenedor-ovalado-paja-chilaquiles` y 03 `uso/contenedor-rect-paja-48-mole`. Son de 1024 px y se bajaron a 900. Se meten a `FOTOS_USO` cuando los productos entren a la tienda.
 - **Llegó con comida la 04:** `uso/contenedor-rect-grande-paja-flautas` (flautas con lechuga, crema y salsa verde). Faltan 14 con comida: 05 a 11 y 13 a 19.
+- **Llegaron 12 fotos con comida más** (2026-10-12). Archivos en `assets/uso/`:
+
+  | # | Archivo | Retoque |
+  |---|---|---|
+  | 05 | `bisagra-paja-trigo-torta` | |
+  | 06 | `tapa-paja-trigo-10x7-a-enchiladas` | Se borró un letrero inventado del fondo ("MEXICA TAKEOU"). |
+  | 08 | `tapa-pla-rect-10x7-sushi` | El contenedor salió color kraft; se pasó a gris claro, como la paja de trigo. |
+  | 09 | `tapa-pla-rect-9x7-fruta` | Igual que la 08. |
+  | 11 | `bisagra-cana-tacos` | |
+  | 13 | `ensaladera-kraft-poke` | |
+  | 14 | `rebanada-pizza-pepperoni` | |
+  | 15 | `caja-kraft-plegable-pad-thai` | |
+  | 16 | `contenedor-ps-17x14x6-conchas` | Ninguno. La tapa salió con rayas y más plana que la de la foto de estudio; se le avisó a Gabriel. |
+  | 17 | `souffle-pp-2oz-alitas` | Gabriel pidió enfocar más los envases: se recortó más cerca (680 de 1024 px). |
+  | 18 | `tapa-pet-plana-63-hamburguesa` | Igual: se recortó más cerca (660 de 1024 px). |
+  | 19 | `popote-cuchara-mangonada` | |
+
+  - Faltan 2 con comida: la 07 (tapa de paja de trigo B) y la 10 (tapa ovalada PLA). A sus prompts se les agregó que el contenedor es gris claro, no kraft.
